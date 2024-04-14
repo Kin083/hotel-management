@@ -4,11 +4,12 @@ import { BrowserRouter as Router} from 'react-router-dom'
 import App from './App.jsx'
 import App1 from './App1.jsx'
 import './index.css'
+import GlobalStyles from './Component/GlobalStyles/index.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Router>
-      <App1 />
-    </Router>
+      <GlobalStyles>
+        <App1 />
+      </GlobalStyles>
   </React.StrictMode>,
 )
