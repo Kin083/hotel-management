@@ -1,0 +1,4 @@
+.wrapper {
+    width: var(--default-layout-sidebar-width);
+    background-color: yellow;
+}

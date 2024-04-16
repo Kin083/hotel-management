@@ -1,23 +1,28 @@
-import PropTypes from 'prop-types';
-import Header from './Header'
-import Sidebar from './Sidebar'
+import PropTypes from "prop-types";
+import classNames from "classnames/bind";
+import styles from "./DefaultLayout.module.css";
 
-function DefaultLayout({ children}) {
-    return ( 
-        <div>
-            <Header />
-            <div className='container'>
-                <Sidebar />
-                <div className='content'>
-                    {children}
-                </div>
-            </div>
-        </div>
-     );
+import Header from "./Header";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+
+const cx = classNames.bind(styles);
+
+function DefaultLayout({ children }) {
+  return (
+    <div className={cx("wrapper")}>
+      <Header />
+      <Navbar />
+      <div className={cx("container")}>
+        <Sidebar />
+        <div className={cx("content")}>{children}</div>
+      </div>
+    </div>
+  );
 }
 
 DefaultLayout.propTypes = {
-    children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 };
 
 export default DefaultLayout;
