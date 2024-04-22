@@ -1,9 +1,9 @@
 
-import OverView from '../pages/OverView/index.jsx'
-import Report from '../pages/Report'
-import Room from '../pages/Room'
-import Staff from '../pages/Staff'
-import Transaction from '../pages/Transaction'
+import OverView from '../pages/OverView/OverView.jsx'
+import Report from '../pages/Report/Report.jsx'
+import Room from '../pages/Room/Room.jsx'
+import Staff from '../pages/Staff/Staff.jsx'
+import Transaction from '../pages/Transaction/Transaction.jsx'
 
 // Public Routes - Don't need sign in but user can see it.
 const publicRoutes = [
