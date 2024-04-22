@@ -3,6 +3,7 @@
     height: var(--default-layout-header-height, 50px);
     display: flex;
     justify-content: center;
+    background-color: #fff;
 }
 
 .inner {
