@@ -17,7 +17,7 @@ import Logout from "@mui/icons-material/Logout";
 import Divider from "@mui/material/Divider";
 
 export default function Header() {
-  const userName = "Tran Duy Tuan Anh";
+  const userName = "Black Mamba";
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -51,7 +51,7 @@ export default function Header() {
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
               >
-                <Avatar sx={{ width: 40, height: 40 }}>TA</Avatar>
+                <Avatar sx={{ width: 40, height: 40 }}>BM</Avatar>
               </IconButton>
             </Tooltip>
           </Box>
