@@ -1,0 +1,36 @@
+
+:root {
+    --primary: #165aaa; // main color
+
+
+    // Default Layout
+    --default-layout-header-height: 50px;
+    --default-layout-width: 1260px;
+    --default-layout-sidebar-width: 235px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    font-size: 62.5%;
+}
+
+body {
+    // font-family: ;
+    font-size: 1.6rem;
+}
+
+button,
+input,
+[tabIndex] {
+    outline: none;
+    border: none;
+}
+
+a[href] {
+    //color: var(--text-color);
+    text-decoration: none;
+}

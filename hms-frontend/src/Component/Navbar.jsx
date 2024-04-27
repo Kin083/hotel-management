@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Logo from '../assets/logo.png';
 import { HiOutlineBars3 } from 'react-icons/hi2';
 import Box from "@mui/material/Box";
