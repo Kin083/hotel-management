@@ -1,7 +1,6 @@
 import { useState } from "react";
-import Logo from '../assets/logo.png';
+import Logo from '../../assets/logo.png';
 import { HiOutlineBars3 } from 'react-icons/hi2';
-import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
@@ -14,6 +13,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
 import { useNavigate } from 'react-router-dom';
 
+import './Navbar.css';
 const Navbar = () => {
     const [openMenu, setOpenMenu] = useState(false);
     const menuOptions = [
@@ -52,8 +52,8 @@ const Navbar = () => {
                 <HiOutlineBars3 onClick={() => setOpenMenu(true)} />
             </div>
             <Drawer open={openMenu} onClose={() => setOpenMenu(false)} anchor="right">
-                <Box
-                    sx={{ width: 250 }}
+                <div
+                    style={{ width: 250 }}
                     role="presentation"
                     onClick={() => setOpenMenu(false)}
                     onKeyDown={() => setOpenMenu(false)}
@@ -69,7 +69,7 @@ const Navbar = () => {
                         ))}
                     </List>
                     <Divider />
-                </Box>
+                </div>
             </Drawer>
         </nav>
     );

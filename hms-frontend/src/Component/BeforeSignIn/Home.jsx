@@ -1,9 +1,10 @@
 import React from 'react';
 import Navbar from './Navbar';
-import BannerBackground from '../assets/background-homepage.jpg';
+import BannerBackground from '../../assets/background-homepage.jpg';
 import About from './About'
 import Contact from './Contact'
 import Footer from './Footer'
+import './Home.css';
 const Home = () => {
     return (<>
         <div className='home-container'>
