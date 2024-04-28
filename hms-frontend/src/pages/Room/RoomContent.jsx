@@ -21,6 +21,13 @@ import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
+import ImageListItemBar from "@mui/material/ImageListItemBar";
 
 function createData(
   id,
@@ -30,7 +37,10 @@ function createData(
   dailyRate,
   overnightRate,
   status,
-  notes
+  notes,
+  overtimePay,
+  maximumCapacity,
+  img
 ) {
   return {
     id,
@@ -41,22 +51,115 @@ function createData(
     overnightRate,
     status,
     notes,
+    overtimePay,
+    maximumCapacity,
+    img,
   };
 }
 
 const data = [
-  createData(1, 501, "VIP", 500, 1000, 1000, "active", null),
-  createData(2, 502, "ONE PERSON ONE BED", 200, 800, 800, "active", null),
-  createData(3, 503, "TWO PERSON", 250, 900, 900, "active", null),
-  createData(4, 504, "VIP", 500, 1000, 1000, "active", null),
-  createData(5, 401, "VIP", 500, 1000, 1000, "active", null),
-  createData(6, 402, "ONE PERSON ONE BED", 200, 800, 800, "active", null),
-  createData(7, 403, "ONE PERSON ONE BED", 200, 800, 800, "active", null),
-  createData(8, 404, "VIP", 500, 1000, 1000, "active", null),
-  createData(9, 301, "VIP", 500, 1000, 1000, "active", null),
-  createData(10, 302, "VIP", 500, 1000, 1000, "active", null),
-  createData(11, 303, "ONE PERSON ONE BED", 200, 800, 800, "active", null),
-  createData(12, 304, "TWO PERSON", 250, 900, 900, "inactive", null),
+  createData(1, 501, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
+  createData(
+    2,
+    502,
+    "ONE PERSON ONE BED",
+    200,
+    800,
+    800,
+    "active",
+    null,
+    "250/h",
+    1
+  ),
+  createData(3, 503, "TWO PERSON", 250, 900, 900, "active", null, "300/h", 2),
+  createData(4, 504, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
+  createData(5, 401, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
+  createData(
+    6,
+    402,
+    "ONE PERSON ONE BED",
+    200,
+    800,
+    800,
+    "inactive",
+    null,
+    "250/h",
+    1
+  ),
+  createData(
+    7,
+    403,
+    "ONE PERSON ONE BED",
+    200,
+    800,
+    800,
+    "active",
+    null,
+    "250/h",
+    1
+  ),
+  createData(8, 404, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
+  createData(9, 301, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
+  createData(10, 302, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
+  createData(
+    11,
+    303,
+    "ONE PERSON ONE BED",
+    200,
+    800,
+    800,
+    "active",
+    null,
+    "250/h",
+    1
+  ),
+  createData(
+    12,
+    304,
+    "TWO PERSON",
+    250,
+    900,
+    900,
+    "inactive",
+    null,
+    "300/h",
+    2
+  ),
+];
+
+const imageData = [
+  {
+    img: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bGl2aW5nJTIwcm9vbXxlbnwwfHwwfHx8Mg%3D%3D",
+    title: "Bed",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1618220179428-22790b461013?q=80&w=3027&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    title: "Books",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1589834390005-5d4fb9bf3d32?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGxpdmluZyUyMHJvb218ZW58MHx8MHx8fDI%3D",
+    title: "Sink",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8a2l0Y2hlbnxlbnwwfHwwfHx8Mg%3D%3D",
+    title: "Kitchen",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1556037843-347ddff9f4b0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGtpdGNoZW58ZW58MHx8MHx8fDI%3D",
+    title: "Blinds",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fENoYWlyfGVufDB8fDB8fHwy",
+    title: "Chairs",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1526657782461-9fe13402a841?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bGFwdG9wfGVufDB8fDB8fHwy",
+    title: "Laptop",
+  },
+  {
+    img: "https://images.unsplash.com/photo-1558827052-620cb6371c78?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGRvb3J8ZW58MHx8MHx8fDI%3D",
+    title: "Doors",
+  },
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -252,6 +355,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 function RoomContent({ selectedType, selectedStatus }) {
+  // eslint-disable-next-line no-unused-vars
   const [rows, setRows] = React.useState(data);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
@@ -259,6 +363,12 @@ function RoomContent({ selectedType, selectedStatus }) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(8);
+  const [expandedRowId, setExpandedRowId] = React.useState(null);
+  const [roomInforTab, setRoomInforTab] = React.useState("1");
+
+  const handleChangeTab = (event, newValue) => {
+    setRoomInforTab(newValue);
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -292,6 +402,7 @@ function RoomContent({ selectedType, selectedStatus }) {
       );
     }
     setSelected(newSelected);
+    setExpandedRowId(id === expandedRowId ? null : id);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -315,17 +426,31 @@ function RoomContent({ selectedType, selectedStatus }) {
 
   const visibleRows = stableSort(
     rows.filter((row) => {
-      if (
-        (selectedType === "ALL" || selectedType === null) &&
-        (selectedStatus === "both" || selectedStatus === null)
-      ) {
+      if (selectedType === null && selectedStatus === null) {
         return true;
-      } else if (selectedType === "ALL" || selectedType === null) {
-        return row.status === selectedStatus;
-      } else if (selectedStatus === "both") {
+      } else if (selectedType !== null && selectedStatus === null) {
+        if (selectedType === "ALL") {
+          return true;
+        }
+
         return row.type === selectedType;
+      } else if (selectedType === null && selectedStatus !== null) {
+        if (selectedStatus === "both") {
+          return true;
+        }
+
+        return row.status === selectedStatus;
       } else {
-        return row.type === selectedType && row.status === selectedStatus;
+        console.log(selectedStatus, selectedType);
+        if (row.type === "ALL") {
+          if (row.status === "both") return true;
+          return row.status === selectedStatus;
+        }
+        if (row.status === "both") {
+          if (row.status === "ALL") return true;
+          return row.type === selectedType;
+        }
+        return row.status === selectedStatus && row.type === selectedType;
       }
     }),
     getComparator(order, orderBy)
@@ -359,43 +484,107 @@ function RoomContent({ selectedType, selectedStatus }) {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
+                  <>
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row.id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.id}
+                      selected={isItemSelected}
+                      sx={{ cursor: "pointer" }}
                     >
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.type}</TableCell>
-                    <TableCell align="right">{row.hourlyRate}</TableCell>
-                    <TableCell align="right">{row.dailyRate}</TableCell>
-                    <TableCell align="right">{row.overnightRate}</TableCell>
-                    <TableCell align="right">
-                      {row.status === "active" ? "Active" : "Inactive"}
-                    </TableCell>
-                    <TableCell align="right">{row.notes}</TableCell>
-                  </TableRow>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            "aria-labelledby": labelId,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                      >
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="right">{row.type}</TableCell>
+                      <TableCell align="right">{row.hourlyRate}</TableCell>
+                      <TableCell align="right">{row.dailyRate}</TableCell>
+                      <TableCell align="right">{row.overnightRate}</TableCell>
+                      <TableCell align="right">
+                        {row.status === "active" ? "Active" : "Inactive"}
+                      </TableCell>
+                      <TableCell align="right">{row.notes}</TableCell>
+                    </TableRow>
+
+                    {expandedRowId === row.id && (
+                      <TableRow sx={{ maxHeight: "435px" }}>
+                        <TableCell
+                          padding="none"
+                          colSpan={8}
+                          sx={{ width: "100%" }}
+                        >
+                          <TabContext value={roomInforTab}>
+                            <Box
+                              sx={{ borderBottom: 1, borderColor: "divider" }}
+                            >
+                              <TabList
+                                onChange={handleChangeTab}
+                                aria-label="room infor tab"
+                              >
+                                <Tab label="Information" value="1" />
+                                <Tab label="Booking History" value="2" />
+                                <Tab label="Transaction History" value="3" />
+                                <Tab label="Cleanup History" value="4" />
+                              </TabList>
+                            </Box>
+                            <TabPanel value="1">
+                              <Box sx={{ display: "flex" }}>
+                                <Box
+                                  sx={{
+                                    flex: 1,
+                                    width: "50%",
+                                    height: "100%",
+                                    overflowY: "scroll",
+                                  }}
+                                >
+                                  <ImageList variant="masonry" cols={3} gap={8}>
+                                    {imageData.map((image) => (
+                                      <ImageListItem key={image.img}>
+                                        <img
+                                          srcSet={`${image.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                                          src={`${image.img}?w=248&fit=crop&auto=format`}
+                                          alt={image.title}
+                                          loading="lazy"
+                                        />
+                                        <ImageListItemBar
+                                          position="below"
+                                          title={image.title}
+                                        />
+                                      </ImageListItem>
+                                    ))}
+                                  </ImageList>
+                                </Box>
+                                <Box sx={{ flex: 1, paddingLeft: "16px" }}>
+                                  Item One
+                                </Box>
+                              </Box>
+                            </TabPanel>
+
+                            <TabPanel value="2">Item Two</TabPanel>
+                            <TabPanel value="3">Item Three</TabPanel>
+                            <TabPanel value="4">Item four</TabPanel>
+                          </TabContext>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </>
                 );
               })}
               {emptyRows > 0 && (

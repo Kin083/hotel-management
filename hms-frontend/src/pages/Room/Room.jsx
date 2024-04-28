@@ -25,7 +25,10 @@ function Room() {
           onTypeSelected={handleTypeSelected}
           onStatusSelected={handleStatusSelected}
         />
-        <RoomContent selectedType={typeSelected} selectedStatus={statusSelected} />
+        <RoomContent
+          selectedType={typeSelected}
+          selectedStatus={statusSelected}
+        />
       </div>
     </>
   );
