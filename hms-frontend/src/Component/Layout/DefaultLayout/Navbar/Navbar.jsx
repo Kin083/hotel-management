@@ -124,7 +124,7 @@ function Navbar() {
     <div className={cx("wrapper")}>
       <div className={cx("inner")}>
         <ThemeProvider theme={theme}>
-          <Stack direction="row" sx={{ height: "100%", }}>
+          <Stack direction="row" sx={{ height: "100%" }}>
             {BUTTON_LIST.map((button) => (
               <Button
                 key={button.text}
@@ -135,7 +135,7 @@ function Navbar() {
                 sx={{
                   width: 200,
                   "&:hover": {
-                    bgcolor: "#3B8665", // Đặt màu nền khi hover
+                    bgcolor: "#3B8665",
                   },
                 }}
                 onClick={
