@@ -1,26 +1,18 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import { visuallyHidden } from "@mui/utils";
+import EnhancedTableHead from "./EnhancedTableHead";
+import EnhancedTableToolbar from "./EnhancedTableToolbar";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -151,184 +143,7 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-const headCells = [
-  {
-    id: "name",
-    numeric: true,
-    disablePadding: true,
-    label: "Room Name",
-  },
-  {
-    id: "type",
-    numeric: false,
-    disablePadding: false,
-    label: "Type",
-  },
-  {
-    id: "hourlyRate",
-    numeric: true,
-    disablePadding: false,
-    label: "Hourly Rate",
-  },
-  {
-    id: "dailyRate",
-    numeric: true,
-    disablePadding: false,
-    label: "Daily Rate",
-  },
-  {
-    id: "overnightRate",
-    numeric: true,
-    disablePadding: false,
-    label: "Over Night Rate",
-  },
-  {
-    id: "status",
-    numeric: false,
-    disablePadding: false,
-    label: "Status",
-  },
-  {
-    id: "overtimePay",
-    numeric: false,
-    disablePadding: false,
-    label: "Overtime Pay",
-  },
-  {
-    id: "maximumCapacity",
-    numeric: true,
-    disablePadding: false,
-    label: "Maximun Capacity",
-  },
-  {
-    id: "notes",
-    numeric: false,
-    disablePadding: false,
-    label: "Notes",
-  },
-];
-function EnhancedTableHead(props) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              "aria-label": "select all rooms",
-            }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align="right"
-            padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
-EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
-function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle3"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h3"
-          id="tableTitle"
-          component="div"
-        >
-          Room List
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  );
-}
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
-
-function RoomContent({ selectedType, selectedStatus }) {
-  // eslint-disable-next-line no-unused-vars
+function RoomList({ selectedType, selectedStatus }) {
   const [rows, setRows] = React.useState(data);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
@@ -338,6 +153,7 @@ function RoomContent({ selectedType, selectedStatus }) {
   const [rowsPerPage, setRowsPerPage] = React.useState(8);
   const [expandedRowId, setExpandedRowId] = React.useState(null);
   const [roomInforTab, setRoomInforTab] = React.useState("1");
+  const [specificRoomData, setSpecificRoomData] = React.useState(null);
 
   const handleChangeTab = (event, newValue) => {
     setRoomInforTab(newValue);
@@ -376,6 +192,8 @@ function RoomContent({ selectedType, selectedStatus }) {
     }
     setSelected(newSelected);
     setExpandedRowId(id === expandedRowId ? null : id);
+    const selectedRow = rows.find((row) => row.id === id);
+    setSpecificRoomData(selectedRow);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -393,7 +211,6 @@ function RoomContent({ selectedType, selectedStatus }) {
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -430,13 +247,12 @@ function RoomContent({ selectedType, selectedStatus }) {
   ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-      }}
-    >
+    <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          specificRoomData={specificRoomData}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -564,9 +380,9 @@ function RoomContent({ selectedType, selectedStatus }) {
   );
 }
 
-RoomContent.propTypes = {
+RoomList.propTypes = {
   selectedType: PropTypes.string.isRequired,
   selectedStatus: PropTypes.string.isRequired,
 };
 
-export default RoomContent;
+export default RoomList;
