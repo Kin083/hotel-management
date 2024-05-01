@@ -1,3 +1,5 @@
 # hotel-management
-npm install
-npm install react-router-dom
+<ul>
+  <li>npm install</li>
+  <li>npm install react-router-dom</li>
+</ul>
