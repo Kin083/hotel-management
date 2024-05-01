@@ -1,0 +1,73 @@
+.booktype-container {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: #00000090;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.booktype {
+    width: 80%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+    border-radius: 20px;
+}
+
+.booktype .booktype-exit {
+    position: absolute;
+    right: 166px;
+    cursor: pointer;
+}
+
+.time-interval {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin: 20px 0px;
+}
+
+.booktype table {
+    border-spacing: 0px;
+    margin: 20px 0px;
+}
+
+.booktype th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+.booktype tr:nth-child(odd) {
+    background-color: rgba(189, 189, 189, 0.565)
+}
+
+.booktype #type-header {
+    background-color: #b1e1e1;
+}
+
+.booktype input {
+    text-align: center;
+    width: 70px;
+}
+
+.submit-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+}
+
+.submit-container button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.accept-button {
+    background-color: aquamarine;
+}
