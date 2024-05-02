@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "room")
 public class RoomEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RoomNumber")
     private Integer roomnumber;
     @Column(name = "HotelID")
