@@ -1,6 +1,10 @@
+
 function Report() {
-    return (  
-        <h2> Report Page</h2>
+    return (
+        <>
+            <h2> Report Page</h2>
+
+        </>
     );
 }
 

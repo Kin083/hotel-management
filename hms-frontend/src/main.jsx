@@ -11,7 +11,7 @@ import GlobalStyles from './Component/GlobalStyles/index.jsx'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <GlobalStyles>
-      <App />
+      <App1 />
     </GlobalStyles>
   </React.StrictMode>,
 )

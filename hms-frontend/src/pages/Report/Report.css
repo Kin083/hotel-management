@@ -1,0 +1,38 @@
+.chart-container {
+    position: absolute;
+    right: 0;
+    top: 95px;
+    bottom: 100px;
+    left: 400px;
+    padding-left: 0px;
+}
+
+.pdf-container {
+    width: 70%;
+    height: 80%;
+    position: absolute;
+    top: 120px;
+    bottom: 100px;
+    left: 400px;
+}
+
+input.inputBox {
+    font-size: 14px;
+    padding: 5px 8px 4px 8px;
+    border-radius: 3px;
+    border: 1px solid #666;
+}
+
+.calendarWrap {
+    display: flex;
+    justify-content: center;
+}
+
+.calendarElement {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 40px;
+    border: 1px solid #ccc;
+    z-index: 999;
+}

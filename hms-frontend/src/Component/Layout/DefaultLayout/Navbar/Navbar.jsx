@@ -26,6 +26,7 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme({
   palette: {
@@ -101,7 +102,7 @@ function Navbar() {
   const [transactionAnchorEl, setTransactionAnchorEl] = useState(null);
   const [staffAnchorEl, setStaffAnchorEl] = useState(null);
   const [reportAnchorEl, setReportAnchorEl] = useState(null);
-
+  const navigate = useNavigate();
   const handleTransactionClick = (event) => {
     setTransactionAnchorEl(event.currentTarget);
   };
@@ -142,10 +143,10 @@ function Navbar() {
                   button.id === "transaction-button"
                     ? handleTransactionClick
                     : button.id === "staff-button"
-                    ? handleStaffClick
-                    : button.id === "report-button"
-                    ? handleReportClick
-                    : null
+                      ? handleStaffClick
+                      : button.id === "report-button"
+                        ? handleReportClick
+                        : null
                 }
               >
                 {button.text}
@@ -210,14 +211,15 @@ function Navbar() {
               open={Boolean(reportAnchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose} disableRipple>
+              <MenuItem onClick={() => navigate('/roombookingreport')} disableRipple >
                 <EventAvailableIcon />
                 Room Booking
               </MenuItem>
-              <MenuItem onClick={handleClose} disableRipple>
+              <MenuItem onClick={() => navigate('/revenue')} disableRipple>
                 <ReceiptLongIcon />
                 Revenue
               </MenuItem>
+
               <MenuItem onClick={handleClose} disableRipple>
                 <FaceRetouchingNaturalIcon />
                 Customer
