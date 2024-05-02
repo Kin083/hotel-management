@@ -16,7 +16,8 @@ import Slide from "@mui/material/Slide";
 import { Box, Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import BookingRoom from "./BookingRoom";
+import BookingDialog from "./BookingDialog";
+import DetailBooking from "./DetailBooking";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -25,6 +26,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function EnhancedTableToolbar({ numSelected, specificRoomData }) {
   const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
   const [openBookingDialog, setOpenBookingDialog] = React.useState(false);
+  const [openDetailBooking, setOpenDetailBooking] = React.useState(false);
 
   const addRoom = () => {
     alert("clicked");
@@ -44,8 +46,21 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
     setOpenBookingDialog(true);
   };
 
-  const saveBooking = () => {
+  const closeBooking = () => {
     setOpenBookingDialog(false);
+  };
+
+  const confirmBooking = () => {
+    setOpenBookingDialog(false);
+    setOpenDetailBooking(true);
+  };
+
+  const closeDetailBooking = () => {
+    setOpenDetailBooking(false);
+  };
+
+  const saveBooking = () => {
+    setOpenDetailBooking(false);
   };
 
   return (
@@ -182,7 +197,7 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
                   </Stack>
                 </Grid>
               </Grid>
-              <Box>Long Itemmmmmmmmmmmmmmmmmmmm</Box>
+              <Box>Long Item</Box>
             </Box>
           </DialogContent>
           <DialogActions>
@@ -190,10 +205,19 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
           </DialogActions>
         </Dialog>
       )}
-      <BookingRoom
+      <BookingDialog
         openBookingDialog={openBookingDialog}
-        saveBooking={saveBooking}
+        closeBooking={closeBooking}
+        confirmBooking={confirmBooking}
       />
+
+      {openDetailBooking && (
+        <DetailBooking
+          openDetailBooking={openDetailBooking}
+          closeDetailBooking={closeDetailBooking}
+          saveBooking={saveBooking}
+        />
+      )}
     </>
   );
 }

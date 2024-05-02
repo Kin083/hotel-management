@@ -12,12 +12,9 @@ import {
   alpha,
 } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import BedIcon from "@mui/icons-material/Bed";
 import NightShelterIcon from "@mui/icons-material/NightShelter";
-import DescriptionIcon from "@mui/icons-material/Description";
 import Person3Icon from "@mui/icons-material/Person3";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import PaidIcon from "@mui/icons-material/Paid";
 import Settings from "@mui/icons-material/Settings";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
@@ -80,11 +77,6 @@ const BUTTON_LIST = [
     icon: <NightShelterIcon />,
   },
   {
-    id: "transaction-button",
-    text: "Transaction",
-    icon: <PaidIcon />,
-  },
-  {
     id: "staff-button",
     text: "Staff",
     icon: <Person3Icon />,
@@ -97,13 +89,8 @@ const BUTTON_LIST = [
 ];
 
 function Navbar() {
-  const [transactionAnchorEl, setTransactionAnchorEl] = useState(null);
   const [staffAnchorEl, setStaffAnchorEl] = useState(null);
   const [reportAnchorEl, setReportAnchorEl] = useState(null);
-
-  const handleTransactionClick = (event) => {
-    setTransactionAnchorEl(event.currentTarget);
-  };
 
   const handleStaffClick = (event) => {
     setStaffAnchorEl(event.currentTarget);
@@ -114,7 +101,6 @@ function Navbar() {
   };
 
   const handleClose = () => {
-    setTransactionAnchorEl(null);
     setStaffAnchorEl(null);
     setReportAnchorEl(null);
   };
@@ -138,9 +124,7 @@ function Navbar() {
                   },
                 }}
                 onClick={
-                  button.id === "transaction-button"
-                    ? handleTransactionClick
-                    : button.id === "staff-button"
+                  button.id === "staff-button"
                     ? handleStaffClick
                     : button.id === "report-button"
                     ? handleReportClick
@@ -150,27 +134,6 @@ function Navbar() {
                 {button.text}
               </Button>
             ))}
-
-            {/* Transaction Menu */}
-            <StyledMenu
-              id="transaction-menu"
-              MenuListProps={{
-                "aria-labelledby": "transaction-button",
-              }}
-              anchorEl={transactionAnchorEl}
-              open={Boolean(transactionAnchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose} disableRipple>
-                <BedIcon />
-                Room Booking
-              </MenuItem>
-              <MenuItem onClick={handleClose} disableRipple>
-                <DescriptionIcon />
-                Receipt
-              </MenuItem>
-            </StyledMenu>
-
             {/* Staff Menu */}
             <StyledMenu
               id="staff-menu"
