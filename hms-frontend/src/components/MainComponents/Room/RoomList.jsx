@@ -23,9 +23,9 @@ function createData(
   id,
   name,
   type,
-  hourlyRate,
+  dayRate,
   dailyRate,
-  overnightRate,
+  nightRate,
   status,
   notes,
   overtimePay,
@@ -35,9 +35,9 @@ function createData(
     id,
     name,
     type,
-    hourlyRate,
+    dayRate,
     dailyRate,
-    overnightRate,
+    nightRate,
     status,
     notes,
     overtimePay,
@@ -303,9 +303,9 @@ function RoomList({ selectedType, selectedStatus }) {
                         {row.name}
                       </TableCell>
                       <TableCell align="right">{row.type}</TableCell>
-                      <TableCell align="right">{row.hourlyRate}</TableCell>
+                      <TableCell align="right">{row.dayRate}</TableCell>
+                      <TableCell align="right">{row.nightRate}</TableCell>
                       <TableCell align="right">{row.dailyRate}</TableCell>
-                      <TableCell align="right">{row.overnightRate}</TableCell>
                       <TableCell align="right">
                         {row.status === "active" ? "Active" : "Inactive"}
                       </TableCell>

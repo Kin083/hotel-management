@@ -1,8 +1,8 @@
 import RoomSideBar from "./RoomSideBar";
 import RoomList from "./RoomList";
 
-import classNames from "classnames/bind";
-import styles from "./Room.module.css";
+//import classNames from "classnames/bind";
+//import styles from "./Room.module.css";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
@@ -10,7 +10,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import RoomType from "./RoomType";
-const cx = classNames.bind(styles);
+//const cx = classNames.bind(styles);
 
 function Room() {
   const [typeSelected, setTypeSelected] = useState(null);

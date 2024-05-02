@@ -21,22 +21,22 @@ const headCells = [
     label: "Type",
   },
   {
-    id: "hourlyRate",
+    id: "dayRate",
     numeric: true,
     disablePadding: false,
-    label: "Hourly Rate",
+    label: "Day Rate",
+  },
+  {
+    id: "nightRate",
+    numeric: true,
+    disablePadding: false,
+    label: "Night Rate",
   },
   {
     id: "dailyRate",
     numeric: true,
     disablePadding: false,
     label: "Daily Rate",
-  },
-  {
-    id: "overnightRate",
-    numeric: true,
-    disablePadding: false,
-    label: "Over Night Rate",
   },
   {
     id: "status",

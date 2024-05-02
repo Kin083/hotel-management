@@ -6,6 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import BuildIcon from "@mui/icons-material/Build";
+import PaidIcon from "@mui/icons-material/Paid";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -15,26 +16,36 @@ import Slide from "@mui/material/Slide";
 import { Box, Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
+import BookingRoom from "./BookingRoom";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
 function EnhancedTableToolbar({ numSelected, specificRoomData }) {
-  const [openDialog, setOpenDialog] = React.useState(false);
+  const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
+  const [openBookingDialog, setOpenBookingDialog] = React.useState(false);
 
   const addRoom = () => {
     alert("clicked");
   };
   const adjustRoom = () => {
-    setOpenDialog(true);
+    setOpenAdjustDialog(true);
   };
   const deleteRoom = () => {
     alert("clicked");
   };
 
   const saveChange = () => {
-    setOpenDialog(false);
+    setOpenAdjustDialog(false);
+  };
+
+  const openBooking = () => {
+    setOpenBookingDialog(true);
+  };
+
+  const saveBooking = () => {
+    setOpenBookingDialog(false);
   };
 
   return (
@@ -60,6 +71,9 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
           </Typography>
         )}
 
+        <IconButton onClick={openBooking}>
+          <PaidIcon />
+        </IconButton>
         {numSelected === 1 ? (
           <IconButton onClick={adjustRoom}>
             <BuildIcon />
@@ -77,7 +91,7 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
 
       {specificRoomData && (
         <Dialog
-          open={openDialog}
+          open={openAdjustDialog}
           TransitionComponent={Transition}
           keepMounted
           onClose={saveChange}
@@ -176,6 +190,10 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
           </DialogActions>
         </Dialog>
       )}
+      <BookingRoom
+        openBookingDialog={openBookingDialog}
+        saveBooking={saveBooking}
+      />
     </>
   );
 }

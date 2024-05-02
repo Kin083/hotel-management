@@ -14,7 +14,7 @@ import Logout from "@mui/icons-material/Logout";
 import Divider from "@mui/material/Divider";
 
 const MainHeader = () => {
-    const userName = "Khai";
+    const userName = "BlackMamba";
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {

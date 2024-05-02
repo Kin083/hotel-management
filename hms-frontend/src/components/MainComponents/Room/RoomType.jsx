@@ -27,6 +27,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
+import CloseIcon from "@mui/icons-material/Close";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -69,7 +70,7 @@ function RoomType() {
   const [rows, setRows] = React.useState(data);
   const [hoveredRow, setHoveredRow] = React.useState(null);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [rowData, setRowData] = React.useState(null);
+  const [selectedRow, setSelectedRow] = React.useState(null);
 
   const [id, setId] = React.useState("");
   const [name, setName] = React.useState("");
@@ -82,7 +83,7 @@ function RoomType() {
     setOpenDialog(true);
   };
   const adjustType = (index) => {
-    setRowData(rows[index]);
+    setSelectedRow(rows[index]);
   };
   const deleteType = (index) => {
     setRows(rows.filter((_, idx) => idx !== index));
@@ -107,9 +108,9 @@ function RoomType() {
       parseFloat(overtimePay)
     );
 
-    if (rowData !== null) {
+    if (selectedRow !== null) {
       const updatedRows = rows.map((row) => {
-        if (row.id === rowData.id) {
+        if (row.id === selectedRow.id) {
           return newData;
         }
         return row;
@@ -129,16 +130,35 @@ function RoomType() {
   };
 
   React.useEffect(() => {
-    if (rowData !== null) {
-      setId(rowData.id);
-      setName(rowData.name);
-      setDayRate(rowData.dayRate);
-      setNightRate(rowData.nightRate);
-      setDailyRate(rowData.dailyRate);
-      setOvertimePay(rowData.overtimePay);
+    if (selectedRow !== null) {
+      setId(selectedRow.id);
+      setName(selectedRow.name);
+      setDayRate(selectedRow.dayRate);
+      setNightRate(selectedRow.nightRate);
+      setDailyRate(selectedRow.dailyRate);
+      setOvertimePay(selectedRow.overtimePay);
       setOpenDialog(true);
     }
-  }, [rowData]);
+  }, [selectedRow]);
+
+  function getTitle() {
+    const title =
+      selectedRow === null ? "Add New Type Of Room" : "Edit Type Of Room";
+    return (
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        {title}
+        <IconButton onClick={handleClose}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+    );
+  }
 
   return (
     <Paper sx={{ width: "100%", mb: 2 }}>
@@ -208,12 +228,7 @@ function RoomType() {
         aria-describedby="add-dialog"
         maxWidth="md"
       >
-        {rowData === null ? (
-          <DialogTitle>{"Add New Type Of Room"}</DialogTitle>
-        ) : (
-          <DialogTitle>{"Edit Type Of Room"}</DialogTitle>
-        )}
-
+        {getTitle()}
         <DialogContent>
           <Stack spacing={2} sx={{ width: "100%" }} component="form">
             <TextField

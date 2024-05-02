@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import '@fortawesome/fontawesome-free/css/all.css';
 
 import './Login.css';
