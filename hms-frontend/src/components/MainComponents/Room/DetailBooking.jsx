@@ -11,6 +11,13 @@ import {
   IconButton,
   Tooltip,
   DialogActions,
+  FormControl,
+  Select,
+  InputLabel,
+  OutlinedInput,
+  MenuItem,
+  Checkbox,
+  ListItem,
 } from "@mui/material";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -51,14 +58,33 @@ const StyledTableRow = styled(TableRow)(() => ({
   },
 }));
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 function createData(type, rooms, rate, start, end, anticipated, money) {
-  return { type, rooms, rate, start, end, anticipated, money };
+  return {
+    type,
+    roomOpt: Array.isArray(rooms) ? [...rooms] : [rooms],
+    rate,
+    start,
+    end,
+    anticipated,
+    money,
+  };
 }
 
 const data = [
   createData(
     "VIP",
-    2,
+    ["501", "303", "405"],
     "dailyRate",
     "05/03/2024 12:43 AM",
     "05/04/2024 01:43 AM",
@@ -67,7 +93,7 @@ const data = [
   ),
   createData(
     "TWO SINGLE BED",
-    1,
+    ["102", "103"],
     "dailyRate",
     "05/03/2024 12:43 AM",
     "05/04/2024 01:43 AM",
@@ -76,8 +102,27 @@ const data = [
   ),
 ];
 
-function DetailBooking(openDetailBooking, closeDetailBooking, saveBooking) {
+function DetailBooking({ openDetailBooking, closeDetailBooking, saveBooking }) {
+  const TOTAL_BOOKING_MONEY = 1000;
   const [rows, setRows] = React.useState(data);
+
+  const handleChange = (event, index) => {
+    const {
+      target: { value },
+    } = event;
+    setRows((prevRows) => {
+      return prevRows.map((row, rowIndex) => {
+        if (rowIndex === index) {
+          return {
+            ...row,
+            roomOpt: typeof value === "string" ? value.split(",") : value,
+          };
+        }
+        return row;
+      });
+    });
+  };
+
   return (
     <Dialog
       open={openDetailBooking}
@@ -136,7 +181,7 @@ function DetailBooking(openDetailBooking, closeDetailBooking, saveBooking) {
               <AddCircleOutlineIcon />
             </IconButton>
           </Box>
-          <Table sx={{ marginTop: "50px" }}>
+          <Table sx={{ marginTop: "20px" }}>
             <TableHead>
               <TableRow>
                 <StyledTableCell>Type</StyledTableCell>
@@ -162,7 +207,28 @@ function DetailBooking(openDetailBooking, closeDetailBooking, saveBooking) {
                   <StyledTableCell component="th" scope="row">
                     {row.type}
                   </StyledTableCell>
-                  <StyledTableCell align="center">{row.rooms}</StyledTableCell>
+                  <StyledTableCell align="center">
+                    <FormControl>
+                      <InputLabel>Select room</InputLabel>
+                      <Select
+                        multiple
+                        value={row.roomOpt}
+                        onChange={(event) => handleChange(event, index)} // Truyền index của hàng
+                        input={<OutlinedInput label="Select room" />}
+                        renderValue={(selected) => selected.join(", ")}
+                        MenuProps={MenuProps}
+                      >
+                        {row.roomOpt.map((room) => (
+                          <MenuItem key={room} value={room}>
+                            <Checkbox
+                              checked={row.roomOpt.indexOf(room) > -1}
+                            />
+                            <ListItem primary={room} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </StyledTableCell>
                   <StyledTableCell align="center">{row.rate}</StyledTableCell>
                   <StyledTableCell align="center">{row.start}</StyledTableCell>
                   <StyledTableCell align="center">{row.end}</StyledTableCell>
@@ -174,6 +240,48 @@ function DetailBooking(openDetailBooking, closeDetailBooking, saveBooking) {
               ))}
             </TableBody>
           </Table>
+          <Box sx={{ marginTop: "20px", display: "flex" }}>
+            <Box sx={{ width: "75%" }}>
+              <label>Notes</label>
+              <input
+                type="text"
+                placeholder="Writing customer notes"
+                style={{
+                  width: "90%",
+                  marginLeft: "10px",
+                  border: "none",
+                  borderBottom: "1px solid #e1e3e6",
+                  outline: "none",
+                }}
+              ></input>
+            </Box>
+            <Box
+              sx={{
+                background: "#f7f8f9",
+                borderRadius: "8px",
+                padding: "16px",
+              }}
+            >
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1 }}>Total</div>
+                <div>{TOTAL_BOOKING_MONEY}</div>
+              </div>
+              <div style={{ display: "flex" }}>
+                <div style={{ flex: 1 }}>Deposit</div>
+                <input
+                  type="number"
+                  dir="rtl"
+                  style={{
+                    fontSize: 17,
+                    background: "#f7f8f9",
+                    border: "none",
+                    borderBottom: "1px solid #e1e3e6",
+                    outline: "none",
+                  }}
+                ></input>
+              </div>
+            </Box>
+          </Box>
         </Box>
       </DialogContent>
       <DialogActions>
