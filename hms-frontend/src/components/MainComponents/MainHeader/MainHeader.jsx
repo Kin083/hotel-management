@@ -1,5 +1,3 @@
-import "./MainHeader.css";
-
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
@@ -13,22 +11,27 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import Divider from "@mui/material/Divider";
 
+import classNames from "classnames/bind";
+import styles from "./MainHeader.module.css";
+
+const cx = classNames.bind(styles);
+
 const MainHeader = () => {
-    const userName = "BlackMamba";
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-      };
-    
-      const handleClose = () => {
-        setAnchorEl(null);
-      };
+  const userName = "BlackMamba";
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <header className='wrapper'>
-      <div className="inner">
-        <a href="/" className="logo">
+    <header className={cx("wrapper")}>
+      <div className={cx("inner")}>
+        <a href="/" className={cx("logo")}>
           {/* <img src="hms-frontend\src\assets\transylvania_logo.png" alt="Transylvania" title="Transylvania" /> */}
           logo
         </a>
@@ -110,7 +113,7 @@ const MainHeader = () => {
         </React.Fragment>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default MainHeader
+export default MainHeader;

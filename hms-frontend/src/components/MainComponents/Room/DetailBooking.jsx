@@ -17,7 +17,7 @@ import {
   OutlinedInput,
   MenuItem,
   Checkbox,
-  ListItem,
+  ListItemText,
 } from "@mui/material";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -25,7 +25,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -110,22 +109,19 @@ function DetailBooking({
 }) {
   const TOTAL_BOOKING_MONEY = 1000;
   const [rows, setRows] = React.useState(data);
+  const [selectedRooms, setSelectedRooms] = React.useState(
+    Array(data.length).fill([])
+  );
   const [notesValue, setNotesValue] = React.useState("");
 
   const handleChange = (event, index) => {
     const {
       target: { value },
     } = event;
-    setRows((prevRows) => {
-      return prevRows.map((row, rowIndex) => {
-        if (rowIndex === index) {
-          return {
-            ...row,
-            roomOpt: typeof value === "string" ? value.split(",") : value,
-          };
-        }
-        return row;
-      });
+    setSelectedRooms((prevSelectedRooms) => {
+      const newSelectedRooms = [...prevSelectedRooms];
+      newSelectedRooms[index] = value;
+      return newSelectedRooms;
     });
   };
 
@@ -178,11 +174,8 @@ function DetailBooking({
             <input
               type="text"
               placeholder="Customer Name"
-              style={{ border: "none", outline: "none" }}
+              style={{ border: "none", outline: "none", flex: 1 }}
             ></input>
-            <IconButton>
-              <AddPhotoAlternateIcon />
-            </IconButton>
             <IconButton>
               <AddCircleOutlineIcon onClick={openCusInfor} />
             </IconButton>
@@ -213,28 +206,29 @@ function DetailBooking({
                   <StyledTableCell component="th" scope="row">
                     {row.type}
                   </StyledTableCell>
-                  <StyledTableCell align="center">
+                  <TableCell align="center" sx={{ width: "250px" }}>
                     <FormControl>
                       <InputLabel>Select room</InputLabel>
                       <Select
                         multiple
-                        value={row.roomOpt}
+                        value={selectedRooms[index]}
                         onChange={(event) => handleChange(event, index)}
                         input={<OutlinedInput label="Select room" />}
                         renderValue={(selected) => selected.join(", ")}
                         MenuProps={MenuProps}
+                        sx={{ width: "250px" }}
                       >
                         {row.roomOpt.map((room) => (
                           <MenuItem key={room} value={room}>
                             <Checkbox
-                              checked={row.roomOpt.indexOf(room) !== -1}
+                              checked={selectedRooms[index].includes(room)}
                             />
-                            <ListItem primary={room} />
+                            <ListItemText primary={room} />
                           </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
-                  </StyledTableCell>
+                  </TableCell>
                   <StyledTableCell align="center">{row.rate}</StyledTableCell>
                   <StyledTableCell align="center">{row.start}</StyledTableCell>
                   <StyledTableCell align="center">{row.end}</StyledTableCell>

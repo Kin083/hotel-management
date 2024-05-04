@@ -1,5 +1,9 @@
 import { useState } from "react";
-import "./MainNavbar.css";
+
+import classNames from "classnames/bind";
+import styles from "./MainNavbar.module.css";
+
+const cx = classNames.bind(styles);
 
 import Stack from "@mui/material/Stack";
 import Menu from "@mui/material/Menu";
@@ -106,8 +110,8 @@ function Navbar() {
   };
 
   return (
-    <div className="wrapper">
-      <div className="inner">
+    <div className={cx("wrapper")}>
+      <div className={cx("inner")}>
         <ThemeProvider theme={theme}>
           <Stack direction="row" sx={{ height: "100%" }}>
             {BUTTON_LIST.map((button) => (

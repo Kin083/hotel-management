@@ -73,7 +73,9 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
     setOpenCusInforDialog(false);
   };
 
-  const saveCusInfor = () => {};
+  const saveCusInfor = () => {
+    setOpenCusInforDialog(false);
+  };
 
   return (
     <>
