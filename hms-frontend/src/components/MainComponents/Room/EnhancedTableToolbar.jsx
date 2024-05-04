@@ -18,6 +18,7 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import BookingDialog from "./BookingDialog";
 import DetailBooking from "./DetailBooking";
+import CustomerInforDialog from "./CustomerInforDialog";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -27,6 +28,7 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
   const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
   const [openBookingDialog, setOpenBookingDialog] = React.useState(false);
   const [openDetailBooking, setOpenDetailBooking] = React.useState(false);
+  const [openCusInforDialog, setOpenCusInforDialog] = React.useState(false);
 
   const addRoom = () => {
     alert("clicked");
@@ -62,6 +64,16 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
   const saveBooking = () => {
     setOpenDetailBooking(false);
   };
+
+  const openCusInfor = () => {
+    setOpenCusInforDialog(true);
+  };
+
+  const closeCusInfor = () => {
+    setOpenCusInforDialog(false);
+  };
+
+  const saveCusInfor = () => {};
 
   return (
     <>
@@ -211,13 +223,18 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
         confirmBooking={confirmBooking}
       />
 
-      {openDetailBooking && (
-        <DetailBooking
-          openDetailBooking={openDetailBooking}
-          closeDetailBooking={closeDetailBooking}
-          saveBooking={saveBooking}
-        />
-      )}
+      <DetailBooking
+        openDetailBooking={openDetailBooking}
+        closeDetailBooking={closeDetailBooking}
+        saveBooking={saveBooking}
+        openCusInfor={openCusInfor}
+      />
+
+      <CustomerInforDialog
+        openCusInforDialog={openCusInforDialog}
+        closeCusInfor={closeCusInfor}
+        saveCusInfor={saveCusInfor}
+      />
     </>
   );
 }

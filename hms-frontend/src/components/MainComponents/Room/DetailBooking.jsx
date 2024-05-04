@@ -102,9 +102,15 @@ const data = [
   ),
 ];
 
-function DetailBooking({ openDetailBooking, closeDetailBooking, saveBooking }) {
+function DetailBooking({
+  openDetailBooking,
+  closeDetailBooking,
+  saveBooking,
+  openCusInfor,
+}) {
   const TOTAL_BOOKING_MONEY = 1000;
   const [rows, setRows] = React.useState(data);
+  const [notesValue, setNotesValue] = React.useState("");
 
   const handleChange = (event, index) => {
     const {
@@ -144,7 +150,7 @@ function DetailBooking({ openDetailBooking, closeDetailBooking, saveBooking }) {
           alignItems: "center",
         }}
       >
-        {"Detail Booking"}{" "}
+        {"Detail Booking"}
         <IconButton onClick={closeDetailBooking}>
           <CloseIcon />
         </IconButton>
@@ -178,7 +184,7 @@ function DetailBooking({ openDetailBooking, closeDetailBooking, saveBooking }) {
               <AddPhotoAlternateIcon />
             </IconButton>
             <IconButton>
-              <AddCircleOutlineIcon />
+              <AddCircleOutlineIcon onClick={openCusInfor} />
             </IconButton>
           </Box>
           <Table sx={{ marginTop: "20px" }}>
@@ -213,7 +219,7 @@ function DetailBooking({ openDetailBooking, closeDetailBooking, saveBooking }) {
                       <Select
                         multiple
                         value={row.roomOpt}
-                        onChange={(event) => handleChange(event, index)} // Truyền index của hàng
+                        onChange={(event) => handleChange(event, index)}
                         input={<OutlinedInput label="Select room" />}
                         renderValue={(selected) => selected.join(", ")}
                         MenuProps={MenuProps}
@@ -221,7 +227,7 @@ function DetailBooking({ openDetailBooking, closeDetailBooking, saveBooking }) {
                         {row.roomOpt.map((room) => (
                           <MenuItem key={room} value={room}>
                             <Checkbox
-                              checked={row.roomOpt.indexOf(room) > -1}
+                              checked={row.roomOpt.indexOf(room) !== -1}
                             />
                             <ListItem primary={room} />
                           </MenuItem>
@@ -241,25 +247,32 @@ function DetailBooking({ openDetailBooking, closeDetailBooking, saveBooking }) {
             </TableBody>
           </Table>
           <Box sx={{ marginTop: "20px", display: "flex" }}>
-            <Box sx={{ width: "75%" }}>
-              <label>Notes</label>
-              <input
-                type="text"
-                placeholder="Writing customer notes"
-                style={{
-                  width: "90%",
-                  marginLeft: "10px",
-                  border: "none",
-                  borderBottom: "1px solid #e1e3e6",
-                  outline: "none",
+            <Box sx={{ width: "70%" }}>
+              <textarea
+                value={notesValue}
+                onChange={(event) => {
+                  setNotesValue(event.target.value);
                 }}
-              ></input>
+                rows={3}
+                cols={10}
+                placeholder="Customer notes"
+                style={{
+                  color: "rgba(0, 0, 0, 0.87)",
+                  width: "100%",
+                  padding: "0.5rem",
+                  fontSize: "1rem",
+                  lineHeight: "1.4375em",
+                  border: "0.1rem solid #c4c4c4",
+                  borderRadius: "4px",
+                }}
+              />
             </Box>
             <Box
               sx={{
                 background: "#f7f8f9",
                 borderRadius: "8px",
-                padding: "16px",
+                padding: "0.5rem",
+                marginLeft: "15px",
               }}
             >
               <div style={{ display: "flex" }}>
@@ -272,7 +285,7 @@ function DetailBooking({ openDetailBooking, closeDetailBooking, saveBooking }) {
                   type="number"
                   dir="rtl"
                   style={{
-                    fontSize: 17,
+                    fontSize: 16,
                     background: "#f7f8f9",
                     border: "none",
                     borderBottom: "1px solid #e1e3e6",
@@ -295,6 +308,7 @@ DetailBooking.propTypes = {
   openDetailBooking: PropTypes.bool.isRequired,
   saveBooking: PropTypes.func.isRequired,
   closeDetailBooking: PropTypes.func.isRequired,
+  openCusInfor: PropTypes.func.isRequired,
 };
 
 export default DetailBooking;

@@ -17,6 +17,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
+import "dayjs/locale/en-gb";
 import Paper from "@mui/material/Paper";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -175,7 +176,10 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                   Days
                 </Button>
               </ButtonGroup>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="en-gb"
+              >
                 <DateTimePicker
                   label="Start Time"
                   value={startTime}
@@ -192,7 +196,10 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
               >
                 -
               </div>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="en-gb"
+              >
                 <DateTimePicker
                   label="End Time"
                   value={endTime}
