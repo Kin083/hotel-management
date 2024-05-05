@@ -1,6 +1,6 @@
 .header {
     width: 100vw;
-    height: 89.9vh;
+    height: 91.8vh;
     margin: 0 auto;
     position: relative;
 }
@@ -44,4 +44,10 @@
     background-color: white;
     font-size: max(1vw, 13px);
     border-radius: 50px;
+    cursor: pointer;
+}
+
+.header-contents button:hover {
+    background-color: #6974f1;
+    color: white;
 }

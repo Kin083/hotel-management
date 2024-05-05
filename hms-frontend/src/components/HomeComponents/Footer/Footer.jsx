@@ -8,7 +8,14 @@ const Footer = () => {
       <div className="footer-content">
         <div className="footer-content-left">
           {/* <img src={assets.logo} alt="" /> */}
-          <p>Lorem Ipsum is simply dummy text of the printing and ...</p>
+          <p>Transylvania Corporation</p>
+          <ul>
+            <li>Hoang Dang Khai</li>
+            <li>Tran Duy Tuan Anh</li>
+            <li>Vu Viet Hung</li>
+            <li>Nguyen Duy Anh Quoc</li>
+            <li>Le Van Luong</li>
+          </ul>
           <div className="footer-social-icons">
             {/* <img src={assets.facebook_icon} alt="" />
             <img src={assets.twitter_icon} alt="" />

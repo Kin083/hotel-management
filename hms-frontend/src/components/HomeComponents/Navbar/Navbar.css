@@ -1,5 +1,5 @@
 .navbar {
-    padding: 20px 80px;
+    padding: 10px 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -20,17 +20,14 @@
 }
 
 .navbar-menu .nav {
-    padding: 10px 30px;
+    padding: 12px 30px;
     border-radius: 50px;
 }
 
 .navbar-menu .nav:hover {
-    background-color: aquamarine;
+    background-color: #88c0f1;
     border-radius: 50px;
-}
-
-.navbar .active {
-    background-color: aquamarine;
+    color: white;;
 }
 
 .navbar-right {
@@ -43,13 +40,13 @@
     background: transparent;
     font-size: 18px;
     color: #49557e;
-    border: 1px solid tomato;
-    padding: 9px 30px;
+    border: 1px solid #63b6ff;
+    padding: 10px 30px;
     border-radius: 50px;
     cursor: pointer;
     transition: 0.3s;
 }
 
 .navbar button:hover {
-    background-color: #fff4f2;
+    background-color: #bbdfff;
 }
