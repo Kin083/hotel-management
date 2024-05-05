@@ -13,6 +13,6 @@
   <li>npm install  jspdf-autotable </li>
   <li>npm install --save react-date-range </li>
   <li>npm install --save react date-fns</li>
-
+  <li>npm install react-phone-number-input --save </li>
 </ul>
 
