@@ -7,14 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Book;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController // This means that this class is a Controller
 //@RequestMapping(path="/demo") // This means URL's start with /demo (after Application path)
@@ -123,13 +121,13 @@ public class ControllerAPI {
 
     //hàm này để tính tiền phòng dụư kiến (chưa kể phí dịch vụ và thời gian ở thêm)
     @PostMapping(path = "/booking/addInforcaculate")
-    public Long addBookingInforCaculate(@RequestBody BookingEntity booking) {
+    public Long addBookingInforCaculate(@RequestBody BookingEntity booking,@RequestParam int soluong) {
 
         int roomnumber = booking.getRoomNumber();
         RoomEntity room = roomService.getRoom(roomnumber);
         Integer roomTypeID = room.getTypeID();
         RoomTypeEntity roomType = roomTypeService.getRoomTypeByID(roomTypeID);
-        return bookingService.addBookingInforCaculate(booking,room,roomType);
+        return bookingService.addBookingInforCaculate(booking,room,roomType,soluong);
     }
 
     //hàm này để liệt kê ra các booking chưa thanh toán
@@ -166,21 +164,40 @@ public class ControllerAPI {
         }
         return listpay;
     }
-//    @PostMapping(path = "/update/roomTYpe")
-//    public RoomTypeEntity updateRoomtype(@RequestBody RoomTypeEntity roomType) {
-//        Integer typeId = roomType.getTypeID();
-//        RoomTypeEntity room  = roomtypeRepository.findById(typeId).get();
-//        Integer Capacity = Integer.valueOf(roomType.getCapacity());
-//        String Description = roomType.getDescription();
-//        String name = roomType.getName();
-//        Float price = roomType.getPricepernight();
-//
-//        room.setCapacity(Capacity.toString());
-//        room.setName(name);
-//        room.setDescription(Description);
-//        room.setPricepernight(price);
-//        roomtypeRepository.save(room);
-//        return room;
-//    }
+    @PostMapping(path = "/update/roomTYpe")
+    public RoomTypeEntity updateRoomtype(@RequestBody RoomTypeEntity roomType) {
+        return roomTypeService.updateRoomType(roomType);
+    }
+    //Hàm này lấy ra số tiền thu được trong ngày dựa theo payments, format gửi request lên có dạng kiểu 2024-04-27+2024-05-02 trong đó
+    //trước dấu +  là ngay bắt đầu, sau là ngày kết thúc
+    @PostMapping(path = "/getBenefit/payments")
+    public Map<String,Double> getInforAboutBenefit(@RequestBody String time) {
+        return mainService.getBenefitByPayments(time,paymentsService);
+    }
 
+    @GetMapping(path = "/getListRoom/{hotelid}")
+    public List<ResponseForListRoom> getListRoom(@PathVariable String hotelid) {
+
+        List<RoomEntity> listRoom =   roomService.getAllByHotelID(hotelid);
+        List<ResponseForListRoom> listResponse = new ArrayList<>();
+        for(RoomEntity room : listRoom) {
+            int roomNum = room.getRoomnumber();
+            int rtype = room.getTypeID();
+            RoomTypeEntity roomtype = roomTypeService.getRoomTypeByID(rtype);
+            ResponseForListRoom res = new ResponseForListRoom();
+            res.setType(roomtype.getName());
+            res.setRoomName(roomNum);
+            res.setDailyRate(roomtype.getPricepernight());
+            res.setStatus(room.getStatus());
+            res.setMaxiumCapacity(roomtype.getCapacity());
+            res.setNotes(roomtype.getDescription());
+            listResponse.add(res);
+        }
+        return listResponse;
+    }
+//    @GetMapping(path = "/getMostGuestUse")
+//    public List<BookingEntity> getInforAboutUseMost() {
+////        List<GuestEntity> listGuest = (List<GuestEntity>) guestService.getAllGuest();
+//
+//    }
 }
