@@ -21,6 +21,8 @@ import RoomImage from "./RoomImage";
 import { useEffect } from "react";
 import userApi from "../../../api/userApi";
 
+
+
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -50,6 +52,7 @@ function stableSort(array, comparator) {
 }
 
 function RoomList({ selectedType, selectedStatus }) {
+
   const userList = [];
   useEffect(() => {
     const fetchUsers = async () => {
@@ -63,6 +66,7 @@ function RoomList({ selectedType, selectedStatus }) {
   }, []);
 
   const [rows, setRows] = React.useState(userList);
+
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
@@ -218,7 +222,9 @@ function RoomList({ selectedType, selectedStatus }) {
                         scope="row"
                         padding="none"
                       >
+
                         {row.roomName}
+
                       </TableCell>
                       <TableCell align="right">{row.type}</TableCell>
                       <TableCell align="right">{row.dayRate}</TableCell>
@@ -228,7 +234,9 @@ function RoomList({ selectedType, selectedStatus }) {
                         {row.status === "active" ? "Active" : "Inactive"}
                       </TableCell>
                       <TableCell align="right">{row.overtimePay}</TableCell>
+
                       <TableCell align="right">{row.maxiumCapacity}</TableCell>
+
                       <TableCell align="right">{row.notes}</TableCell>
                     </TableRow>
 

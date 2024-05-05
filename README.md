@@ -8,5 +8,10 @@
   <li>npm install @mui/x-date-pickers</li>
   <li>npm install dayjs</li>
   <li>npm i --save axios </li>
+  <li>npm install jspdf --save</li>
+  <li>npm install --save react-google-charts </li>
+  <li>npm install  jspdf-autotable </li>
+  <li>npm install --save react-date-range </li>
+  <li>npm install --save react date-fns</li>
 
 </ul>

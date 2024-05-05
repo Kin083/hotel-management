@@ -25,6 +25,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
+
 import { useEffect } from "react";
 import userApi from "../../../api/userApi";
 
@@ -49,6 +50,9 @@ import userApi from "../../../api/userApi";
 //     overtimePay,
 //   };
 // }
+
+
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -79,6 +83,7 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
+
   const userList = [];
   useEffect(() => {
     const fetchUsers = async () => {
@@ -94,6 +99,8 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
   const [startTime, setStartTime] = React.useState(dayjs());
   const [endTime, setEndTime] = React.useState(dayjs().add(1, "hour"));
   //const [price, setPrice] = React.useState("dailyRate");
+
+
   const [executeTime, setExecuteTime] = React.useState("hour");
 
   const handleChangeQuantity = (index, value) => {
@@ -149,7 +156,9 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
               <ButtonGroup variant="outlined" sx={{ height: "56px" }}>
                 <Button
                   onClick={() => {
+
                     // setPrice("dayRate");
+
                     setExecuteTime("hour");
                   }}
                 >
@@ -157,7 +166,9 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                 </Button>
                 <Button
                   onClick={() => {
+
                     // setPrice("nightRate");
+
                     setExecuteTime("hour");
                   }}
                 >
@@ -165,7 +176,9 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                 </Button>
                 <Button
                   onClick={() => {
+
                     // setPrice("dailyRate");
+
                     setExecuteTime("day");
                   }}
                 >
@@ -245,12 +258,14 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                       />
                     </StyledTableCell>
                     <StyledTableCell align="center">
+
                       {/* {price === "dailyRate"
                         ? row.dailyRate
                         : price === "dayRate"
                         ? row.dayRate
                         : row.nightRate} */}
                       {row.price}
+
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.overtimePay}

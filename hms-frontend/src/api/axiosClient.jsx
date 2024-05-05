@@ -1,14 +1,17 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
+
   baseURL: "http://localhost:8080",
   headers: {
     "Content-Type": "application/json",
   },
+
 });
 
 //Interceptors
 // Add a request interceptor
+
 axiosClient.interceptors.request.use(
   function (config) {
     // Do something before request is sent
@@ -33,5 +36,6 @@ axiosClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default axiosClient;
