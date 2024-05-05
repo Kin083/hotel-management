@@ -26,44 +26,33 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 
-function createData(
-  name,
-  capacity,
-  available,
-  quantity,
-  dayRate,
-  nightRate,
-  dailyRate,
-  overtimePay
-) {
-  return {
-    name,
-    capacity,
-    available,
-    quantity,
-    dayRate,
-    nightRate,
-    dailyRate,
-    overtimePay,
-  };
-}
+import { useEffect } from "react";
+import userApi from "../../../api/userApi";
 
-const data = [
-  createData("VIP", 3, 5, 0, 500, 700, 1000, 250),
-  createData("TWO SINGLE BED", 3, 5, 0, 350, 400, 800, 200),
-  createData("ONE SINGLE BED", 3, 5, 0, 200, 300, 700, 100),
-  createData("ONE QUEEN-SIZED BED", 3, 5, 0, 400, 500, 800, 250),
-  createData(
-    "ONE SINGLE BED, ONE QUEEN-SIZED BED",
-    3,
-    5,
-    0,
-    450,
-    700,
-    900,
-    300
-  ),
-];
+// function createData(
+//   name,
+//   capacity,
+//   available,
+//   quantity,
+//   dayRate,
+//   nightRate,
+//   dailyRate,
+//   overtimePay
+// ) {
+//   return {
+//     name,
+//     capacity,
+//     available,
+//     quantity,
+//     dayRate,
+//     nightRate,
+//     dailyRate,
+//     overtimePay,
+//   };
+// }
+
+
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -94,10 +83,24 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
-  const [rows, setRows] = React.useState(data);
+
+  const userList = [];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const userList = await userApi.getType();
+      console.log("ok");
+      console.log(userList);
+      setRows(userList);
+    };
+
+    fetchUsers();
+  }, []);
+  const [rows, setRows] = React.useState(userList);
   const [startTime, setStartTime] = React.useState(dayjs());
   const [endTime, setEndTime] = React.useState(dayjs().add(1, "hour"));
-  const [price, setPrice] = React.useState("dailyRate");
+  //const [price, setPrice] = React.useState("dailyRate");
+
+
   const [executeTime, setExecuteTime] = React.useState("hour");
 
   const handleChangeQuantity = (index, value) => {
@@ -153,7 +156,9 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
               <ButtonGroup variant="outlined" sx={{ height: "56px" }}>
                 <Button
                   onClick={() => {
-                    setPrice("dayRate");
+
+                    // setPrice("dayRate");
+
                     setExecuteTime("hour");
                   }}
                 >
@@ -161,7 +166,9 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                 </Button>
                 <Button
                   onClick={() => {
-                    setPrice("nightRate");
+
+                    // setPrice("nightRate");
+
                     setExecuteTime("hour");
                   }}
                 >
@@ -169,7 +176,9 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                 </Button>
                 <Button
                   onClick={() => {
-                    setPrice("dailyRate");
+
+                    // setPrice("dailyRate");
+
                     setExecuteTime("day");
                   }}
                 >
@@ -249,11 +258,14 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                       />
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {price === "dailyRate"
+
+                      {/* {price === "dailyRate"
                         ? row.dailyRate
                         : price === "dayRate"
                         ? row.dayRate
-                        : row.nightRate}
+                        : row.nightRate} */}
+                      {row.price}
+
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.overtimePay}

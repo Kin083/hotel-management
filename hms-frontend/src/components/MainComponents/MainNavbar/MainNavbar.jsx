@@ -28,6 +28,7 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import { useNavigate } from 'react-router-dom';
 
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -96,7 +97,9 @@ const BUTTON_LIST = [
 function Navbar() {
   const [staffAnchorEl, setStaffAnchorEl] = useState(null);
   const [reportAnchorEl, setReportAnchorEl] = useState(null);
+
   const navigate = useNavigate();
+
   const handleStaffClick = (event) => {
     setStaffAnchorEl(event.currentTarget);
   };
@@ -132,8 +135,10 @@ function Navbar() {
                   button.id === "staff-button"
                     ? handleStaffClick
                     : button.id === "report-button"
+
                       ? handleReportClick
                       : null
+
                 }
               >
                 {button.text}
@@ -177,11 +182,13 @@ function Navbar() {
               open={Boolean(reportAnchorEl)}
               onClose={handleClose}
             >
+
               <MenuItem onClick={() => navigate('/roombooking-report')} disableRipple>
                 <EventAvailableIcon />
                 Room Booking
               </MenuItem>
               <MenuItem onClick={() => navigate('/revenue')} disableRipple>
+
                 <ReceiptLongIcon />
                 Revenue
               </MenuItem>

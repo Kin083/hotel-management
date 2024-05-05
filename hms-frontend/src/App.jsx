@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Main from "./pages/Main/Main";
+
 import Revenue from "./components/MainComponents/Report/Revenue"
 import { useEffect } from "react";
 import userApi from "./api/userApi";
@@ -20,6 +21,7 @@ const App = () => {
     fetchUsers();
   }, []);
 
+
   return (
     <>
       <div className="app">
@@ -27,8 +29,9 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/main" element={<Main />} />
-          <Route path="/revenue" element={<Revenue />} />
+            <Route path="/revenue" element={<Revenue />} />
           <Route path="/roombooking-report" element={<RoomBooking />} />
+
         </Routes>
       </div>
     </>

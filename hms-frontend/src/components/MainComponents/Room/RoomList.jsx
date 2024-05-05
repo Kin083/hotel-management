@@ -18,102 +18,10 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import RoomImage from "./RoomImage";
+import { useEffect } from "react";
+import userApi from "../../../api/userApi";
 
-function createData(
-  id,
-  name,
-  type,
-  dayRate,
-  dailyRate,
-  nightRate,
-  status,
-  notes,
-  overtimePay,
-  maximumCapacity
-) {
-  return {
-    id,
-    name,
-    type,
-    dayRate,
-    dailyRate,
-    nightRate,
-    status,
-    notes,
-    overtimePay,
-    maximumCapacity,
-  };
-}
 
-const data = [
-  createData(1, 501, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
-  createData(
-    2,
-    502,
-    "ONE PERSON ONE BED",
-    200,
-    800,
-    800,
-    "active",
-    null,
-    "250/h",
-    1
-  ),
-  createData(3, 503, "TWO PERSON", 250, 900, 900, "active", null, "300/h", 2),
-  createData(4, 504, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
-  createData(5, 401, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
-  createData(
-    6,
-    402,
-    "ONE PERSON ONE BED",
-    200,
-    800,
-    800,
-    "inactive",
-    null,
-    "250/h",
-    1
-  ),
-  createData(
-    7,
-    403,
-    "ONE PERSON ONE BED",
-    200,
-    800,
-    800,
-    "active",
-    null,
-    "250/h",
-    1
-  ),
-  createData(8, 404, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
-  createData(9, 301, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
-  createData(10, 302, "VIP", 500, 1000, 1000, "active", null, "400/h", 3),
-  createData(
-    11,
-    303,
-    "ONE PERSON ONE BED",
-    200,
-    800,
-    800,
-    "active",
-    null,
-    "250/h",
-    1
-  ),
-  createData(
-    12,
-    304,
-    "TWO PERSON",
-    250,
-    900,
-    900,
-    "inactive",
-    null,
-    "300/h",
-    2
-  ),
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -144,7 +52,21 @@ function stableSort(array, comparator) {
 }
 
 function RoomList({ selectedType, selectedStatus }) {
-  const [rows, setRows] = React.useState(data);
+
+  const userList = [];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const userList = await userApi.getAll();
+      console.log("ok");
+      console.log(userList);
+      setRows(userList);
+    };
+
+    fetchUsers();
+  }, []);
+
+  const [rows, setRows] = React.useState(userList);
+
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
@@ -300,7 +222,9 @@ function RoomList({ selectedType, selectedStatus }) {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+
+                        {row.roomName}
+
                       </TableCell>
                       <TableCell align="right">{row.type}</TableCell>
                       <TableCell align="right">{row.dayRate}</TableCell>
@@ -310,7 +234,9 @@ function RoomList({ selectedType, selectedStatus }) {
                         {row.status === "active" ? "Active" : "Inactive"}
                       </TableCell>
                       <TableCell align="right">{row.overtimePay}</TableCell>
-                      <TableCell align="right">{row.maximumCapacity}</TableCell>
+
+                      <TableCell align="right">{row.maxiumCapacity}</TableCell>
+
                       <TableCell align="right">{row.notes}</TableCell>
                     </TableRow>
 
