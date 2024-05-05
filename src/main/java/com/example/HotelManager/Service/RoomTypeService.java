@@ -16,4 +16,20 @@ public class RoomTypeService {
         roomTypeRepository.save(roomType);
         return roomType;
     }
+    public RoomTypeEntity updateRoomType(RoomTypeEntity roomType) {
+        Integer typeId = roomType.getTypeID();
+        RoomTypeEntity room  = roomTypeRepository.findById(typeId).get();
+        Integer Capacity = Integer.valueOf(roomType.getCapacity());
+        String Description = roomType.getDescription();
+        String name = roomType.getName();
+        Float price = roomType.getPricepernight();
+
+        room.setCapacity(Capacity.toString());
+        room.setName(name);
+        room.setDescription(Description);
+        room.setPricepernight(price);
+        roomTypeRepository.save(room);
+        return room;
+    }
+
 }

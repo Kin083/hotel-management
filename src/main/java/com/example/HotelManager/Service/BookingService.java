@@ -58,7 +58,7 @@ public class BookingService {
         return booking;
     }
 
-    public Long addBookingInforCaculate(BookingEntity booking,RoomEntity room,RoomTypeEntity roomType) {
+    public Long addBookingInforCaculate(BookingEntity booking,RoomEntity room,RoomTypeEntity roomType,int soluong) {
         Date checkinDate = booking.getCheckinDate();
         Date checkoutDate = booking.getCheckoutDate();
         long checkinTime = checkinDate.getTime();
@@ -79,6 +79,6 @@ public class BookingService {
         Float thanhtien = (Float) (giatien*daysDifference);
         booking.setTotalPrice(thanhtien);
 //        bookingRepository.save(booking);
-        return (long) (giatien*daysDifference);
+        return (long) (giatien*daysDifference*soluong);
     }
 }

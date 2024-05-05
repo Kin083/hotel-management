@@ -23,4 +23,7 @@ public class PaymentsService {
         return payment;
 
     }
+    public List<PaymentEntity> getByDate(String payment) {
+        return paymentRepository.findByPaymentDate(payment);
+    }
 }

@@ -1,10 +1,14 @@
 package com.example.HotelManager.Service;
 
+import com.example.HotelManager.Entity.BookingEntity;
 import com.example.HotelManager.Entity.RoomEntity;
+import com.example.HotelManager.Repository.BookingRepository;
 import com.example.HotelManager.Repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 @Service
 public class RoomService {
@@ -44,5 +48,8 @@ public class RoomService {
         else {
             return "Fail!!!";
         }
+    }
+    public List<RoomEntity> getAllByHotelID(String HotelID) {
+        return roomRepository.findByhotelID(HotelID);
     }
 }

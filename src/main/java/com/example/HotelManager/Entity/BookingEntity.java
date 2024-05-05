@@ -16,8 +16,8 @@ public class BookingEntity {
         BookingID = bookingID;
     }
 
-    public void setGestID(int gestID) {
-        GestID = gestID;
+    public void setGestID(int guestID) {
+        GuestID = guestID;
     }
 
     public void setRoomNumber(int roomNumber) {
@@ -37,7 +37,7 @@ public class BookingEntity {
     }
 
     @Column(name = "GuestID")
-    private int GestID;
+    private int GuestID;
     @Column(name = "RoomNumber")
     private int RoomNumber;
     @Column(name = "CheckinDate")
@@ -52,7 +52,7 @@ public class BookingEntity {
     }
 
     public int getGestID() {
-        return GestID;
+        return GuestID;
     }
 
     public int getRoomNumber() {
