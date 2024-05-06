@@ -5,6 +5,8 @@ import com.example.HotelManager.Repository.RoomTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoomTypeService {
     @Autowired
@@ -15,6 +17,9 @@ public class RoomTypeService {
     public RoomTypeEntity saveDetails(RoomTypeEntity roomType) {
         roomTypeRepository.save(roomType);
         return roomType;
+    }
+    public List<RoomTypeEntity> getAllRoomType() {
+        return roomTypeRepository.findAll();
     }
     public RoomTypeEntity updateRoomType(RoomTypeEntity roomType) {
         Integer typeId = roomType.getTypeID();

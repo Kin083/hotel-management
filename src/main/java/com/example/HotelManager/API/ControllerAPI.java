@@ -2,6 +2,7 @@ package com.example.HotelManager.API;
 
 import com.example.HotelManager.Entity.*;
 import com.example.HotelManager.Repository.*;
+import com.example.HotelManager.Response.ResponseForRoomTypeAndCountAvail;
 import com.example.HotelManager.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -195,8 +196,24 @@ public class ControllerAPI {
         }
         return listResponse;
     }
-//    @GetMapping(path = "/getMostGuestUse")
-//    public List<BookingEntity> getInforAboutUseMost() {
+    @GetMapping(path = "/getRoomByRNumberAndAvailable")
+    public List<ResponseForRoomTypeAndCountAvail> getRoomTypeAndAvail() {
+        List<RoomTypeEntity> listRoomtype = roomTypeService.getAllRoomType();
+        List<ResponseForRoomTypeAndCountAvail> listRoomAvail = new ArrayList<>();
+        for(RoomTypeEntity roomt : listRoomtype) {
+            int rid = roomt.getTypeID();
+            ResponseForRoomTypeAndCountAvail res = new ResponseForRoomTypeAndCountAvail();
+            res.setAvailable(roomService.countByRtype(rid));
+            res.setCapacity(roomt.getCapacity());
+            res.setName(roomt.getName());
+            res.setPrice(roomt.getPricepernight());
+            listRoomAvail.add(res);
+        }
+        return listRoomAvail;
+    }
+//    @GetMapping(path = "/getMostGue")
+//    public int getInforAboutUseMost() {
+//        return roomService.countByRtype(2);
 ////        List<GuestEntity> listGuest = (List<GuestEntity>) guestService.getAllGuest();
 //
 //    }
