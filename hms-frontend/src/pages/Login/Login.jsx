@@ -20,6 +20,8 @@ const Login = () => {
     const handleLoginClick = () => {
         setIsActive(false);
     };
+
+
     return (
         <>
             <div className="login-body-page">
@@ -39,7 +41,7 @@ const Login = () => {
                                 onChange={setValue} className="PhoneInputInput"
                             />
                             <input type="password" placeholder="Password" />
-                            <Link to="/main"><button type="submit">Sign Up</button></Link>
+                            <Link to="/verification"><button type="submit">Sign Up</button></Link>
                         </form>
                     </div>
                     <div className="form-container sign-in">
