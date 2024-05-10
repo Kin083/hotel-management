@@ -68,50 +68,16 @@ const MenuProps = {
   },
 };
 
-function createData(type, rooms, rate, start, end, anticipated, money) {
-  return {
-    type,
-    roomOpt: Array.isArray(rooms) ? [...rooms] : [rooms],
-    rate,
-    start,
-    end,
-    anticipated,
-    money,
-  };
-}
-
-const data = [
-  createData(
-    "VIP",
-    ["501", "303", "405"],
-    "dailyRate",
-    "05/03/2024 12:43 AM",
-    "05/04/2024 01:43 AM",
-    "1 day",
-    600
-  ),
-  createData(
-    "TWO SINGLE BED",
-    ["102", "103"],
-    "dailyRate",
-    "05/03/2024 12:43 AM",
-    "05/04/2024 01:43 AM",
-    "1 day",
-    200
-  ),
-];
-
 function DetailBooking({
   openDetailBooking,
   closeDetailBooking,
   saveBooking,
   openCusInfor,
+  detailData,
 }) {
   const TOTAL_BOOKING_MONEY = 1000;
-  const [rows, setRows] = React.useState(data);
-  const [selectedRooms, setSelectedRooms] = React.useState(
-    Array(data.length).fill([])
-  );
+  const [rows, setRows] = React.useState(detailData);
+  const [selectedRooms, setSelectedRooms] = React.useState([]);
   const [notesValue, setNotesValue] = React.useState("");
 
   const handleChange = (event, index) => {
@@ -125,177 +91,191 @@ function DetailBooking({
     });
   };
 
-  return (
-    <Dialog
-      open={openDetailBooking}
-      TransitionComponent={Transition}
-      keepMounted
-      onClose={closeDetailBooking}
-      aria-describedby="detail-booking-dialog"
-      maxWidth="lg"
-      sx={{
-        "& .MuiDialog-paper": {
-          borderRadius: "1.6rem",
-        },
-      }}
-    >
-      <DialogTitle
+  React.useEffect(() => {
+    setRows(detailData);
+    setSelectedRooms(Array(detailData.length).fill([]));
+  }, [detailData]);
+
+  if (rows.length != 0) {
+    return (
+      <Dialog
+        open={openDetailBooking}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={closeDetailBooking}
+        aria-describedby="detail-booking-dialog"
+        maxWidth="lg"
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          "& .MuiDialog-paper": {
+            borderRadius: "1.6rem",
+          },
         }}
       >
-        {"Detail Booking"}
-        <IconButton onClick={closeDetailBooking}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent>
-        <Box
+        <DialogTitle
           sx={{
-            width: "900px",
-            minHeight: "100px",
-            paddingTop: "20px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
+          {"Detail Booking"}
+          <IconButton onClick={closeDetailBooking}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
           <Box
             sx={{
-              width: 292,
-              height: 40,
-              display: "flex",
-              alignItems: "center",
-              border: "1px solid #e1e3e5",
-              borderRadius: "0.5rem",
-              padding: "0.5rem",
+              width: "900px",
+              minHeight: "100px",
+              paddingTop: "20px",
             }}
           >
-            <SearchIcon />
-            <input
-              type="text"
-              placeholder="Customer Name"
-              style={{ border: "none", outline: "none", flex: 1 }}
-            ></input>
-            <IconButton>
-              <AddCircleOutlineIcon onClick={openCusInfor} />
-            </IconButton>
-          </Box>
-          <Table sx={{ marginTop: "20px" }}>
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Type</StyledTableCell>
-                <StyledTableCell align="center">Rooms</StyledTableCell>
-                <StyledTableCell align="center">Rate</StyledTableCell>
-                <StyledTableCell align="center">Start</StyledTableCell>
-                <StyledTableCell align="center">End</StyledTableCell>
-                <StyledTableCell align="center">Anticipated</StyledTableCell>
-                <StyledTableCell align="center">
-                  Money
-                  <Tooltip
-                    title="Money = Room price + surcharge"
-                    placement="top"
-                  >
-                    <TipsAndUpdatesOutlinedIcon fontSize="inherit" />
-                  </Tooltip>
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => (
-                <StyledTableRow key={row.type}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.type}
-                  </StyledTableCell>
-                  <TableCell align="center" sx={{ width: "250px" }}>
-                    <FormControl>
-                      <InputLabel>Select room</InputLabel>
-                      <Select
-                        multiple
-                        value={selectedRooms[index]}
-                        onChange={(event) => handleChange(event, index)}
-                        input={<OutlinedInput label="Select room" />}
-                        renderValue={(selected) => selected.join(", ")}
-                        MenuProps={MenuProps}
-                        sx={{ width: "250px" }}
-                      >
-                        {row.roomOpt.map((room) => (
-                          <MenuItem key={room} value={room}>
-                            <Checkbox
-                              checked={selectedRooms[index].includes(room)}
-                            />
-                            <ListItemText primary={room} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </TableCell>
-                  <StyledTableCell align="center">{row.rate}</StyledTableCell>
-                  <StyledTableCell align="center">{row.start}</StyledTableCell>
-                  <StyledTableCell align="center">{row.end}</StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.anticipated}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">{row.money}</StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <Box sx={{ marginTop: "20px", display: "flex" }}>
-            <Box sx={{ width: "70%" }}>
-              <textarea
-                value={notesValue}
-                onChange={(event) => {
-                  setNotesValue(event.target.value);
-                }}
-                rows={3}
-                cols={10}
-                placeholder="Customer notes"
-                style={{
-                  color: "rgba(0, 0, 0, 0.87)",
-                  width: "100%",
-                  padding: "0.5rem",
-                  fontSize: "1rem",
-                  lineHeight: "1.4375em",
-                  border: "0.1rem solid #c4c4c4",
-                  borderRadius: "4px",
-                }}
-              />
-            </Box>
             <Box
               sx={{
-                background: "#f7f8f9",
-                borderRadius: "8px",
+                width: 292,
+                height: 40,
+                display: "flex",
+                alignItems: "center",
+                border: "1px solid #e1e3e5",
+                borderRadius: "0.5rem",
                 padding: "0.5rem",
-                marginLeft: "15px",
               }}
             >
-              <div style={{ display: "flex" }}>
-                <div style={{ flex: 1 }}>Total</div>
-                <div>{TOTAL_BOOKING_MONEY}</div>
-              </div>
-              <div style={{ display: "flex" }}>
-                <div style={{ flex: 1 }}>Deposit</div>
-                <input
-                  type="number"
-                  dir="rtl"
-                  style={{
-                    fontSize: 16,
-                    background: "#f7f8f9",
-                    border: "none",
-                    borderBottom: "1px solid #e1e3e6",
-                    outline: "none",
+              <SearchIcon />
+              <input
+                type="text"
+                placeholder="Customer Name"
+                style={{ border: "none", outline: "none", flex: 1 }}
+              ></input>
+              <IconButton>
+                <AddCircleOutlineIcon onClick={openCusInfor} />
+              </IconButton>
+            </Box>
+            <Table sx={{ marginTop: "20px" }}>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Type</StyledTableCell>
+                  <StyledTableCell align="center">Rooms</StyledTableCell>
+                  <StyledTableCell align="center">Rate</StyledTableCell>
+                  <StyledTableCell align="center">Start</StyledTableCell>
+                  <StyledTableCell align="center">End</StyledTableCell>
+                  <StyledTableCell align="center">Anticipated</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Money
+                    <Tooltip
+                      title="Money = Room price + surcharge"
+                      placement="top"
+                    >
+                      <TipsAndUpdatesOutlinedIcon fontSize="inherit" />
+                    </Tooltip>
+                  </StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => (
+                  <StyledTableRow key={row.type}>
+                    <StyledTableCell component="th" scope="row">
+                      {row.type}
+                    </StyledTableCell>
+                    <TableCell align="center" sx={{ width: "250px" }}>
+                      <FormControl>
+                        <InputLabel>Select room</InputLabel>
+                        <Select
+                          multiple
+                          value={selectedRooms[index]}
+                          onChange={(event) => handleChange(event, index)}
+                          input={<OutlinedInput label="Select room" />}
+                          renderValue={(selected) => selected.join(", ")}
+                          MenuProps={MenuProps}
+                          sx={{ width: "250px" }}
+                        >
+                          {row.listRoomNumber.map((room) => (
+                            <MenuItem key={room} value={room}>
+                              <Checkbox
+                                checked={selectedRooms[index].includes(room)}
+                              />
+
+                              <ListItemText primary={room} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <StyledTableCell align="center">{row.rate}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.start}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">{row.end}</StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.anticipated}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.dailyRate * row.quantity}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <Box sx={{ marginTop: "20px", display: "flex" }}>
+              <Box sx={{ width: "70%" }}>
+                <textarea
+                  value={notesValue}
+                  onChange={(event) => {
+                    setNotesValue(event.target.value);
                   }}
-                ></input>
-              </div>
+                  rows={3}
+                  cols={10}
+                  placeholder="Customer notes"
+                  style={{
+                    color: "rgba(0, 0, 0, 0.87)",
+                    width: "100%",
+                    padding: "0.5rem",
+                    fontSize: "1rem",
+                    lineHeight: "1.4375em",
+                    border: "0.1rem solid #c4c4c4",
+                    borderRadius: "4px",
+                  }}
+                />
+              </Box>
+              <Box
+                sx={{
+                  background: "#f7f8f9",
+                  borderRadius: "8px",
+                  padding: "0.5rem",
+                  marginLeft: "15px",
+                }}
+              >
+                <div style={{ display: "flex" }}>
+                  <div style={{ flex: 1 }}>Total</div>
+                  <div>{TOTAL_BOOKING_MONEY}</div>
+                </div>
+                <div style={{ display: "flex" }}>
+                  <div style={{ flex: 1 }}>Deposit</div>
+                  <input
+                    type="number"
+                    dir="rtl"
+                    style={{
+                      fontSize: 16,
+                      background: "#f7f8f9",
+                      border: "none",
+                      borderBottom: "1px solid #e1e3e6",
+                      outline: "none",
+                    }}
+                  ></input>
+                </div>
+              </Box>
             </Box>
           </Box>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={saveBooking}>Save</Button>
-      </DialogActions>
-    </Dialog>
-  );
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={saveBooking}>Save</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  return <></>;
 }
 
 DetailBooking.propTypes = {
@@ -303,6 +283,7 @@ DetailBooking.propTypes = {
   saveBooking: PropTypes.func.isRequired,
   closeDetailBooking: PropTypes.func.isRequired,
   openCusInfor: PropTypes.func.isRequired,
+  detailData: PropTypes.array.isRequired,
 };
 
 export default DetailBooking;

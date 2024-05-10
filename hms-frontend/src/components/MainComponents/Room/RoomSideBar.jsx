@@ -16,7 +16,7 @@ import { styled } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PropTypes from "prop-types";
 
-const typeOptionsBtn = ["VIP", "ONE PERSON ONE BED", "TWO PERSON", "ALL"];
+const typeOptionsBtn = ["Standard", "Family Room", "ALL"];
 
 const StyledBox = styled(Box)(() => ({
   width: "100%",
@@ -107,14 +107,14 @@ function RoomSideBar({ onTypeSelected, onStatusSelected }) {
                     onChange={handleRadioChange}
                   >
                     <FormControlLabel
-                      value="active"
+                      value="Available"
                       control={<Radio />}
-                      label="Active"
+                      label="Available"
                     />
                     <FormControlLabel
-                      value="inactive"
+                      value="Unavailable"
                       control={<Radio />}
-                      label="Inactive"
+                      label="Unavailable"
                     />
                     <FormControlLabel
                       value="both"

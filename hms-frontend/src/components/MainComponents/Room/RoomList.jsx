@@ -21,8 +21,6 @@ import RoomImage from "./RoomImage";
 import { useEffect } from "react";
 import userApi from "../../../api/userApi";
 
-
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -52,21 +50,7 @@ function stableSort(array, comparator) {
 }
 
 function RoomList({ selectedType, selectedStatus }) {
-
-  const userList = [];
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const userList = await userApi.getAll();
-      console.log("ok");
-      console.log(userList);
-      setRows(userList);
-    };
-
-    fetchUsers();
-  }, []);
-
-  const [rows, setRows] = React.useState(userList);
-
+  const [rows, setRows] = React.useState([]);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
   const [selected, setSelected] = React.useState([]);
@@ -76,6 +60,19 @@ function RoomList({ selectedType, selectedStatus }) {
   const [expandedRowId, setExpandedRowId] = React.useState(null);
   const [roomInforTab, setRoomInforTab] = React.useState("1");
   const [specificRoomData, setSpecificRoomData] = React.useState(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const userList = await userApi.getAll();
+      const rowsWithId = userList.map((user, index) => ({
+        ...user,
+        id: index,
+      }));
+      setRows(rowsWithId);
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleChangeTab = (event, newValue) => {
     setRoomInforTab(newValue);
@@ -195,14 +192,13 @@ function RoomList({ selectedType, selectedStatus }) {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <>
+                  <React.Fragment key={row.id}>
                     <TableRow
                       hover
                       onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.id}
                       selected={isItemSelected}
                       sx={{ cursor: "pointer" }}
                     >
@@ -222,16 +218,16 @@ function RoomList({ selectedType, selectedStatus }) {
                         scope="row"
                         padding="none"
                       >
-
                         {row.roomName}
-
                       </TableCell>
                       <TableCell align="right">{row.type}</TableCell>
                       <TableCell align="right">{row.dayRate}</TableCell>
                       <TableCell align="right">{row.nightRate}</TableCell>
                       <TableCell align="right">{row.dailyRate}</TableCell>
                       <TableCell align="right">
-                        {row.status === "active" ? "Active" : "Inactive"}
+                        {row.status === "Available"
+                          ? "Available"
+                          : "Unavailable"}
                       </TableCell>
                       <TableCell align="right">{row.overtimePay}</TableCell>
 
@@ -242,7 +238,10 @@ function RoomList({ selectedType, selectedStatus }) {
 
                     {/* Expand Row */}
                     {expandedRowId === row.id && (
-                      <TableRow sx={{ maxHeight: "435px" }}>
+                      <TableRow
+                        key={`${row.id}-expand`}
+                        sx={{ maxHeight: "435px" }}
+                      >
                         <TableCell
                           padding="none"
                           colSpan={10}
@@ -273,7 +272,7 @@ function RoomList({ selectedType, selectedStatus }) {
                         </TableCell>
                       </TableRow>
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })}
               {emptyRows > 0 && (
@@ -307,8 +306,8 @@ function RoomList({ selectedType, selectedStatus }) {
 }
 
 RoomList.propTypes = {
-  selectedType: PropTypes.string.isRequired,
-  selectedStatus: PropTypes.string.isRequired,
+  selectedType: PropTypes.string,
+  selectedStatus: PropTypes.string,
 };
 
 export default RoomList;

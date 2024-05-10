@@ -112,6 +112,7 @@ function CustomerInforDialog({
       aria-describedby="detail-booking-dialog"
       maxWidth="lg"
       sx={{
+        zIndex: 1,
         "& .MuiDialog-paper": {
           borderRadius: "1.6rem",
         },
@@ -202,10 +203,10 @@ CustomerInforDialog.propTypes = {
 
 StackItem.propTypes = {
   label: PropTypes.string.isRequired,
-  standard: PropTypes.bool.isRequired,
-  date: PropTypes.bool.isRequired,
-  selection: PropTypes.bool.isRequired,
-  notes: PropTypes.bool.isRequired,
+  standard: PropTypes.bool,
+  date: PropTypes.bool,
+  selection: PropTypes.bool,
+  notes: PropTypes.bool,
 };
 
 export default CustomerInforDialog;

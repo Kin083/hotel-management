@@ -39,10 +39,12 @@ function Room() {
           <TabList
             onChange={handleChangeTab}
             centered
-            textColor="#132046"
             sx={{
               "& .MuiTabs-indicator": {
                 backgroundColor: "#009394",
+              },
+              "& .custom-tab-label": {
+                color: "#132046",
               },
             }}
           >

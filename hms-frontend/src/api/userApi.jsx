@@ -1,28 +1,14 @@
 import axiosClient from "./axiosClient";
 
-
-// const app = express();
-
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
-//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   next();
-// });
-
 const userApi = {
-//   getAll(params) {
-//     const url = "getallGuest";
-//     return axiosClient.get(url, { params: params });
-//     },
-    getAll(params) {
-        const url = "getListRoom/1";
-        return axiosClient.get(url,{params : params})
-    },
-    getType(params) {
-      const url = "/getRoomByRNumberAndAvailable";
-      return axiosClient.get(url, { params: params });
-    }
+  getAll(params) {
+    const url = "getListRoom/1";
+    return axiosClient.get(url, { params: params });
+  },
+  getType(params) {
+    const url = "getAvailRoom/1";
+    return axiosClient.get(url, { params: params });
+  },
 
   //   get(id) {
   //     const url = `/users/${id}`;
@@ -44,4 +30,3 @@ const userApi = {
 };
 
 export default userApi;
-
