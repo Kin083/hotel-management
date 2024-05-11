@@ -20,6 +20,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import RoomImage from "./RoomImage";
 import BuildIcon from "@mui/icons-material/Build";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useEffect } from "react";
 import userApi from "../../../api/userApi";
 import { IconButton } from "@mui/material";
@@ -61,7 +62,7 @@ function RoomList({ selectedType, selectedStatus }) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(8);
-  const [expandedRowId, setExpandedRowId] = React.useState(null);
+  const [expandedRows, setExpandedRows] = React.useState({});
   const [roomInforTab, setRoomInforTab] = React.useState("1");
   const [hoveredRowId, setHoveredRowId] = React.useState(null);
   const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
@@ -133,7 +134,10 @@ function RoomList({ selectedType, selectedStatus }) {
   };
 
   const handleClickExpand = (id) => {
-    setExpandedRowId(expandedRowId === id ? null : id);
+    setExpandedRows((prevExpandedRows) => ({
+      ...prevExpandedRows,
+      [id]: !prevExpandedRows[id],
+    }));
   };
 
   const handleChangePage = (event, newPage) => {
@@ -245,8 +249,18 @@ function RoomList({ selectedType, selectedStatus }) {
                           {isHovered && (
                             <IconButton
                               onClick={() => handleClickExpand(row.id)}
+                              sx={{
+                                transition: "transform 0.5s ease-in-out",
+                                transform: expandedRows[row.id]
+                                  ? "rotate(180deg)"
+                                  : "rotate(0deg)",
+                              }}
                             >
-                              <ExpandMoreIcon />
+                              {expandedRows[row.id] ? (
+                                <ExpandLessIcon />
+                              ) : (
+                                <ExpandMoreIcon />
+                              )}
                             </IconButton>
                           )}
                           {row.roomName}
@@ -275,11 +289,8 @@ function RoomList({ selectedType, selectedStatus }) {
                       </TableRow>
 
                       {/* Expand Row */}
-                      {expandedRowId === row.id && (
-                        <TableRow
-                          key={`${row.id}-expand`}
-                          sx={{ maxHeight: "435px" }}
-                        >
+                      {expandedRows[row.id] && (
+                        <TableRow key={`${row.id}-expand`}>
                           <TableCell
                             padding="none"
                             colSpan={10}
@@ -299,7 +310,7 @@ function RoomList({ selectedType, selectedStatus }) {
                                   <Tab label="Cleanup History" value="4" />
                                 </TabList>
                               </Box>
-                              <TabPanel value="1">
+                              <TabPanel sx={{ height: "300px" }} value="1">
                                 <RoomImage />
                               </TabPanel>
                               <TabPanel value="2">Item Two</TabPanel>

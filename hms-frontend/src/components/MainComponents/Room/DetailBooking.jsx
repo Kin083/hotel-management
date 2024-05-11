@@ -109,6 +109,7 @@ function DetailBooking({
           "& .MuiDialog-paper": {
             borderRadius: "1.6rem",
           },
+          zIndex: 1,
         }}
       >
         <DialogTitle

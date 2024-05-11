@@ -112,7 +112,7 @@ function CustomerInforDialog({
       aria-describedby="detail-booking-dialog"
       maxWidth="lg"
       sx={{
-        zIndex: 1,
+        zIndex: 2,
         "& .MuiDialog-paper": {
           borderRadius: "1.6rem",
         },
