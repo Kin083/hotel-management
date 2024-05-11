@@ -21,6 +21,7 @@ public class RoomTypeService {
         roomTypeRepository.save(roomType);
         return roomType;
     }
+
     public RoomTypeEntity updateRoomType(RoomTypeEntity roomType) {
         Integer typeId = roomType.getTypeID();
         RoomTypeEntity room  = roomTypeRepository.findById(typeId).get();

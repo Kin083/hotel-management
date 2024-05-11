@@ -52,4 +52,8 @@ public class RoomService {
     public List<RoomEntity> getAllByHotelID(String HotelID) {
         return roomRepository.findByhotelID(HotelID);
     }
+
+    public int countByRtype(int roomtype) {
+        return roomRepository.countRoom(roomtype,"Available");
+    }
 }
