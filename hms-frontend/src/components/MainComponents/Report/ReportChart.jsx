@@ -41,8 +41,8 @@ export function RevenueReportChart({ selectedDateRange }) {
         <div className={cx("chart-container")}>
             <Chart
                 chartType="ColumnChart"
-                width="1100px"
-                height="600px"
+                width="100%"
+                height="100%"
                 data={dataRevenue}
                 options={optionRevenue}
             />
@@ -55,8 +55,8 @@ export function RoomBookingReportChart() {
         <div className={cx("chart-container")}>
             <Chart
                 chartType="ColumnChart"
-                width="1100px"
-                height="600px"
+                width="100%"
+                height="100%"
                 data={dataRoom}
                 options={optionRoomBooking}
             />

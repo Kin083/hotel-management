@@ -242,3 +242,15 @@
     right: 30px;
     cursor: pointer;
 }
+
+
+.PhoneInputInput {
+    background-color: #eee;
+    margin: 8px 0;
+    padding: 0px 10px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+    outline: none;
+
+}
