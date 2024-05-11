@@ -27,7 +27,7 @@ import styles from "./Report.module.css";
 
 const cx = classNames.bind(styles);
 const StyledBox = styled(Box)(() => ({
-    width: "300px",
+    width: "100%",
     backgroundColor: "white",
     borderRadius: 5,
     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",

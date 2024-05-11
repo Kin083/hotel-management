@@ -5,6 +5,7 @@ import Main from "./pages/Main/Main";
 
 import Revenue from "./components/MainComponents/Report/Revenue";
 import RoomBooking from "./components/MainComponents/Report/RoomBooking";
+import Verification from "./pages/Login/Verification";
 
 const App = () => {
   return (
@@ -17,6 +18,8 @@ const App = () => {
           <Route path="/room" element={<Main />} />
           <Route path="/revenue" element={<Revenue />} />
           <Route path="/roombooking-report" element={<RoomBooking />} />
+          <Route path="/verification" element={<Verification />} />
+
         </Routes>
       </div>
     </>
