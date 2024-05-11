@@ -18,8 +18,11 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import RoomImage from "./RoomImage";
+import BuildIcon from "@mui/icons-material/Build";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useEffect } from "react";
 import userApi from "../../../api/userApi";
+import { IconButton } from "@mui/material";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -60,6 +63,7 @@ function RoomList({ selectedType, selectedStatus }) {
   const [expandedRowId, setExpandedRowId] = React.useState(null);
   const [roomInforTab, setRoomInforTab] = React.useState("1");
   const [specificRoomData, setSpecificRoomData] = React.useState(null);
+  const [hoveredRowId, setHoveredRowId] = React.useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -93,7 +97,7 @@ function RoomList({ selectedType, selectedStatus }) {
     setSelected([]);
   };
 
-  const handleClick = (event, id) => {
+  const handleClickCheckbox = (event, id) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
@@ -110,9 +114,15 @@ function RoomList({ selectedType, selectedStatus }) {
       );
     }
     setSelected(newSelected);
-    setExpandedRowId(id === expandedRowId ? null : id);
-    const selectedRow = rows.find((row) => row.id === id);
-    setSpecificRoomData(selectedRow);
+  };
+
+  const handleClickBuildIcon = (event, id) => {
+    const clickedRoom = rows.find((room) => room.id === id);
+    setSpecificRoomData(clickedRoom);
+  };
+
+  const handleClickExpand = (id) => {
+    setExpandedRowId(expandedRowId === id ? null : id);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -190,12 +200,14 @@ function RoomList({ selectedType, selectedStatus }) {
               {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
+                const isHovered = hoveredRowId === row.id;
 
                 return (
                   <React.Fragment key={row.id}>
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
+                      onMouseEnter={() => setHoveredRowId(row.id)}
+                      onMouseLeave={() => setHoveredRowId(null)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -209,16 +221,31 @@ function RoomList({ selectedType, selectedStatus }) {
                           inputProps={{
                             "aria-labelledby": labelId,
                           }}
+                          onClick={(event) =>
+                            handleClickCheckbox(event, row.id)
+                          }
                         />
                       </TableCell>
                       <TableCell
-                        align="right"
+                        align="center"
                         component="th"
                         id={labelId}
                         scope="row"
                         padding="none"
                       >
+                        {isHovered && (
+                          <IconButton onClick={() => handleClickExpand(row.id)}>
+                            <ExpandMoreIcon />
+                          </IconButton>
+                        )}
                         {row.roomName}
+                        {isHovered && (
+                          <IconButton
+                            onClick={() => handleClickBuildIcon(event, row.id)}
+                          >
+                            <BuildIcon />
+                          </IconButton>
+                        )}
                       </TableCell>
                       <TableCell align="right">{row.type}</TableCell>
                       <TableCell align="right">{row.dayRate}</TableCell>

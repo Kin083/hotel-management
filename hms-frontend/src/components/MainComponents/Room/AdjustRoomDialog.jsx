@@ -42,7 +42,7 @@ function AdjustRoomDialog({ openAdjustDialog, saveChange, specificRoomData }) {
                   required
                   id="room-name"
                   label="Name"
-                  defaultValue={1234324}
+                  defaultValue={specificRoomData.roomName}
                   variant="standard"
                 />
                 <TextField

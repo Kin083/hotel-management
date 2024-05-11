@@ -5,7 +5,6 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import BuildIcon from "@mui/icons-material/Build";
 import PaidIcon from "@mui/icons-material/Paid";
 
 import BookingDialog from "./BookingDialog";
@@ -91,17 +90,13 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
         <IconButton onClick={openBooking}>
           <PaidIcon />
         </IconButton>
-        {numSelected === 1 ? (
+        {numSelected === 0 ? (
           <IconButton onClick={adjustRoom}>
-            <BuildIcon />
-          </IconButton>
-        ) : numSelected > 1 ? (
-          <IconButton onClick={deleteRoom}>
-            <DeleteIcon />
+            <AddIcon />
           </IconButton>
         ) : (
-          <IconButton>
-            <AddIcon />
+          <IconButton onClick={deleteRoom}>
+            <DeleteIcon />
           </IconButton>
         )}
       </Toolbar>
@@ -111,7 +106,9 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
           openAdjustDialog={openAdjustDialog}
           saveChange={saveChange}
           specificRoomData={specificRoomData}
-        ></AdjustRoomDialog>
+        >
+          {console.log(specificRoomData)}
+        </AdjustRoomDialog>
       )}
       <BookingDialog
         openBookingDialog={openBookingDialog}
