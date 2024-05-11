@@ -5,10 +5,15 @@ import com.example.HotelManager.Repository.RoomTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoomTypeService {
     @Autowired
     private RoomTypeRepository roomTypeRepository;
+    public List<RoomTypeEntity> getAllRoomType() {
+        return roomTypeRepository.findAll();
+    }
     public RoomTypeEntity getRoomTypeByID(int RoomTypeID) {
         return roomTypeRepository.findById(RoomTypeID).get();
     }

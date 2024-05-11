@@ -1,7 +1,6 @@
 package com.example.HotelManager.Service;
 
-import com.example.HotelManager.Entity.BookingEntity;
-import com.example.HotelManager.Entity.PaymentEntity;
+import com.example.HotelManager.Entity.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -77,5 +76,23 @@ public class MainService {
             ans.put(dateString,sum);
         }
         return ans;
+    }
+    public List<ResponseForListRoom> lisResponse(String hotelid,RoomService roomService,RoomTypeService roomTypeService) {
+        List<RoomEntity> listRoom =   roomService.getAllByHotelID(hotelid);
+        List<ResponseForListRoom> listResponse = new ArrayList<>();
+        for(RoomEntity room : listRoom) {
+            int roomNum = room.getRoomnumber();
+            int rtype = room.getTypeID();
+            RoomTypeEntity roomtype = roomTypeService.getRoomTypeByID(rtype);
+            ResponseForListRoom res = new ResponseForListRoom();
+            res.setType(roomtype.getName());
+            res.setRoomName(roomNum);
+            res.setDailyRate(roomtype.getPricepernight());
+            res.setStatus(room.getStatus());
+            res.setMaxiumCapacity(roomtype.getCapacity());
+            res.setNotes(roomtype.getDescription());
+            listResponse.add(res);
+        }
+        return listResponse;
     }
 }
