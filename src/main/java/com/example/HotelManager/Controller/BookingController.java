@@ -1,4 +1,4 @@
-package com.example.HotelManager.API;
+package com.example.HotelManager.Controller;
 
 import com.example.HotelManager.Entity.BookingEntity;
 import com.example.HotelManager.Entity.PaymentEntity;
@@ -31,6 +31,7 @@ public class BookingController {
 
     @GetMapping(path="/getallBooking")
     public @ResponseBody Iterable<BookingEntity> getAllBooking() {
+        System.out.println("ok da vao den day");
         // This returns a JSON or XML with the users
         return bookingService.getAllBooking();
     }

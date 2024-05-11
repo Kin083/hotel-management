@@ -1,4 +1,4 @@
-package com.example.HotelManager.API;
+package com.example.HotelManager.Controller;
 
 import com.example.HotelManager.Entity.RoomTypeEntity;
 import com.example.HotelManager.Service.RoomTypeService;
