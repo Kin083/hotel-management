@@ -10,24 +10,29 @@ import PaidIcon from "@mui/icons-material/Paid";
 import BookingDialog from "./BookingDialog";
 import DetailBooking from "./DetailBooking";
 import CustomerInforDialog from "./CustomerInforDialog";
-import AdjustRoomDialog from "./AdjustRoomDialog";
 
-function EnhancedTableToolbar({ numSelected, specificRoomData }) {
-  const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
+function EnhancedTableToolbar({ numSelected }) {
+  // const [openAddDialog, setOpenAddDialog] = React.useState(false);
   const [openBookingDialog, setOpenBookingDialog] = React.useState(false);
   const [openDetailBooking, setOpenDetailBooking] = React.useState(false);
   const [openCusInforDialog, setOpenCusInforDialog] = React.useState(false);
   const [detailData, setDetailData] = React.useState([]);
 
-  const adjustRoom = () => {
-    setOpenAdjustDialog(true);
-  };
-  const deleteRoom = () => {
-    alert("clicked");
+  const openAdd = () => {
+    alert("Clicked");
+    //    setOpenAddDialog(true);
   };
 
-  const saveChange = () => {
-    setOpenAdjustDialog(false);
+  // const closeAdd = () => {
+  //   setOpenAddDialog(false);
+  // };
+
+  // const saveAdd = () => {
+  //   setOpenAddDialog(false);
+  // };
+
+  const deleteRoom = () => {
+    alert("clicked");
   };
 
   const openBooking = () => {
@@ -91,7 +96,7 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
           <PaidIcon />
         </IconButton>
         {numSelected === 0 ? (
-          <IconButton onClick={adjustRoom}>
+          <IconButton onClick={openAdd}>
             <AddIcon />
           </IconButton>
         ) : (
@@ -101,15 +106,6 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
         )}
       </Toolbar>
 
-      {specificRoomData && (
-        <AdjustRoomDialog
-          openAdjustDialog={openAdjustDialog}
-          saveChange={saveChange}
-          specificRoomData={specificRoomData}
-        >
-          {console.log(specificRoomData)}
-        </AdjustRoomDialog>
-      )}
       <BookingDialog
         openBookingDialog={openBookingDialog}
         closeBooking={closeBooking}
@@ -134,7 +130,6 @@ function EnhancedTableToolbar({ numSelected, specificRoomData }) {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
-  specificRoomData: PropTypes.object,
 };
 
 export default EnhancedTableToolbar;

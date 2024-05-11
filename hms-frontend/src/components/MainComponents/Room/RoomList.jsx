@@ -23,6 +23,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useEffect } from "react";
 import userApi from "../../../api/userApi";
 import { IconButton } from "@mui/material";
+import AdjustRoomDialog from "./AdjustRoomDialog";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -62,8 +63,9 @@ function RoomList({ selectedType, selectedStatus }) {
   const [rowsPerPage, setRowsPerPage] = React.useState(8);
   const [expandedRowId, setExpandedRowId] = React.useState(null);
   const [roomInforTab, setRoomInforTab] = React.useState("1");
-  const [specificRoomData, setSpecificRoomData] = React.useState(null);
   const [hoveredRowId, setHoveredRowId] = React.useState(null);
+  const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
+  const [specificRoomData, setSpecificRoomData] = React.useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -116,9 +118,18 @@ function RoomList({ selectedType, selectedStatus }) {
     setSelected(newSelected);
   };
 
-  const handleClickBuildIcon = (event, id) => {
+  const handleClickAdjust = (id) => {
+    setOpenAdjustDialog(true);
     const clickedRoom = rows.find((room) => room.id === id);
     setSpecificRoomData(clickedRoom);
+  };
+
+  const closeAdjustDialog = () => {
+    setOpenAdjustDialog(false);
+  };
+
+  const saveChange = () => {
+    setOpenAdjustDialog(false);
   };
 
   const handleClickExpand = (id) => {
@@ -176,159 +187,167 @@ function RoomList({ selectedType, selectedStatus }) {
   ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
+    <>
+      <Box sx={{ width: "100%" }}>
+        <Paper sx={{ width: "100%", mb: 2 }}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+            >
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {visibleRows.map((row, index) => {
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+                  const isHovered = hoveredRowId === row.id;
+
+                  return (
+                    <React.Fragment key={row.id}>
+                      <TableRow
+                        hover
+                        onMouseEnter={() => setHoveredRowId(row.id)}
+                        onMouseLeave={() => setHoveredRowId(null)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        selected={isItemSelected}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              "aria-labelledby": labelId,
+                            }}
+                            onClick={(event) =>
+                              handleClickCheckbox(event, row.id)
+                            }
+                          />
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {isHovered && (
+                            <IconButton
+                              onClick={() => handleClickExpand(row.id)}
+                            >
+                              <ExpandMoreIcon />
+                            </IconButton>
+                          )}
+                          {row.roomName}
+                          {isHovered && (
+                            <IconButton
+                              onClick={() => handleClickAdjust(row.id)}
+                            >
+                              <BuildIcon />
+                            </IconButton>
+                          )}
+                        </TableCell>
+                        <TableCell align="right">{row.type}</TableCell>
+                        <TableCell align="right">{row.dayRate}</TableCell>
+                        <TableCell align="right">{row.nightRate}</TableCell>
+                        <TableCell align="right">{row.dailyRate}</TableCell>
+                        <TableCell align="right">
+                          {row.status === "Available"
+                            ? "Available"
+                            : "Unavailable"}
+                        </TableCell>
+                        <TableCell align="right">{row.overtimePay}</TableCell>
+                        <TableCell align="right">
+                          {row.maxiumCapacity}
+                        </TableCell>
+                        <TableCell align="right">{row.notes}</TableCell>
+                      </TableRow>
+
+                      {/* Expand Row */}
+                      {expandedRowId === row.id && (
+                        <TableRow
+                          key={`${row.id}-expand`}
+                          sx={{ maxHeight: "435px" }}
+                        >
+                          <TableCell
+                            padding="none"
+                            colSpan={10}
+                            sx={{ width: "100%" }}
+                          >
+                            <TabContext value={roomInforTab}>
+                              <Box
+                                sx={{ borderBottom: 1, borderColor: "divider" }}
+                              >
+                                <TabList
+                                  onChange={handleChangeTab}
+                                  aria-label="room infor tab"
+                                >
+                                  <Tab label="Images" value="1" />
+                                  <Tab label="Booking History" value="2" />
+                                  <Tab label="Transaction History" value="3" />
+                                  <Tab label="Cleanup History" value="4" />
+                                </TabList>
+                              </Box>
+                              <TabPanel value="1">
+                                <RoomImage />
+                              </TabPanel>
+                              <TabPanel value="2">Item Two</TabPanel>
+                              <TabPanel value="3">Item Three</TabPanel>
+                              <TabPanel value="4">Item four</TabPanel>
+                            </TabContext>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (dense ? 33 : 53) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={10} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[8, 16, 24]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+        <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label="Dense padding"
+        />
+      </Box>
+      {openAdjustDialog && (
+        <AdjustRoomDialog
+          openAdjustDialog={openAdjustDialog}
+          closeAdjustDialog={closeAdjustDialog}
+          saveChange={saveChange}
           specificRoomData={specificRoomData}
         />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
-                const isHovered = hoveredRowId === row.id;
-
-                return (
-                  <React.Fragment key={row.id}>
-                    <TableRow
-                      hover
-                      onMouseEnter={() => setHoveredRowId(row.id)}
-                      onMouseLeave={() => setHoveredRowId(null)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      selected={isItemSelected}
-                      sx={{ cursor: "pointer" }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                          onClick={(event) =>
-                            handleClickCheckbox(event, row.id)
-                          }
-                        />
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {isHovered && (
-                          <IconButton onClick={() => handleClickExpand(row.id)}>
-                            <ExpandMoreIcon />
-                          </IconButton>
-                        )}
-                        {row.roomName}
-                        {isHovered && (
-                          <IconButton
-                            onClick={() => handleClickBuildIcon(event, row.id)}
-                          >
-                            <BuildIcon />
-                          </IconButton>
-                        )}
-                      </TableCell>
-                      <TableCell align="right">{row.type}</TableCell>
-                      <TableCell align="right">{row.dayRate}</TableCell>
-                      <TableCell align="right">{row.nightRate}</TableCell>
-                      <TableCell align="right">{row.dailyRate}</TableCell>
-                      <TableCell align="right">
-                        {row.status === "Available"
-                          ? "Available"
-                          : "Unavailable"}
-                      </TableCell>
-                      <TableCell align="right">{row.overtimePay}</TableCell>
-
-                      <TableCell align="right">{row.maxiumCapacity}</TableCell>
-
-                      <TableCell align="right">{row.notes}</TableCell>
-                    </TableRow>
-
-                    {/* Expand Row */}
-                    {expandedRowId === row.id && (
-                      <TableRow
-                        key={`${row.id}-expand`}
-                        sx={{ maxHeight: "435px" }}
-                      >
-                        <TableCell
-                          padding="none"
-                          colSpan={10}
-                          sx={{ width: "100%" }}
-                        >
-                          <TabContext value={roomInforTab}>
-                            <Box
-                              sx={{ borderBottom: 1, borderColor: "divider" }}
-                            >
-                              <TabList
-                                onChange={handleChangeTab}
-                                aria-label="room infor tab"
-                              >
-                                <Tab label="Images" value="1" />
-                                <Tab label="Booking History" value="2" />
-                                <Tab label="Transaction History" value="3" />
-                                <Tab label="Cleanup History" value="4" />
-                              </TabList>
-                            </Box>
-                            <TabPanel value="1">
-                              <RoomImage />
-                            </TabPanel>
-
-                            <TabPanel value="2">Item Two</TabPanel>
-                            <TabPanel value="3">Item Three</TabPanel>
-                            <TabPanel value="4">Item four</TabPanel>
-                          </TabContext>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </React.Fragment>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={10} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[8, 16, 24]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
-    </Box>
+      )}
+    </>
   );
 }
 
