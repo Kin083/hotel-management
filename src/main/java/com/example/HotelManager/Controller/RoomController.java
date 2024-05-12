@@ -57,6 +57,9 @@ public class RoomController {
             res.setStatus(room.getStatus());
             res.setMaxiumCapacity(roomtype.getCapacity());
             res.setNotes(roomtype.getDescription());
+            res.setOvertimeRate(roomtype.getOvertimePay());
+            res.setDayRate(roomtype.getDayRate());
+            res.setNightRate(roomtype.getPricepernight());
             listResponse.add(res);
         }
         return listResponse;

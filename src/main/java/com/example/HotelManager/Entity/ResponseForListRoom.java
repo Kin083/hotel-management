@@ -5,6 +5,34 @@ public class ResponseForListRoom {
     private String Type;
     private float DailyRate;
 
+    public float getDayRate() {
+        return DayRate;
+    }
+
+    public void setDayRate(float dayRate) {
+        DayRate = dayRate;
+    }
+
+    public float getNightRate() {
+        return NightRate;
+    }
+
+    public void setNightRate(float nightRate) {
+        NightRate = nightRate;
+    }
+
+    public float getOvertimeRate() {
+        return overtimeRate;
+    }
+
+    public void setOvertimeRate(float overtimeRate) {
+        this.overtimeRate = overtimeRate;
+    }
+
+    private  float DayRate;
+    private float NightRate;
+    private float overtimeRate;
+
     public String getRoomName() {
         return RoomName;
     }
