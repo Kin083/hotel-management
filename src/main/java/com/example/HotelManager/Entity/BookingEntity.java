@@ -21,7 +21,7 @@ public class BookingEntity {
     }
 
     public void setRoomNumber(int roomNumber) {
-        RoomNumber = roomNumber;
+        RoomName = roomNumber;
     }
 
     public void setCheckinDate(Date checkinDate) {
@@ -39,7 +39,7 @@ public class BookingEntity {
     @Column(name = "GuestID")
     private int GuestID;
     @Column(name = "RoomNumber")
-    private int RoomNumber;
+    private int RoomName;
     @Column(name = "CheckinDate")
     private Date CheckinDate;
     @Column(name = "CheckoutDate")
@@ -56,7 +56,7 @@ public class BookingEntity {
     }
 
     public int getRoomNumber() {
-        return RoomNumber;
+        return RoomName;
     }
 
     public Date getCheckinDate() {

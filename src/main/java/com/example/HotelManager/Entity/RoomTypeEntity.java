@@ -54,8 +54,39 @@ public class RoomTypeEntity {
 
     @Column(name  = "Description")
     private String description;
-    @Column(name = "PricePerNight")
+    @Column(name = "NightRate")
     private Float pricepernight;
+    @Column(name = "DayRate")
+    private Float dayRate;
+
+    public Float getDayRate() {
+        return dayRate;
+    }
+
+    public void setDayRate(Float dayRate) {
+        this.dayRate = dayRate;
+    }
+
+    public Float getDailyRate() {
+        return dailyRate;
+    }
+
+    public void setDailyRate(Float dailyRate) {
+        this.dailyRate = dailyRate;
+    }
+
+    public Float getOvertimePay() {
+        return overtimePay;
+    }
+
+    public void setOvertimePay(Float overtimePay) {
+        this.overtimePay = overtimePay;
+    }
+
+    @Column(name = "DailyRate")
+    private Float dailyRate;
+    @Column(name = "OvertimePay")
+    private Float overtimePay;
     @Column(name = "Capacity")
     private String capacity;
 }

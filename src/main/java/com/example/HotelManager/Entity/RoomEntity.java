@@ -9,11 +9,21 @@ public class RoomEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RoomNumber")
     private Integer roomnumber;
+
+    public String getRoomName() {
+        return RoomName;
+    }
+
+    public void setRoomName(String roomName) {
+        RoomName = roomName;
+    }
+
     @Column(name = "HotelID")
     private Integer hotelID;
     @Column(name = "TypeID")
     private  Integer typeID;
-
+    @Column(name = "RoomName")
+    private String RoomName;
     public Integer getRoomnumber() {
         return roomnumber;
     }
