@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class PaymentsController {
@@ -61,7 +58,8 @@ public class PaymentsController {
             }
             ans.put(dateString,sum);
         }
-        return ans;
+        TreeMap<String,Double> sortedmap = new TreeMap<>(ans);
+        return sortedmap;
     }
 
     public List<String> splitString(String date) {
