@@ -5,7 +5,7 @@ import java.util.List;
 public class ResponseAvailRoom {
     private String type;
     private String capicity;
-    List<Integer> listRoomNumber;
+    List<String> listRoomNumber;
     private Float dayRate;
 
     public String getType() {
@@ -24,11 +24,11 @@ public class ResponseAvailRoom {
         this.capicity = capicity;
     }
 
-    public List<Integer> getListRoomNumber() {
+    public List<String> getListRoomNumber() {
         return listRoomNumber;
     }
 
-    public void setListRoomNumber(List<Integer> listRoomNumber) {
+    public void setListRoomNumber(List<String> listRoomNumber) {
         this.listRoomNumber = listRoomNumber;
     }
 

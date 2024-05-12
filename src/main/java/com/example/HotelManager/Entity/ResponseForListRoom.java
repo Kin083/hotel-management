@@ -1,15 +1,15 @@
 package com.example.HotelManager.Entity;
 
 public class ResponseForListRoom {
-    private int RoomName;
+    private String RoomName;
     private String Type;
     private float DailyRate;
 
-    public int getRoomName() {
+    public String getRoomName() {
         return RoomName;
     }
 
-    public void setRoomName(int roomName) {
+    public void setRoomName(String roomName) {
         RoomName = roomName;
     }
 

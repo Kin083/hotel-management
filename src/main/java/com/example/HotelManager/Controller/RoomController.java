@@ -47,7 +47,7 @@ public class RoomController {
         List<RoomEntity> listRoom =   roomService.getAllByHotelID(hotelid);
         List<ResponseForListRoom> listResponse = new ArrayList<>();
         for(RoomEntity room : listRoom) {
-            int roomNum = room.getRoomnumber();
+            String roomNum = room.getRoomName();
             int rtype = room.getTypeID();
             RoomTypeEntity roomtype = roomTypeService.getRoomTypeByID(rtype);
             ResponseForListRoom res = new ResponseForListRoom();
@@ -84,7 +84,7 @@ public class RoomController {
             float nightrate = 0;
             float dailyrate = 0;
             float overtimepay = 0;
-            List<Integer> lisRoomNumber = new ArrayList<>();
+            List<String> lisRoomNumber = new ArrayList<>();
             ResponseAvailRoom resAvail = new ResponseAvailRoom();
             int count = 0;
             for (ResponseForListRoom lis : lisResponseDetail) {
