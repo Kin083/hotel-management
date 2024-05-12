@@ -27,7 +27,7 @@ const StyledBox = styled(Box)(() => ({
   padding: "10px",
 }));
 
-function RoomSideBar({ onTypeSelected, onStatusSelected }) {
+function RoomSideBar({ onTypeSelected, onStatusSelected, typeList }) {
   const [typeExpanded, setTypeExpanded] = useState(true);
   const [statusExpanded, setStatusExpanded] = useState(true);
   const [value, setValue] = useState("active");
@@ -135,6 +135,7 @@ function RoomSideBar({ onTypeSelected, onStatusSelected }) {
 RoomSideBar.propTypes = {
   onTypeSelected: PropTypes.func.isRequired,
   onStatusSelected: PropTypes.func.isRequired,
+  typeList: PropTypes.array,
 };
 
 export default RoomSideBar;

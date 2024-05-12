@@ -54,7 +54,7 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function RoomList({ selectedType, selectedStatus }) {
+function RoomList({ selectedType, selectedStatus, typeList }) {
   const [rows, setRows] = React.useState([]);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
@@ -67,18 +67,21 @@ function RoomList({ selectedType, selectedStatus }) {
   const [hoveredRowId, setHoveredRowId] = React.useState(null);
   const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
   const [specificRoomData, setSpecificRoomData] = React.useState(null);
+  const [roomNames, setRoomNames] = React.useState([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const userList = await userApi.getAll();
-      const rowsWithId = userList.map((user, index) => ({
-        ...user,
+    const fetchRooms = async () => {
+      const roomList = await userApi.getAll();
+      const rowsWithId = roomList.map((room, index) => ({
+        ...room,
         id: index,
       }));
+
+      setRoomNames(roomList.map((room) => room.roomName));
       setRows(rowsWithId);
     };
 
-    fetchUsers();
+    fetchRooms();
   }, []);
 
   const handleChangeTab = (event, newValue) => {
@@ -129,7 +132,55 @@ function RoomList({ selectedType, selectedStatus }) {
     setOpenAdjustDialog(false);
   };
 
-  const saveChange = () => {
+  const saveChange = (updatedData) => {
+    const currentRoomData = specificRoomData;
+
+    const updatedRoomData = {
+      ...currentRoomData,
+      roomName:
+        updatedData.name !== currentRoomData.roomName &&
+        updatedData.roomName !== undefined
+          ? updatedData.roomName
+          : currentRoomData.roomName,
+      type:
+        updatedData.type !== currentRoomData.type &&
+        updatedData.type !== undefined
+          ? updatedData.type
+          : currentRoomData.type,
+      status:
+        updatedData.status !== currentRoomData.status &&
+        updatedData.status !== undefined
+          ? updatedData.status
+          : currentRoomData.status,
+      notes:
+        updatedData.notes !== currentRoomData.notes &&
+        updatedData.notes !== undefined
+          ? updatedData.notes
+          : currentRoomData.notes,
+    };
+
+    if (updatedRoomData.type !== currentRoomData.type) {
+      const updatedType = typeList.find(
+        (type) => type.name === updatedRoomData.type
+      );
+
+      if (updatedType) {
+        updatedRoomData.dailyRate = updatedType.dailyRate;
+        updatedRoomData.dayRate = updatedType.dayRate;
+        updatedRoomData.nightRate = updatedType.pricepernight;
+        updatedRoomData.overtimeRate = updatedType.overtimePay;
+        updatedRoomData.maxiumCapacity = updatedType.capacity;
+      }
+    }
+
+    const updatedUIRow = rows.map((room) => {
+      if (room.id === updatedRoomData.id) {
+        return updatedRoomData;
+      }
+      return room;
+    });
+
+    setRows(updatedUIRow);
     setOpenAdjustDialog(false);
   };
 
@@ -175,7 +226,6 @@ function RoomList({ selectedType, selectedStatus }) {
 
         return row.status === selectedStatus;
       } else {
-        console.log(selectedStatus, selectedType);
         if (row.type === "ALL") {
           if (row.status === "both") return true;
           return row.status === selectedStatus;
@@ -281,7 +331,7 @@ function RoomList({ selectedType, selectedStatus }) {
                             ? "Available"
                             : "Unavailable"}
                         </TableCell>
-                        <TableCell align="right">{row.overtimePay}</TableCell>
+                        <TableCell align="right">{row.overtimeRate}</TableCell>
                         <TableCell align="right">
                           {row.maxiumCapacity}
                         </TableCell>
@@ -356,6 +406,8 @@ function RoomList({ selectedType, selectedStatus }) {
           closeAdjustDialog={closeAdjustDialog}
           saveChange={saveChange}
           specificRoomData={specificRoomData}
+          typeList={typeList}
+          roomNames={roomNames}
         />
       )}
     </>
@@ -365,6 +417,7 @@ function RoomList({ selectedType, selectedStatus }) {
 RoomList.propTypes = {
   selectedType: PropTypes.string,
   selectedStatus: PropTypes.string,
+  typeList: PropTypes.array,
 };
 
 export default RoomList;

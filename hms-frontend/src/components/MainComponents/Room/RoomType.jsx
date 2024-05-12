@@ -1,4 +1,5 @@
 import * as React from "react";
+import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -66,7 +67,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
-function RoomType() {
+function RoomType({ typeList }) {
   const [rows, setRows] = React.useState(data);
   const [hoveredRow, setHoveredRow] = React.useState(null);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -306,5 +307,9 @@ function RoomType() {
     </Paper>
   );
 }
+
+RoomType.propTypes = {
+  typeList: PropTypes.array,
+};
 
 export default RoomType;

@@ -5,8 +5,12 @@ const userApi = {
     const url = "getListRoom/1";
     return axiosClient.get(url, { params: params });
   },
-  getType(params) {
+  getAvailRoom(params) {
     const url = "getAvailRoom/1";
+    return axiosClient.get(url, { params: params });
+  },
+  getType(params) {
+    const url = "getAllRoomType";
     return axiosClient.get(url, { params: params });
   },
 
@@ -15,10 +19,10 @@ const userApi = {
   //     return axiosClient.get(url);
   //   },
 
-  //   add(data) {
-  //     const url = "/users";
-  //     return axiosClient.post(url, data);
-  //   },
+    add(data) {
+      const url = "/users";
+      return axiosClient.post(url, data);
+    },
   //   update(data) {
   //     const url = `/users/${data.id}`;
   //     return axiosClient.patch(url, data);

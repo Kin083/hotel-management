@@ -38,7 +38,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const userList = await userApi.getType();
+      const userList = await userApi.getAvailRoom();
       const userListWithQuantity = userList.map((user) => ({
         ...user,
         quantity: 0,
@@ -119,7 +119,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
             <ButtonGroup variant="outlined" sx={{ height: "56px" }}>
               <Button
                 onClick={() => {
-                  setExecuteTime("hour"), setPrice("daRate");
+                  setExecuteTime("hour"), setPrice("dayRate");
                 }}
               >
                 Day Hour
@@ -217,7 +217,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                       ? row.nightRate
                       : row.dailyRate}
                   </TableCell>
-                  <TableCell align="center">{row.ovetimePay}</TableCell>
+                  <TableCell align="center">{row.ovetimeRate}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

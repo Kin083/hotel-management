@@ -1,3 +1,4 @@
+import * as React from "react";
 import RoomSideBar from "./RoomSideBar";
 import RoomList from "./RoomList";
 
@@ -10,10 +11,12 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import RoomType from "./RoomType";
+import userApi from "../../../api/userApi";
 //const cx = classNames.bind(styles);
 
 function Room() {
   const [typeSelected, setTypeSelected] = useState(null);
+  const [typeList, setTypeList] = React.useState([]);
 
   const handleTypeSelected = (type) => {
     setTypeSelected(type);
@@ -30,6 +33,14 @@ function Room() {
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
   };
+
+  React.useEffect(() => {
+    const fetchTypes = async () => {
+      setTypeList(await userApi.getType());
+    };
+
+    fetchTypes();
+  }, []);
   return (
     <Box
       sx={{ width: "100%", typography: "body1", bgcolor: "background.paper" }}
@@ -53,16 +64,18 @@ function Room() {
           </TabList>
         </Box>
         <TabPanel value="1">
-          <RoomType />
+          <RoomType typeList={typeList} />
         </TabPanel>
         <TabPanel value="2" sx={{ display: "flex" }}>
           <RoomSideBar
             onTypeSelected={handleTypeSelected}
             onStatusSelected={handleStatusSelected}
+            typeList={typeList}
           />
           <RoomList
             selectedType={typeSelected}
             selectedStatus={statusSelected}
+            typeList={typeList}
           />
         </TabPanel>
       </TabContext>
