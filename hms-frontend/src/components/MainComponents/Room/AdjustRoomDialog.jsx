@@ -115,6 +115,11 @@ const AdjustRoomDialog = ({
       onClose={closeAdjustDialog}
       aria-describedby="adjust-dialog"
       maxWidth="lg"
+      sx={{
+        "& .MuiDialog-paper": {
+          borderRadius: "1.6rem",
+        },
+      }}
     >
       <DialogTitle>{"Edit Room Information"}</DialogTitle>
       <DialogContent>

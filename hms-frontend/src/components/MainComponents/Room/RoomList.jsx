@@ -135,6 +135,16 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const saveChange = (updatedData) => {
     const currentRoomData = specificRoomData;
 
+    // Checking are there any changes? If not -> Do not create new object
+    const isDataChanged = Object.keys(updatedData).some(
+      (key) => updatedData[key] !== currentRoomData[key]
+    );
+
+    if (!isDataChanged) {
+      setOpenAdjustDialog(false);
+      return;
+    }
+
     const updatedRoomData = {
       ...currentRoomData,
       roomName:
