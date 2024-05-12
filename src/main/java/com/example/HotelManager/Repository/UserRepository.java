@@ -3,7 +3,7 @@ package com.example.HotelManager.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.example.HotelManager.entity.User;
+import com.example.HotelManager.Entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> { // Thay đổi này
     // Các phương thức tùy chỉnh nếu cần

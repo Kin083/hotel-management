@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.HotelManager.entity.UserAccount;
+import com.example.HotelManager.Entity.UserAccount;
 
 public class CustomUserDetails implements UserDetails {
 

@@ -1,4 +1,4 @@
-package com.example.HotelManager.entity;
+package com.example.HotelManager.Entity;
 
 import org.springframework.stereotype.Component;
 

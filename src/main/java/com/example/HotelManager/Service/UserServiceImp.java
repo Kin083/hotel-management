@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.example.HotelManager.Repository.UserAccountRepository;
 import com.example.HotelManager.Repository.UserRepository;
-import com.example.HotelManager.entity.User;
-import com.example.HotelManager.entity.UserAccount;
+import com.example.HotelManager.Entity.User;
+import com.example.HotelManager.Entity.UserAccount;
 
 @Component
 public class UserServiceImp implements UserService{

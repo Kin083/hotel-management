@@ -2,7 +2,7 @@ package com.example.HotelManager.Service;
 
 import org.springframework.stereotype.Service;
 
-import com.example.HotelManager.entity.User;
+import com.example.HotelManager.Entity.User;
 
 @Service
 public interface UserService {

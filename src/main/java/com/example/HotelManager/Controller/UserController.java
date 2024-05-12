@@ -20,7 +20,7 @@ import com.example.HotelManager.Repository.UserRepository;
 import com.example.HotelManager.Service.EmailSenderService;
 import com.example.HotelManager.Service.UserService;
 import com.example.HotelManager.Service.UserService.UserInput;
-import com.example.HotelManager.entity.User;
+import com.example.HotelManager.Entity.User;
 
 @RestController
 public class UserController {

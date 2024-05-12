@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.example.HotelManager.entity.UserAccount;
+import com.example.HotelManager.Entity.UserAccount;
 
 public interface UserAccountRepository extends JpaRepository<UserAccount, String> { // Thay đổi này
     // Các phương thức tùy chỉnh nếu cần

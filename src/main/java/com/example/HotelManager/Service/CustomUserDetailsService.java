@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.HotelManager.Repository.UserAccountRepository;
-import com.example.HotelManager.entity.UserAccount;
+import com.example.HotelManager.Entity.UserAccount;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
