@@ -70,7 +70,8 @@ function EnhancedTableToolbar({
     setOpenDetailBooking(false);
   };
 
-  const saveBooking = () => {
+  const saveBooking = (bookingObjects) => {
+    console.log(bookingObjects);
     setOpenDetailBooking(false);
   };
 

@@ -5,6 +5,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import Slide from "@mui/material/Slide";
 import {
+  Alert,
   Box,
   Button,
   Table,
@@ -75,15 +76,44 @@ function DetailBooking({
   openCusInfor,
   detailData,
 }) {
-  const TOTAL_BOOKING_MONEY = 1000;
   const [rows, setRows] = React.useState(detailData);
   const [selectedRooms, setSelectedRooms] = React.useState([]);
   const [notesValue, setNotesValue] = React.useState("");
+  const [showAlert, setShowAlert] = React.useState(false);
+
+  let totalMoney = 0;
+
+  const getRate = (typeOfRate, dayRate, nightRate, dailyRate) => {
+    if (typeOfRate === "Day") {
+      return dayRate;
+    } else if (typeOfRate === "Night") {
+      return nightRate;
+    } else {
+      return dailyRate;
+    }
+  };
+
+  const getHour = (typeOfRate) => {
+    if (typeOfRate === "Daily") {
+      return "day";
+    }
+    return "hour";
+  };
+
+  const getTypeMoney = (rate, quantity, hour) => {
+    const money = rate * quantity * hour;
+    totalMoney += money;
+    return money;
+  };
 
   const handleChange = (event, index) => {
     const {
       target: { value },
     } = event;
+
+    if (value.length === detailData[index].quantity + 1) {
+      setShowAlert(true);
+    }
     setSelectedRooms((prevSelectedRooms) => {
       const newSelectedRooms = [...prevSelectedRooms];
       newSelectedRooms[index] = value;
@@ -91,10 +121,44 @@ function DetailBooking({
     });
   };
 
+  const createBookingObjects = () => {
+    return rows.flatMap((row, index) => {
+      const selectedRoomsArray = selectedRooms[index];
+      return selectedRoomsArray.map((room) => ({
+        name: room,
+        startTime: row.startTime,
+        endTime: row.endTime,
+        typeOfRate: row.typeOfRate,
+
+        money: getTypeMoney(
+          getRate(row.typeOfRate, row.dayRate, row.nightRate, row.dailyRate),
+          1,
+          row.anticipated
+        ),
+      }));
+    });
+  };
+
+  const handleSaveBooking = () => {
+    if (showAlert === false) {
+      const bookingObjects = createBookingObjects();
+      saveBooking(bookingObjects);
+    } else {
+      alert("Please choose the number of room is suitable");
+    }
+  };
+
   React.useEffect(() => {
     setRows(detailData);
     setSelectedRooms(Array(detailData.length).fill([]));
   }, [detailData]);
+
+  React.useEffect(() => {
+    const anyExceededQuantity = selectedRooms.some(
+      (rooms, index) => rooms.length > detailData[index].quantity
+    );
+    setShowAlert(anyExceededQuantity);
+  }, [selectedRooms]);
 
   if (rows.length != 0) {
     return (
@@ -104,7 +168,7 @@ function DetailBooking({
         keepMounted
         onClose={closeDetailBooking}
         aria-describedby="detail-booking-dialog"
-        maxWidth="lg"
+        maxWidth="xl"
         sx={{
           "& .MuiDialog-paper": {
             borderRadius: "1.6rem",
@@ -127,36 +191,52 @@ function DetailBooking({
         <DialogContent>
           <Box
             sx={{
-              width: "900px",
+              width: "1200px",
               minHeight: "100px",
               paddingTop: "20px",
             }}
           >
-            <Box
-              sx={{
-                width: 292,
-                height: 40,
-                display: "flex",
-                alignItems: "center",
-                border: "1px solid #e1e3e5",
-                borderRadius: "0.5rem",
-                padding: "0.5rem",
-              }}
-            >
-              <SearchIcon />
-              <input
-                type="text"
-                placeholder="Customer Name"
-                style={{ border: "none", outline: "none", flex: 1 }}
-              ></input>
-              <IconButton>
-                <AddCircleOutlineIcon onClick={openCusInfor} />
-              </IconButton>
+            <Box sx={{ display: "flex" }}>
+              <Box
+                sx={{
+                  width: "25%",
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  border: "1px solid #e1e3e5",
+                  borderRadius: "0.5rem",
+                  padding: "0.5rem",
+                }}
+              >
+                <SearchIcon />
+                <input
+                  type="text"
+                  placeholder="Customer Name"
+                  style={{
+                    border: "none",
+                    outline: "none",
+                    flex: 1,
+                    paddingLeft: "15px",
+                  }}
+                ></input>
+                <IconButton onClick={openCusInfor}>
+                  <AddCircleOutlineIcon />
+                </IconButton>
+              </Box>
+              {showAlert && (
+                <Alert
+                  severity="error"
+                  sx={{ marginLeft: "15px", width: "75%" }}
+                >
+                  Exceeded maximum quantity.
+                </Alert>
+              )}
             </Box>
             <Table sx={{ marginTop: "20px" }}>
               <TableHead>
                 <TableRow>
                   <StyledTableCell>Type</StyledTableCell>
+                  <StyledTableCell>Quantity</StyledTableCell>
                   <StyledTableCell align="center">Rooms</StyledTableCell>
                   <StyledTableCell align="center">Rate</StyledTableCell>
                   <StyledTableCell align="center">Start</StyledTableCell>
@@ -178,6 +258,9 @@ function DetailBooking({
                   <StyledTableRow key={row.type}>
                     <StyledTableCell component="th" scope="row">
                       {row.type}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.quantity}
                     </StyledTableCell>
                     <TableCell align="center" sx={{ width: "250px" }}>
                       <FormControl>
@@ -203,23 +286,43 @@ function DetailBooking({
                         </Select>
                       </FormControl>
                     </TableCell>
-                    <StyledTableCell align="center">{row.rate}</StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.start}
+                      {row.typeOfRate +
+                        "-" +
+                        getRate(
+                          row.typeOfRate,
+                          row.dayRate,
+                          row.nightRate,
+                          row.dailyRate
+                        )}
                     </StyledTableCell>
-                    <StyledTableCell align="center">{row.end}</StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.anticipated}
+                      {row.startTime}
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      {row.dailyRate * row.quantity}
+                      {row.endTime}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {row.anticipated + " " + getHour(row.typeOfRate)}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {getTypeMoney(
+                        getRate(
+                          row.typeOfRate,
+                          row.dayRate,
+                          row.nightRate,
+                          row.dailyRate
+                        ),
+                        row.quantity,
+                        row.anticipated
+                      )}
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
               </TableBody>
             </Table>
             <Box sx={{ marginTop: "20px", display: "flex" }}>
-              <Box sx={{ width: "70%" }}>
+              <Box sx={{ width: "80%" }}>
                 <textarea
                   value={notesValue}
                   onChange={(event) => {
@@ -249,7 +352,7 @@ function DetailBooking({
               >
                 <div style={{ display: "flex" }}>
                   <div style={{ flex: 1 }}>Total</div>
-                  <div>{TOTAL_BOOKING_MONEY}</div>
+                  <div>{totalMoney}</div>
                 </div>
                 <div style={{ display: "flex" }}>
                   <div style={{ flex: 1 }}>Deposit</div>
@@ -270,7 +373,7 @@ function DetailBooking({
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={saveBooking}>Save</Button>
+          <Button onClick={handleSaveBooking}>Save</Button>
         </DialogActions>
       </Dialog>
     );

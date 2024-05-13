@@ -42,11 +42,6 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
       const userListWithQuantity = userList.map((user) => ({
         ...user,
         quantity: 0,
-        rate: "dayRate",
-        startTime: 0,
-        endTime: 0,
-        anticipated: 0,
-        totalMoney: 0,
       }));
       setRows(userListWithQuantity);
     };
@@ -68,9 +63,23 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
   };
 
   const handleConfirmBooking = () => {
-    const selectedRows = rows.filter(
-      (row) => row.quantity !== null && row.quantity !== 0
-    );
+    const selectedRows = rows
+      .filter((row) => row.quantity !== null && row.quantity !== 0)
+      .map((row) => {
+        const duration = dayjs(endTime).diff(dayjs(startTime), executeTime);
+        let typeOfRate;
+        if (price === "dayRate") typeOfRate = "Day";
+        else if (price === "nightRate") typeOfRate = "Night";
+        else typeOfRate = "Daily";
+
+        return {
+          ...row,
+          startTime: startTime.format("HH:mm/DD/MM/YYYY"),
+          endTime: endTime.format("HH:mm/DD/MM/YYYY"),
+          typeOfRate: typeOfRate,
+          anticipated: duration,
+        };
+      });
     confirmBooking(selectedRows);
   };
 
