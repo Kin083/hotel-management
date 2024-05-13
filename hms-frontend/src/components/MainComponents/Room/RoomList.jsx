@@ -132,6 +132,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     setOpenAdjustDialog(false);
   };
 
+  // Render Room information is changed.
   const saveChange = (updatedData) => {
     const currentRoomData = specificRoomData;
 
@@ -173,7 +174,6 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
       const updatedType = typeList.find(
         (type) => type.name === updatedRoomData.type
       );
-
       if (updatedType) {
         updatedRoomData.dailyRate = updatedType.dailyRate;
         updatedRoomData.dayRate = updatedType.dayRate;
@@ -194,6 +194,25 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     setOpenAdjustDialog(false);
   };
 
+  // Render New Room
+  const updateRoomList = (newRoomData) => {
+    // Get type details from typeList
+    const typeDetails = typeList.find((type) => type.name === newRoomData.type);
+
+    // If type details found, update newRoomData with corresponding fields
+    if (typeDetails) {
+      newRoomData.dayRate = typeDetails.dayRate;
+      newRoomData.nightRate = typeDetails.pricepernight;
+      newRoomData.dailyRate = typeDetails.dailyRate;
+      newRoomData.overtimeRate = typeDetails.overtimePay;
+      newRoomData.maxiumCapacity = typeDetails.capacity;
+    }
+
+    // Update rows with newRoomData
+    setRows([...rows, newRoomData]);
+  };
+
+  // Render expand information of specific row when Click Expand btn.
   const handleClickExpand = (id) => {
     setExpandedRows((prevExpandedRows) => ({
       ...prevExpandedRows,
@@ -254,7 +273,12 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     <>
       <Box sx={{ width: "100%" }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            typeList={typeList}
+            roomNames={roomNames}
+            updateRoomList={updateRoomList}
+          />
           <TableContainer>
             <Table
               sx={{ minWidth: 750 }}

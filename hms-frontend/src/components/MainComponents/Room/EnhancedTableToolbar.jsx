@@ -10,26 +10,43 @@ import PaidIcon from "@mui/icons-material/Paid";
 import BookingDialog from "./BookingDialog";
 import DetailBooking from "./DetailBooking";
 import CustomerInforDialog from "./CustomerInforDialog";
+import AddRoomDialog from "./AddRoomDialog";
+import userApi from "../../../api/userApi";
 
-function EnhancedTableToolbar({ numSelected }) {
-  // const [openAddDialog, setOpenAddDialog] = React.useState(false);
+function EnhancedTableToolbar({
+  numSelected,
+  typeList,
+  roomNames,
+  updateRoomList,
+}) {
+  const [openAddDialog, setOpenAddDialog] = React.useState(false);
   const [openBookingDialog, setOpenBookingDialog] = React.useState(false);
   const [openDetailBooking, setOpenDetailBooking] = React.useState(false);
   const [openCusInforDialog, setOpenCusInforDialog] = React.useState(false);
   const [detailData, setDetailData] = React.useState([]);
 
   const openAdd = () => {
-    alert("Clicked");
-    //    setOpenAddDialog(true);
+    setOpenAddDialog(true);
   };
 
-  // const closeAdd = () => {
-  //   setOpenAddDialog(false);
-  // };
+  const closeAdd = () => {
+    setOpenAddDialog(false);
+  };
 
-  // const saveAdd = () => {
-  //   setOpenAddDialog(false);
-  // };
+  const saveAdd = (newRoomData) => {
+    userApi
+      .addRoom(newRoomData)
+      .then(() => {
+        console.log("Room added successfully");
+        updateRoomList(newRoomData);
+      })
+      .catch((error) => {
+        console.error("Error adding room:", error);
+      })
+      .finally(() => {
+        closeAdd();
+      });
+  };
 
   const deleteRoom = () => {
     alert("clicked");
@@ -124,12 +141,25 @@ function EnhancedTableToolbar({ numSelected }) {
         closeCusInfor={closeCusInfor}
         saveCusInfor={saveCusInfor}
       />
+
+      {openAddDialog && (
+        <AddRoomDialog
+          openAddDialog={openAddDialog}
+          closeAdd={closeAdd}
+          saveAdd={saveAdd}
+          typeList={typeList}
+          roomNames={roomNames}
+        />
+      )}
     </>
   );
 }
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  typeList: PropTypes.array.isRequired,
+  roomNames: PropTypes.array.isRequired,
+  updateRoomList: PropTypes.func,
 };
 
 export default EnhancedTableToolbar;

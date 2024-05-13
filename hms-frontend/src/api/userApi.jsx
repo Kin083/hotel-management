@@ -19,8 +19,8 @@ const userApi = {
   //     return axiosClient.get(url);
   //   },
 
-    add(data) {
-      const url = "/users";
+    addRoom(data) {
+      const url = "/Room/add";
       return axiosClient.post(url, data);
     },
   //   update(data) {

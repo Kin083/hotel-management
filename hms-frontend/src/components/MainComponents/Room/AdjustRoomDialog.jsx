@@ -6,6 +6,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   FormControl,
@@ -18,6 +19,7 @@ import {
   Select,
   Stack,
   TextField,
+  IconButton,
 } from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -121,7 +123,18 @@ const AdjustRoomDialog = ({
         },
       }}
     >
-      <DialogTitle>{"Edit Room Information"}</DialogTitle>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        Edit room information
+        <IconButton onClick={closeAdjustDialog}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
       <DialogContent>
         {specificRoomData && (
           <Box
