@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/en-gb";
 import PropTypes from "prop-types";
 import {
+  Alert,
   Box,
   Button,
   Dialog,
@@ -31,18 +32,25 @@ const styleInput = {
   borderRadius: "4px",
 };
 
-const StackItem = ({ label, standard, date, selection, notes }) => {
+const StackItem = ({ label, standard, date, selection, onChange }) => {
   const [value, setValue] = React.useState(dayjs());
   const [selectedGender, setSelectedGender] = React.useState("");
-  const [textValue, setTextValue] = React.useState("");
 
-  const handleChange = (event) => {
+  const handleGenderChange = (event) => {
     setSelectedGender(event.target.value);
+    onChange(event.target.value);
   };
 
-  const handleText = (event) => {
-    setTextValue(event.target.value);
+  const handleDateChange = (newValue) => {
+    const formattedDate = dayjs(newValue).format("DD/MM/YYYY");
+    setValue(newValue);
+    onChange(formattedDate);
   };
+
+  const handleInputChange = (event) => {
+    onChange(event.target.value);
+  };
+
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       <div
@@ -55,44 +63,46 @@ const StackItem = ({ label, standard, date, selection, notes }) => {
         {label}
       </div>
 
-      {standard && <input type="text" style={styleInput} />}
+      {standard && (
+        <input type="text" style={styleInput} onChange={handleInputChange} />
+      )}
       {date && (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
           <DatePicker
             value={value}
-            onChange={(newValue) => setValue(newValue)}
+            onChange={handleDateChange}
             sx={{ width: "60%", height: "42px" }}
           />
         </LocalizationProvider>
       )}
 
       {selection && (
-        <RadioGroup row value={selectedGender} onChange={handleChange}>
+        <RadioGroup row value={selectedGender} onChange={handleGenderChange}>
           <FormControlLabel value="male" control={<Radio />} label="Male" />
           <FormControlLabel value="female" control={<Radio />} label="Female" />
           <FormControlLabel value="other" control={<Radio />} label="Other" />
         </RadioGroup>
       )}
-
-      {notes && (
-        <textarea
-          value={textValue}
-          onChange={handleText}
-          rows={3}
-          cols={10}
-          placeholder="Customer notes"
-          style={styleInput}
-        />
-      )}
     </div>
   );
 };
+
 function CustomerInforDialog({
   openCusInforDialog,
   closeCusInfor,
   saveCusInfor,
 }) {
+  const [showAlert, setShowAlert] = React.useState(false);
   const [selectedImage, setSelectedImage] = React.useState(null);
+  const [cusInfor, setCusInfor] = React.useState({
+    cusID: "",
+    cusName: "",
+    cusDoB: "",
+    cusGender: "",
+    cusEmail: "",
+    cusPhone: "",
+    cusImg: "",
+  });
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -100,10 +110,26 @@ function CustomerInforDialog({
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result);
+        setCusInfor({ ...cusInfor, cusImg: reader.result });
       };
       reader.readAsDataURL(file);
     }
   };
+
+  const handleInputChange = (key) => (value) => {
+    setCusInfor((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSave = () => {
+    const { cusID, cusName, cusGender, cusPhone } = cusInfor;
+    if (!cusID || !cusName || !cusGender || !cusPhone) {
+      setShowAlert(true);
+      return;
+    }
+    setShowAlert(false);
+    saveCusInfor(cusInfor);
+  };
+
   return (
     <Dialog
       open={openCusInforDialog}
@@ -125,7 +151,12 @@ function CustomerInforDialog({
           alignItems: "center",
         }}
       >
-        {"Customer Information"}
+        Customer Information
+        {showAlert && (
+          <Alert severity="error" sx={{ marginLeft: "15px", width: "450px" }}>
+            Please provide enough necessary information
+          </Alert>
+        )}
         <IconButton onClick={closeCusInfor}>
           <CloseIcon />
         </IconButton>
@@ -179,17 +210,41 @@ function CustomerInforDialog({
               width: "100%",
             }}
           >
-            <StackItem label="Customer name" standard />
-            <StackItem label="Date of Birth" date />
-            <StackItem label="Gender" selection />
-            <StackItem label="Email" standard />
-            <StackItem label="Phone number" standard />
-            <StackItem label="Notes" notes />
+            <StackItem
+              label="Identification Number *"
+              standard
+              onChange={handleInputChange("cusID")}
+            />
+            <StackItem
+              label="Customer name *"
+              standard
+              onChange={handleInputChange("cusName")}
+            />
+            <StackItem
+              label="Date of Birth"
+              date
+              onChange={handleInputChange("cusDoB")}
+            />
+            <StackItem
+              label="Gender *"
+              selection
+              onChange={handleInputChange("cusGender")}
+            />
+            <StackItem
+              label="Email"
+              standard
+              onChange={handleInputChange("cusEmail")}
+            />
+            <StackItem
+              label="Phone number *"
+              standard
+              onChange={handleInputChange("cusPhone")}
+            />
           </Stack>
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={saveCusInfor}>Save</Button>
+        <Button onClick={handleSave}>Save</Button>
       </DialogActions>
     </Dialog>
   );
@@ -207,6 +262,7 @@ StackItem.propTypes = {
   date: PropTypes.bool,
   selection: PropTypes.bool,
   notes: PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
 };
 
 export default CustomerInforDialog;

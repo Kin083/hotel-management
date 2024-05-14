@@ -29,6 +29,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import FaceIcon from "@mui/icons-material/Face";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -52,7 +53,6 @@ const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(even)": {
     backgroundColor: "#f7f8f9",
   },
-  // hide last border
   "& td, & th": {
     border: 0,
   },
@@ -75,13 +75,14 @@ function DetailBooking({
   saveBooking,
   openCusInfor,
   detailData,
+  cusName,
 }) {
   const [rows, setRows] = React.useState(detailData);
   const [selectedRooms, setSelectedRooms] = React.useState([]);
   const [notesValue, setNotesValue] = React.useState("");
   const [showAlert, setShowAlert] = React.useState(false);
-
-  let totalMoney = 0;
+  const [noRoomsSelectedAlert, setNoRoomsSelectedAlert] = React.useState(false);
+  const [totalMoney, setTotalMoney] = React.useState(0);
 
   const getRate = (typeOfRate, dayRate, nightRate, dailyRate) => {
     if (typeOfRate === "Day") {
@@ -101,9 +102,7 @@ function DetailBooking({
   };
 
   const getTypeMoney = (rate, quantity, hour) => {
-    const money = rate * quantity * hour;
-    totalMoney += money;
-    return money;
+    return rate * quantity * hour;
   };
 
   const handleChange = (event, index) => {
@@ -129,7 +128,6 @@ function DetailBooking({
         startTime: row.startTime,
         endTime: row.endTime,
         typeOfRate: row.typeOfRate,
-
         money: getTypeMoney(
           getRate(row.typeOfRate, row.dayRate, row.nightRate, row.dailyRate),
           1,
@@ -141,8 +139,25 @@ function DetailBooking({
 
   const handleSaveBooking = () => {
     if (showAlert === false) {
-      const bookingObjects = createBookingObjects();
-      saveBooking(bookingObjects);
+      const anyRoomNotSelected = selectedRooms.some(
+        (rooms) => rooms.length === 0
+      );
+      if (anyRoomNotSelected) {
+        setNoRoomsSelectedAlert(true);
+      } else {
+        setNoRoomsSelectedAlert(false);
+        const bookingObjects = createBookingObjects();
+        const totalMoney = bookingObjects.reduce(
+          (total, booking) => total + booking.money,
+          0
+        );
+        const bookingData = {
+          cusNotes: notesValue,
+          totalMoney,
+          rooms: bookingObjects,
+        };
+        saveBooking(bookingData);
+      }
     } else {
       alert("Please choose the number of room is suitable");
     }
@@ -158,9 +173,23 @@ function DetailBooking({
       (rooms, index) => rooms.length > detailData[index].quantity
     );
     setShowAlert(anyExceededQuantity);
-  }, [selectedRooms]);
+  }, [selectedRooms, detailData]);
 
-  if (rows.length != 0) {
+  React.useEffect(() => {
+    const newTotalMoney = rows.reduce((total, row, index) => {
+      const rate = getRate(
+        row.typeOfRate,
+        row.dayRate,
+        row.nightRate,
+        row.dailyRate
+      );
+      const money = selectedRooms[index].length * rate * row.anticipated;
+      return total + money;
+    }, 0);
+    setTotalMoney(newTotalMoney);
+  }, [rows, selectedRooms]);
+
+  if (rows.length !== 0) {
     return (
       <Dialog
         open={openDetailBooking}
@@ -200,7 +229,7 @@ function DetailBooking({
               <Box
                 sx={{
                   width: "25%",
-                  height: 40,
+                  height: 47,
                   display: "flex",
                   alignItems: "center",
                   border: "1px solid #e1e3e5",
@@ -223,12 +252,29 @@ function DetailBooking({
                   <AddCircleOutlineIcon />
                 </IconButton>
               </Box>
+              {cusName && (
+                <Alert
+                  icon={<FaceIcon fontSize="inherit" />}
+                  severity="success"
+                  sx={{ marginLeft: "15px", width: "20%" }}
+                >
+                  {cusName}
+                </Alert>
+              )}
               {showAlert && (
                 <Alert
                   severity="error"
-                  sx={{ marginLeft: "15px", width: "75%" }}
+                  sx={{ marginLeft: "15px", width: "50%" }}
                 >
                   Exceeded maximum quantity.
+                </Alert>
+              )}
+              {noRoomsSelectedAlert && (
+                <Alert
+                  severity="error"
+                  sx={{ marginLeft: "15px", width: "50%" }}
+                >
+                  Please select at least one room for each row.
                 </Alert>
               )}
             </Box>
@@ -388,6 +434,7 @@ DetailBooking.propTypes = {
   closeDetailBooking: PropTypes.func.isRequired,
   openCusInfor: PropTypes.func.isRequired,
   detailData: PropTypes.array.isRequired,
+  cusName: PropTypes.string,
 };
 
 export default DetailBooking;

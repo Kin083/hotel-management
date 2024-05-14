@@ -45,6 +45,8 @@ function AddRoomDialog(props) {
   const [newRoomData, setNewRoomData] = useState({
     roomName: "",
     type: "",
+    hotelID: "1",
+    typeID: "",
     status: "",
     notes: "",
   });
@@ -55,11 +57,13 @@ function AddRoomDialog(props) {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setNewRoomData({
-      ...newRoomData,
+
+    setNewRoomData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
-    if (name === "name" && roomNames.includes(value)) {
+    }));
+
+    if (name === "roomName" && roomNames.includes(value)) {
       setNameError(true);
     } else {
       setNameError(false);
@@ -75,6 +79,11 @@ function AddRoomDialog(props) {
           overtimeRate: selectedType.overtimePay,
           capacity: selectedType.capacity,
         });
+
+        setNewRoomData((prevData) => ({
+          ...prevData,
+          typeID: selectedType.typeID,
+        }));
       }
     }
   };
@@ -102,6 +111,7 @@ function AddRoomDialog(props) {
         },
       }}
     >
+      {console.log(newRoomData)}
       <DialogTitle
         sx={{
           display: "flex",

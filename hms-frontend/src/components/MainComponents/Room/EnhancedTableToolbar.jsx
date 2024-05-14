@@ -24,6 +24,7 @@ function EnhancedTableToolbar({
   const [openDetailBooking, setOpenDetailBooking] = React.useState(false);
   const [openCusInforDialog, setOpenCusInforDialog] = React.useState(false);
   const [detailData, setDetailData] = React.useState([]);
+  const [cusInfor, setCusInfor] = React.useState({});
 
   const openAdd = () => {
     setOpenAddDialog(true);
@@ -70,8 +71,9 @@ function EnhancedTableToolbar({
     setOpenDetailBooking(false);
   };
 
-  const saveBooking = (bookingObjects) => {
-    console.log(bookingObjects);
+  const saveBooking = (bookingData) => {
+    const combinedData = { ...bookingData, ...cusInfor };
+    console.log(combinedData);
     setOpenDetailBooking(false);
   };
 
@@ -83,7 +85,8 @@ function EnhancedTableToolbar({
     setOpenCusInforDialog(false);
   };
 
-  const saveCusInfor = () => {
+  const saveCusInfor = (cusInfor) => {
+    setCusInfor(cusInfor);
     setOpenCusInforDialog(false);
   };
 
@@ -135,6 +138,7 @@ function EnhancedTableToolbar({
         saveBooking={saveBooking}
         openCusInfor={openCusInfor}
         detailData={detailData}
+        cusName={cusInfor.cusName}
       />
 
       <CustomerInforDialog
