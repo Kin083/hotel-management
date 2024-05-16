@@ -96,7 +96,7 @@ function CustomerInforDialog({
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [cusInfor, setCusInfor] = React.useState({
     cusID: "",
-    cusName: "",
+    firstname: "",
     cusDoB: "",
     cusGender: "",
     cusEmail: "",
@@ -121,8 +121,8 @@ function CustomerInforDialog({
   };
 
   const handleSave = () => {
-    const { cusID, cusName, cusGender, cusPhone } = cusInfor;
-    if (!cusID || !cusName || !cusGender || !cusPhone) {
+    const { cusID, firstname, cusGender, cusPhone } = cusInfor;
+    if (!cusID || !firstname || !cusGender || !cusPhone) {
       setShowAlert(true);
       return;
     }
@@ -218,7 +218,7 @@ function CustomerInforDialog({
             <StackItem
               label="Customer name *"
               standard
-              onChange={handleInputChange("cusName")}
+              onChange={handleInputChange("firstname")}
             />
             <StackItem
               label="Date of Birth"

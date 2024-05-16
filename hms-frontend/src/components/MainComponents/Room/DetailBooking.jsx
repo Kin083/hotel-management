@@ -82,15 +82,58 @@ function DetailBooking({
   const [notesValue, setNotesValue] = React.useState("");
   const [showAlert, setShowAlert] = React.useState(false);
   const [noRoomsSelectedAlert, setNoRoomsSelectedAlert] = React.useState(false);
+
+  // eslint-disable-next-line no-unused-vars
   const [totalMoney, setTotalMoney] = React.useState(0);
 
-  const getRate = (typeOfRate, dayRate, nightRate, dailyRate) => {
-    if (typeOfRate === "Day") {
-      return dayRate;
-    } else if (typeOfRate === "Night") {
-      return nightRate;
+  const getRate = (
+    typeOfRate,
+    dayRate,
+    nightRate,
+    dailyRate,
+    startTime,
+    endTime
+  ) => {
+    if (!startTime || !endTime) {
+      return "Invalid startTime or endTime";
+    }
+
+    if (typeOfRate === "Daily") {
+      return "Daily - " + dailyRate;
     } else {
-      return dailyRate;
+      const startTimeParts = startTime.split(":");
+      const endTimeParts = endTime.split(":");
+
+      if (startTimeParts.length < 2 || endTimeParts.length < 2) {
+        return "Invalid time format";
+      }
+
+      const startHour = parseInt(startTimeParts[0]);
+      const startMinute = parseInt(startTimeParts[1]);
+      const endHour = parseInt(endTimeParts[0]);
+      const endMinute = parseInt(endTimeParts[1]);
+
+      if (
+        isNaN(startHour) ||
+        isNaN(startMinute) ||
+        isNaN(endHour) ||
+        isNaN(endMinute)
+      ) {
+        return "Invalid time format";
+      }
+
+      const isDayToNight =
+        startHour >= 6 && startHour < 18 && (endHour >= 18 || endHour < 6);
+
+      if (isDayToNight) {
+        return "Day - " + dayRate + " & " + "Night - " + nightRate;
+      } else if (typeOfRate === "Day" && startHour >= 6 && startHour < 18) {
+        return "Day - " + dayRate;
+      } else if (typeOfRate === "Night" && (startHour >= 18 || startHour < 6)) {
+        return "Night - " + nightRate;
+      } else {
+        return "Invalid time range";
+      }
     }
   };
 
@@ -101,8 +144,41 @@ function DetailBooking({
     return "hour";
   };
 
-  const getTypeMoney = (rate, quantity, hour) => {
-    return rate * quantity * hour;
+  const getTypeMoney = (rate, quantity, hour, startTime, endTime) => {
+    // Parse startTime and endTime to get hour and minutes
+    const startHour = parseInt(startTime.split(":")[0]);
+    const endHour = parseInt(endTime.split(":")[0]);
+    const startMinute = parseInt(startTime.split(":")[1]);
+    const endMinute = parseInt(endTime.split(":")[1]);
+
+    // Check if startTime is in dayRate and endTime is in nightRate
+    const isDayToNight =
+      startHour >= 6 && startHour < 18 && (endHour >= 18 || endHour < 6);
+
+    if (isDayToNight) {
+      // Calculate number of hours in dayRate and nightRate
+      const dayEndHour = 18;
+      const nightStartHour = 18;
+
+      let dayHours = 0;
+      let nightHours = 0;
+
+      if (endHour >= nightStartHour) {
+        dayHours = dayEndHour - startHour + startMinute / 60;
+        nightHours = endHour - nightStartHour + endMinute / 60;
+      } else {
+        dayHours = dayEndHour - startHour + startMinute / 60;
+        nightHours = 24 - nightStartHour + endHour + endMinute / 60;
+      }
+
+      // Calculate money for each rate and sum them up
+      const dayMoney = rate * dayHours * quantity;
+      const nightMoney = rate * nightHours * quantity;
+      return dayMoney + nightMoney;
+    } else {
+      // Calculate money as usual
+      return rate * quantity * hour;
+    }
   };
 
   const handleChange = (event, index) => {
@@ -129,9 +205,15 @@ function DetailBooking({
         endTime: row.endTime,
         typeOfRate: row.typeOfRate,
         money: getTypeMoney(
-          getRate(row.typeOfRate, row.dayRate, row.nightRate, row.dailyRate),
+          row.typeOfRate === "Daily"
+            ? row.dailyRate
+            : row.typeOfRate === "Day"
+            ? row.dayRate
+            : row.nightRate,
           1,
-          row.anticipated
+          row.anticipated,
+          row.startTime,
+          row.endTime
         ),
       }));
     });
@@ -174,6 +256,29 @@ function DetailBooking({
     );
     setShowAlert(anyExceededQuantity);
   }, [selectedRooms, detailData]);
+
+  React.useEffect(() => {
+    const newTotalMoney = rows.reduce((total, row, index) => {
+      const money = selectedRooms[index].reduce((acc) => {
+        return (
+          acc +
+          getTypeMoney(
+            row.typeOfRate === "Daily"
+              ? row.dailyRate
+              : row.typeOfRate === "Day"
+              ? row.dayRate
+              : row.nightRate,
+            1,
+            row.anticipated,
+            row.startTime,
+            row.endTime
+          )
+        );
+      }, 0);
+      return total + money;
+    }, 0);
+    setTotalMoney(newTotalMoney);
+  }, [rows, selectedRooms]);
 
   React.useEffect(() => {
     const newTotalMoney = rows.reduce((total, row, index) => {
@@ -333,14 +438,14 @@ function DetailBooking({
                       </FormControl>
                     </TableCell>
                     <StyledTableCell align="center">
-                      {row.typeOfRate +
-                        "-" +
-                        getRate(
-                          row.typeOfRate,
-                          row.dayRate,
-                          row.nightRate,
-                          row.dailyRate
-                        )}
+                      {getRate(
+                        row.typeOfRate,
+                        row.dayRate,
+                        row.nightRate,
+                        row.dailyRate,
+                        row.startTime,
+                        row.endTime
+                      )}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {row.startTime}
@@ -353,14 +458,15 @@ function DetailBooking({
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {getTypeMoney(
-                        getRate(
-                          row.typeOfRate,
-                          row.dayRate,
-                          row.nightRate,
-                          row.dailyRate
-                        ),
-                        row.quantity,
-                        row.anticipated
+                        row.typeOfRate === "Daily"
+                          ? row.dailyRate
+                          : row.typeOfRate === "Day"
+                          ? row.dayRate
+                          : row.nightRate,
+                        selectedRooms[index].length,
+                        row.anticipated,
+                        row.startTime,
+                        row.endTime
                       )}
                     </StyledTableCell>
                   </StyledTableRow>
@@ -394,25 +500,29 @@ function DetailBooking({
                   borderRadius: "8px",
                   padding: "0.5rem",
                   marginLeft: "15px",
+                  display: "flex",
+                  width: "20%",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
                 <div style={{ display: "flex" }}>
-                  <div style={{ flex: 1 }}>Total</div>
-                  <div>{totalMoney}</div>
-                </div>
-                <div style={{ display: "flex" }}>
-                  <div style={{ flex: 1 }}>Deposit</div>
-                  <input
-                    type="number"
-                    dir="rtl"
-                    style={{
-                      fontSize: 16,
-                      background: "#f7f8f9",
-                      border: "none",
-                      borderBottom: "1px solid #e1e3e6",
-                      outline: "none",
-                    }}
-                  ></input>
+                  <div>
+                    {rows.reduce((total, row, index) => {
+                      const money = getTypeMoney(
+                        row.typeOfRate === "Daily"
+                          ? row.dailyRate
+                          : row.typeOfRate === "Day"
+                          ? row.dayRate
+                          : row.nightRate,
+                        selectedRooms[index].length,
+                        row.anticipated,
+                        row.startTime,
+                        row.endTime
+                      );
+                      return total + money;
+                    }, 0) + " USD"}
+                  </div>
                 </div>
               </Box>
             </Box>

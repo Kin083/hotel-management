@@ -138,7 +138,7 @@ function EnhancedTableToolbar({
         saveBooking={saveBooking}
         openCusInfor={openCusInfor}
         detailData={detailData}
-        cusName={cusInfor.cusName}
+        cusName={cusInfor.firstname}
       />
 
       <CustomerInforDialog
