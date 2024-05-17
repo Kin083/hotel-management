@@ -14,6 +14,8 @@ import java.util.*;
 public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private GuestService guestService;
     public Iterable<BookingEntity> getAllBooking() {
         return bookingRepository.findAll();
     }
@@ -122,5 +124,10 @@ public class BookingService {
             listans.add(res);
         }
         return listans;
+    }
+    public List<GuestEntity> handleDataRecieve(RequestForBooking booking) {
+        String cusID = booking.getCusID();
+        List<GuestEntity> lisGuest = guestService.getByCusID(cusID);
+        return lisGuest;
     }
 }

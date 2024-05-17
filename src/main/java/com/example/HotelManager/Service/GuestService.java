@@ -21,4 +21,7 @@ public class GuestService {
     public List<GuestEntity> getByID(String id) {
         return guestRepository.findByGuestID(id);
     }
+    public List<GuestEntity> getByCusID(String id) {
+        return guestRepository.findByCusID(id);
+    }
 }

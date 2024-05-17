@@ -110,5 +110,8 @@ public class BookingController {
     public List<ResponseForUsingRoomInformation> gettest() {
         return bookingService.getInforBookingAndGuest(guestService);
     }
-
+    @PostMapping(path = "/addBookingDetails")
+    public List<GuestEntity> getDataReturn(@RequestBody RequestForBooking booking) {
+        return bookingService.handleDataRecieve(booking);
+    }
 }
