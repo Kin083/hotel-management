@@ -25,6 +25,8 @@ import { useEffect } from "react";
 import userApi from "../../../api/userApi";
 import { IconButton } from "@mui/material";
 import AdjustRoomDialog from "./AdjustRoomDialog";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import PaymentDialog from "./PaymentDialog";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -68,7 +70,9 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
   const [specificRoomData, setSpecificRoomData] = React.useState(null);
   const [roomNames, setRoomNames] = React.useState([]);
+  const [openPayDialog, setOpenPayDialog] = React.useState(false);
 
+  // Call API
   useEffect(() => {
     const fetchRooms = async () => {
       const roomList = await userApi.getAll();
@@ -84,44 +88,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     fetchRooms();
   }, []);
 
-  const handleChangeTab = (event, newValue) => {
-    setRoomInforTab(newValue);
-  };
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClickCheckbox = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
-
+  // ADJUST ROOM
   const handleClickAdjust = (id) => {
     setOpenAdjustDialog(true);
     const clickedRoom = rows.find((room) => room.id === id);
@@ -212,6 +179,21 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     setRows([...rows, newRoomData]);
   };
 
+  // PAYMENT DIALOG
+  const openPaymentDialog = (id) => {
+    setOpenPayDialog(true);
+    const clickedRoom = rows.find((room) => room.id === id);
+    setSpecificRoomData(clickedRoom);
+  };
+
+  const closePaymentDialog = () => {
+    setOpenPayDialog(false);
+  };
+
+  const savePayment = () => {
+    setOpenPayDialog(false);
+  };
+
   // Render expand information of specific row when Click Expand btn.
   const handleClickExpand = (id) => {
     setExpandedRows((prevExpandedRows) => ({
@@ -220,6 +202,48 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     }));
   };
 
+  // Change Inner Tab in expand row
+  const handleChangeTab = (event, newValue) => {
+    setRoomInforTab(newValue);
+  };
+
+  // Sort by specific attribute
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
+  // CHECK BOX
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelected = rows.map((n) => n.id);
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClickCheckbox = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+    setSelected(newSelected);
+  };
+
+  // CHANGE PAGE
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -238,6 +262,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  // FILLER TABLE FROM STATUS AND TYPE
   const visibleRows = stableSort(
     rows.filter((row) => {
       if (selectedType === null && selectedStatus === null) {
@@ -269,6 +294,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     getComparator(order, orderBy)
   ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+  // UI
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -369,7 +395,19 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                         <TableCell align="right">
                           {row.maxiumCapacity}
                         </TableCell>
-                        <TableCell align="right">{row.notes}</TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            color={
+                              row.status === "Available"
+                                ? "secondary"
+                                : "primary"
+                            }
+                            disabled={row.status === "Available"}
+                            onClick={() => openPaymentDialog(row.id)}
+                          >
+                            <AccountBalanceWalletIcon />
+                          </IconButton>
+                        </TableCell>
                       </TableRow>
 
                       {/* Expand Row */}
@@ -442,6 +480,14 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
           specificRoomData={specificRoomData}
           typeList={typeList}
           roomNames={roomNames}
+        />
+      )}
+      {openPayDialog && (
+        <PaymentDialog
+          openPayDialog={openPayDialog}
+          closePaymentDialog={closePaymentDialog}
+          savePayment={savePayment}
+          specificRoomData={specificRoomData}
         />
       )}
     </>

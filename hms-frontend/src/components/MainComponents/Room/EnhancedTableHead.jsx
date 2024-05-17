@@ -58,10 +58,10 @@ function EnhancedTableHead(props) {
       label: "Maximun Capacity",
     },
     {
-      id: "notes",
+      id: "pay",
       numeric: false,
       disablePadding: false,
-      label: "Notes",
+      label: "Pay",
     },
   ];
   const {

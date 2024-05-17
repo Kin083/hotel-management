@@ -73,7 +73,26 @@ function EnhancedTableToolbar({
 
   const saveBooking = (bookingData) => {
     const combinedData = { ...bookingData, ...cusInfor };
-    console.log(combinedData);
+
+    combinedData.rooms.forEach((room) => {
+      const roomData = {
+        totalPrice: room.money,
+        gestID: combinedData.firstname,
+        checkinDate: room.startTime,
+        checkoutDate: room.endTime,
+        roomNumber: room.name,
+      };
+      console.log(combinedData);
+      userApi
+        .addBooking(roomData)
+        .then(() => {
+          console.log("Room booked successfully:", roomData);
+        })
+        .catch((error) => {
+          console.error("Error booking room:", error);
+        });
+    });
+
     setOpenDetailBooking(false);
   };
 

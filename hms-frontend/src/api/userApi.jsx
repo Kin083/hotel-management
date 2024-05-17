@@ -14,15 +14,15 @@ const userApi = {
     return axiosClient.get(url, { params: params });
   },
 
-  //   get(id) {
-  //     const url = `/users/${id}`;
-  //     return axiosClient.get(url);
-  //   },
+  addRoom(data) {
+    const url = "/Room/add";
+    return axiosClient.post(url, data);
+  },
 
-    addRoom(data) {
-      const url = "/Room/add";
-      return axiosClient.post(url, data);
-    },
+  addBooking(data) {
+    const url = "/BookingInfomation/add";
+    return axiosClient.post(url, data);
+  },
   //   update(data) {
   //     const url = `/users/${data.id}`;
   //     return axiosClient.patch(url, data);

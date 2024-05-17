@@ -14,5 +14,7 @@
   <li>npm install --save react-date-range </li>
   <li>npm install --save react date-fns</li>
   <li>npm install react-phone-number-input --save </li>
+  <li>npm install @mui/styled-engine </li>
+  <li> npm install qrcode.react
+</li>
 </ul>
-
