@@ -72,7 +72,7 @@ function EnhancedTableToolbar({
   };
 
   const saveBooking = (bookingData) => {
-    if (cusInfor) {
+    if (cusInfor && Object.keys(cusInfor).length > 0) {
       const combinedData = { ...bookingData, ...cusInfor };
       combinedData.rooms.forEach((room) => {
         const roomData = {
