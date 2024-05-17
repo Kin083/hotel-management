@@ -83,5 +83,30 @@ public class PaymentsController {
         listdate.add(end);
         return listdate;
     }
+    @PostMapping(path = "/getRevune/Payments/{year}")
+    public  Map<String,Double> getRevune(@PathVariable String year) {
+        System.out.println(year);
+        return getBenefitByPaymentsByYear(year,paymentsService);
+    }
 
+
+    public Map<String,Double> getBenefitByPaymentsByYear(String time,PaymentsService paymentsService){
+        Map<String,Double> ans = new HashMap<>();
+        for(int i = 1; i <= 12; i ++) {
+            String t = String.valueOf(i);
+            if(i<10) {
+                t='0'+t;
+            }
+            String monthQuerry = time +'-'+t;
+            System.out.println(monthQuerry);
+            List<PaymentEntity> listPayMonth = paymentsService.getByYear(monthQuerry);
+            Double sum = 0.0;
+            for (PaymentEntity PayMonth : listPayMonth) {
+                sum+=PayMonth.getAmount();
+            }
+            ans.put(t,sum);
+        }
+        TreeMap<String,Double> sortedmap = new TreeMap<>(ans);
+        return sortedmap;
+    }
 }

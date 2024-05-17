@@ -11,4 +11,7 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity,Integer> 
 
     @Query("SELECT p FROM PaymentEntity p where p.paymentDate = :paymentDate")
     List<PaymentEntity> findByPaymentDate(String paymentDate);
+    @Query("SELECT p FROM PaymentEntity p WHERE p.paymentDate LIKE CONCAT('%', :year, '%')")
+    List<PaymentEntity> findByPaymentYear( String year);
+
 }

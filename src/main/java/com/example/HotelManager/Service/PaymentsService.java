@@ -26,4 +26,7 @@ public class PaymentsService {
     public List<PaymentEntity> getByDate(String payment) {
         return paymentRepository.findByPaymentDate(payment);
     }
+    public List<PaymentEntity> getByYear(String year) {
+        return paymentRepository.findByPaymentYear(year);
+    }
 }
