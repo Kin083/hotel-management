@@ -72,28 +72,31 @@ function EnhancedTableToolbar({
   };
 
   const saveBooking = (bookingData) => {
-    const combinedData = { ...bookingData, ...cusInfor };
+    if (cusInfor) {
+      const combinedData = { ...bookingData, ...cusInfor };
+      combinedData.rooms.forEach((room) => {
+        const roomData = {
+          totalPrice: room.money,
+          gestID: combinedData.firstname,
+          checkinDate: room.startTime,
+          checkoutDate: room.endTime,
+          roomNumber: room.name,
+        };
+        console.log(combinedData);
+        userApi
+          .addBooking(roomData)
+          .then(() => {
+            console.log("Room booked successfully:", roomData);
+          })
+          .catch((error) => {
+            console.error("Error booking room:", error);
+          });
+      });
 
-    combinedData.rooms.forEach((room) => {
-      const roomData = {
-        totalPrice: room.money,
-        gestID: combinedData.firstname,
-        checkinDate: room.startTime,
-        checkoutDate: room.endTime,
-        roomNumber: room.name,
-      };
-      console.log(combinedData);
-      userApi
-        .addBooking(roomData)
-        .then(() => {
-          console.log("Room booked successfully:", roomData);
-        })
-        .catch((error) => {
-          console.error("Error booking room:", error);
-        });
-    });
-
-    setOpenDetailBooking(false);
+      setOpenDetailBooking(false);
+    } else {
+      alert("Please provide customer information");
+    }
   };
 
   const openCusInfor = () => {

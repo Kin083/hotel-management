@@ -23,10 +23,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useEffect } from "react";
 import userApi from "../../../api/userApi";
-import { IconButton } from "@mui/material";
+import { Alert, IconButton } from "@mui/material";
 import AdjustRoomDialog from "./AdjustRoomDialog";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import PaymentDialog from "./PaymentDialog";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Snackbar from "@mui/material/Snackbar";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -71,6 +74,8 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const [specificRoomData, setSpecificRoomData] = React.useState(null);
   const [roomNames, setRoomNames] = React.useState([]);
   const [openPayDialog, setOpenPayDialog] = React.useState(false);
+  const [openBackdrop, setOpenBackDrop] = React.useState(false);
+  const [successAlert, setSuccessAlert] = React.useState(false);
 
   // Call API
   useEffect(() => {
@@ -190,8 +195,41 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     setOpenPayDialog(false);
   };
 
+  const updateRoomStatusAfterPayment = () => {
+    // Update room status to "Using" after successful payment
+    const updatedRoomData = {
+      ...specificRoomData,
+      status: "Available",
+    };
+
+    const updatedRoomList = rows.map((room) =>
+      room.id === specificRoomData.id ? updatedRoomData : room
+    );
+
+    setRows(updatedRoomList);
+  };
+
   const savePayment = () => {
     setOpenPayDialog(false);
+    setOpenBackDrop(true);
+    console.log(specificRoomData);
+    updateRoomStatusAfterPayment();
+
+    setTimeout(() => {
+      setOpenBackDrop(false);
+      setSuccessAlert(true);
+      setTimeout(() => {
+        setSuccessAlert(false);
+      }, 2000);
+    }, 3000);
+  };
+
+  const handleCloseBackDrop = () => {
+    setOpenBackDrop(false);
+  };
+
+  const closeAlert = () => {
+    setSuccessAlert(false);
   };
 
   // Render expand information of specific row when Click Expand btn.
@@ -489,6 +527,33 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
           savePayment={savePayment}
           specificRoomData={specificRoomData}
         />
+      )}
+
+      {openBackdrop && (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={openBackdrop}
+          onClick={handleCloseBackDrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
+
+      {successAlert && (
+        <Snackbar
+          open={successAlert}
+          autoHideDuration={2000}
+          onClose={closeAlert}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={closeAlert}
+            severity="success"
+            sx={{ width: "100%", borderRadius: "1.6rem" }}
+          >
+            Payment success
+          </Alert>
+        </Snackbar>
       )}
     </>
   );
