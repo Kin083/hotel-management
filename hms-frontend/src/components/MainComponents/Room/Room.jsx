@@ -37,7 +37,12 @@ function Room() {
   // GET TYPE FROM API
   React.useEffect(() => {
     const fetchTypes = async () => {
-      setTypeList(await userApi.getType());
+      try {
+        const response = await userApi.getType();
+        setTypeList(response);
+      } catch (error) {
+        console.error("Failed to fetch types", error);
+      }
     };
 
     fetchTypes();
@@ -64,10 +69,10 @@ function Room() {
             <Tab label="Room List" value="2" />
           </TabList>
         </Box>
-        <TabPanel value="1">
+        <TabPanel value="1" sx={{ padding: 0 }}>
           <RoomType typeList={typeList} />
         </TabPanel>
-        <TabPanel value="2" sx={{ display: "flex" }}>
+        <TabPanel value="2" sx={{ display: "flex", padding: 0 }}>
           <RoomSideBar
             onTypeSelected={handleTypeSelected}
             onStatusSelected={handleStatusSelected}

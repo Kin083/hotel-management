@@ -14,6 +14,21 @@ const userApi = {
     return axiosClient.get(url, { params: params });
   },
 
+  addType(data) {
+    const url = "/Roomtype/add";
+    return axiosClient.post(url, data);
+  },
+
+  updateType(typeID,data) {
+    const url = `/update/roomTYpe/${typeID}`;
+    return axiosClient.post(url, data);
+  },
+
+   deleteType(typeID) {
+    const url = `/Roomtype/delete/${typeID}`;
+    return axiosClient.delete(url);
+  },
+
   addRoom(data) {
     const url = "/Room/add";
     return axiosClient.post(url, data);

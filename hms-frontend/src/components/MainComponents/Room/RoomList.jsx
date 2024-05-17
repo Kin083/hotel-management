@@ -4,7 +4,6 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
@@ -30,6 +29,31 @@ import PaymentDialog from "./PaymentDialog";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Snackbar from "@mui/material/Snackbar";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import { styled } from "@mui/material/styles";
+
+const StyledTableCell = styled(TableCell)(() => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#ebf5ee",
+    color: "#1f2224",
+    fontSize: 14,
+    border: 0,
+    padding: 10,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    padding: 10,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(() => ({
+  "&:nth-of-type(even)": {
+    backgroundColor: "#f7f8f9",
+  },
+  "& td, & th": {
+    border: 0,
+  },
+}));
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -364,7 +388,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
 
                   return (
                     <React.Fragment key={row.id}>
-                      <TableRow
+                      <StyledTableRow
                         hover
                         onMouseEnter={() => setHoveredRowId(row.id)}
                         onMouseLeave={() => setHoveredRowId(null)}
@@ -374,7 +398,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                         selected={isItemSelected}
                         sx={{ cursor: "pointer" }}
                       >
-                        <TableCell padding="checkbox">
+                        <StyledTableCell padding="checkbox">
                           <Checkbox
                             color="primary"
                             checked={isItemSelected}
@@ -385,8 +409,8 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                               handleClickCheckbox(event, row.id)
                             }
                           />
-                        </TableCell>
-                        <TableCell
+                        </StyledTableCell>
+                        <StyledTableCell
                           align="center"
                           component="th"
                           id={labelId}
@@ -418,21 +442,31 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                               <BuildIcon />
                             </IconButton>
                           )}
-                        </TableCell>
-                        <TableCell align="right">{row.type}</TableCell>
-                        <TableCell align="right">{row.dayRate}</TableCell>
-                        <TableCell align="right">{row.nightRate}</TableCell>
-                        <TableCell align="right">{row.dailyRate}</TableCell>
-                        <TableCell align="right">
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.type}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.dayRate}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.nightRate}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.dailyRate}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
                           {row.status === "Available"
                             ? "Available"
                             : "Unavailable"}
-                        </TableCell>
-                        <TableCell align="right">{row.overtimeRate}</TableCell>
-                        <TableCell align="right">
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.overtimeRate}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
                           {row.maxiumCapacity}
-                        </TableCell>
-                        <TableCell align="right">
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
                           <IconButton
                             color={
                               row.status === "Available"
@@ -444,13 +478,13 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                           >
                             <AccountBalanceWalletIcon />
                           </IconButton>
-                        </TableCell>
-                      </TableRow>
+                        </StyledTableCell>
+                      </StyledTableRow>
 
                       {/* Expand Row */}
                       {expandedRows[row.id] && (
                         <TableRow key={`${row.id}-expand`}>
-                          <TableCell
+                          <StyledTableCell
                             padding="none"
                             colSpan={10}
                             sx={{ width: "100%" }}
@@ -476,7 +510,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                               <TabPanel value="3">Item Three</TabPanel>
                               <TabPanel value="4">Item four</TabPanel>
                             </TabContext>
-                          </TableCell>
+                          </StyledTableCell>
                         </TableRow>
                       )}
                     </React.Fragment>
