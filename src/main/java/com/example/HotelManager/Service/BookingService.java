@@ -1,8 +1,6 @@
 package com.example.HotelManager.Service;
 
-import com.example.HotelManager.Entity.BookingEntity;
-import com.example.HotelManager.Entity.RoomEntity;
-import com.example.HotelManager.Entity.RoomTypeEntity;
+import com.example.HotelManager.Entity.*;
 import com.example.HotelManager.Repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,8 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.awt.print.Book;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BookingService {
@@ -80,5 +77,50 @@ public class BookingService {
         booking.setTotalPrice(thanhtien);
 //        bookingRepository.save(booking);
         return (long) (giatien*daysDifference*soluong);
+    }
+    public List<BookingEntity> getUniqueUsingRoom() {
+        List<BookingEntity> listBookingUsing = bookingRepository.findTest();
+        Map<Integer,BookingEntity> mapRoomIDToBooking = new HashMap<>();
+        for(BookingEntity booking : listBookingUsing) {
+            Integer roomumber = booking.getRoomNumber();
+            Date checkinDate = booking.getCheckinDate();
+            if (mapRoomIDToBooking.containsKey(roomumber)) {
+                Date checkin = mapRoomIDToBooking.get(roomumber).getCheckinDate();
+                if (checkinDate.after(checkin)) {
+                    mapRoomIDToBooking.put(roomumber, booking);
+                }
+            }
+            else {
+                mapRoomIDToBooking.put(roomumber,booking);
+            }
+        }
+        return bookingRepository.findTest();
+    }
+    public List<ResponseForUsingRoomInformation> getInforBookingAndGuest(GuestService guestService) {
+        List<BookingEntity> lisUniqueBooing = getUniqueUsingRoom();
+        List<ResponseForUsingRoomInformation> listans = new ArrayList<>();
+        for (BookingEntity book : lisUniqueBooing) {
+            ResponseForUsingRoomInformation res = new ResponseForUsingRoomInformation();
+            Date starttime = book.getCheckinDate();
+            Date endtime = book.getCheckoutDate();
+            res.setStartTime(starttime);
+            res.setEndTime(endtime);
+            Float money = book.getTotalPrice();
+            res.setMoney(money);
+            Integer guestID = book.getGestID();
+            List<GuestEntity> lisguestTMP = guestService.getByID(String.valueOf(guestID));
+            GuestEntity guestTMP = lisguestTMP.get(0);
+            String firstname = guestTMP.getFirstname();
+            String cusID = guestTMP.getCusID();
+            String gender = guestTMP.getCusGender();
+            String Phone = guestTMP.getCusPhone();
+            res.setFirstname(firstname);
+            res.setCusID(cusID);
+            res.setGender(gender);
+            res.setPhone(Phone);
+
+            listans.add(res);
+        }
+        return listans;
     }
 }
