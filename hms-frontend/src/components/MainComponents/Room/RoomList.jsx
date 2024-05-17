@@ -212,7 +212,6 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const savePayment = () => {
     setOpenPayDialog(false);
     setOpenBackDrop(true);
-    console.log(specificRoomData);
     updateRoomStatusAfterPayment();
 
     setTimeout(() => {

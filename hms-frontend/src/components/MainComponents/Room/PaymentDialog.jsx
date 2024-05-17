@@ -245,11 +245,7 @@ function PaymentDialog(props) {
                 Customer Information
               </Box>
               <Box sx={{ padding: "10px" }}>
-                <StackItem
-                  label="Customer name"
-                  infor={data.firstname}
-                  tag
-                />
+                <StackItem label="Customer name" infor={data.firstname} tag />
                 <StackItem
                   label="Identification Number"
                   infor={data.cusID}
@@ -267,9 +263,7 @@ function PaymentDialog(props) {
                 <TableRow>
                   <StyledTableCell>Type</StyledTableCell>
                   <StyledTableCell align="center">Check In</StyledTableCell>
-                  <StyledTableCell align="center">
-                    Check Out
-                  </StyledTableCell>
+                  <StyledTableCell align="center">Check Out</StyledTableCell>
                   <StyledTableCell align="center">Time</StyledTableCell>
                   <StyledTableCell align="center">Money</StyledTableCell>
                 </TableRow>
@@ -288,9 +282,7 @@ function PaymentDialog(props) {
                   <StyledTableCell align="center">
                     {timeDiffHours} hours
                   </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {data.money}
-                  </StyledTableCell>
+                  <StyledTableCell align="center">{data.money}</StyledTableCell>
                 </StyledTableRow>
               </TableBody>
             </Table>
@@ -335,12 +327,7 @@ function PaymentDialog(props) {
               mB
               onChange={handleDiscountChange}
             />
-            <StackItem
-              label="Total amount due"
-              infor={totalAmountDue}
-              tag
-              mB
-            />
+            <StackItem label="Total amount due" infor={totalAmountDue} tag mB />
             <FormControl>
               <FormLabel id="Payment Method">Payment Method</FormLabel>
               <RadioGroup
@@ -385,7 +372,7 @@ PaymentDialog.propTypes = {
 
 StackItem.propTypes = {
   label: PropTypes.string.isRequired,
-  infor: PropTypes.string,
+  infor: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   mT: PropTypes.bool,
   mB: PropTypes.bool,
   tag: PropTypes.bool,

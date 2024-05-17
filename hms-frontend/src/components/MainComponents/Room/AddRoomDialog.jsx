@@ -111,7 +111,6 @@ function AddRoomDialog(props) {
         },
       }}
     >
-      {console.log(newRoomData)}
       <DialogTitle
         sx={{
           display: "flex",

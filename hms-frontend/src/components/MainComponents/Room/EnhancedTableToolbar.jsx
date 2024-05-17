@@ -82,7 +82,6 @@ function EnhancedTableToolbar({
           checkoutDate: room.endTime,
           roomNumber: room.name,
         };
-        console.log(combinedData);
         userApi
           .addBooking(roomData)
           .then(() => {

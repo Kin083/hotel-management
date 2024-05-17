@@ -34,6 +34,7 @@ function Room() {
     setTabValue(newValue);
   };
 
+  // GET TYPE FROM API
   React.useEffect(() => {
     const fetchTypes = async () => {
       setTypeList(await userApi.getType());

@@ -80,7 +80,9 @@ const StyledAlert = styled(Alert)(() => ({
   },
 }));
 
-const StyledTableHead = styled(TableHead)(({ rateType }) => ({
+const StyledTableHead = styled(TableHead, {
+  shouldForwardProp: (prop) => prop !== 'rateType',
+})(({ rateType }) => ({
   background:
     rateType === "dayRate"
       ? "linear-gradient(to right, #f8b195, #f67280)"
@@ -92,7 +94,9 @@ const StyledTableHead = styled(TableHead)(({ rateType }) => ({
   },
 }));
 
-const StyledTableContainer = styled(TableContainer)(({ rateType }) => ({
+const StyledTableContainer = styled(TableContainer, {
+  shouldForwardProp: (prop) => prop !== 'rateType',
+})(({ rateType }) => ({
   border: `2px solid ${
     rateType === "dayRate"
       ? "#f8b195"
