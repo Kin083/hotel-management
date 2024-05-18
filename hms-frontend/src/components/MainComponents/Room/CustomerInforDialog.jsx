@@ -176,7 +176,6 @@ function CustomerInforDialog({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      {console.log(cusInfor)}
       <DialogContent>
         <Box
           sx={{
