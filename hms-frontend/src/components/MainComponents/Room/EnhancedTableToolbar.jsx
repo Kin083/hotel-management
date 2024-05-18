@@ -93,6 +93,7 @@ function EnhancedTableToolbar({
       });
 
       setOpenDetailBooking(false);
+      setCusInfor({});
     } else {
       alert("Please provide customer information");
     }

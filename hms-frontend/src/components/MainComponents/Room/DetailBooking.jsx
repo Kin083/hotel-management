@@ -239,6 +239,7 @@ function DetailBooking({
           rooms: bookingObjects,
         };
         saveBooking(bookingData);
+        
       }
     } else {
       alert("Please choose the number of room is suitable");

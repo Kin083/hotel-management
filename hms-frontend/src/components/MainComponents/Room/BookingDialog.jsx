@@ -81,7 +81,7 @@ const StyledAlert = styled(Alert)(() => ({
 }));
 
 const StyledTableHead = styled(TableHead, {
-  shouldForwardProp: (prop) => prop !== 'rateType',
+  shouldForwardProp: (prop) => prop !== "rateType",
 })(({ rateType }) => ({
   background:
     rateType === "dayRate"
@@ -95,7 +95,7 @@ const StyledTableHead = styled(TableHead, {
 }));
 
 const StyledTableContainer = styled(TableContainer, {
-  shouldForwardProp: (prop) => prop !== 'rateType',
+  shouldForwardProp: (prop) => prop !== "rateType",
 })(({ rateType }) => ({
   border: `2px solid ${
     rateType === "dayRate"
@@ -108,12 +108,30 @@ const StyledTableContainer = styled(TableContainer, {
 }));
 
 function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
-  const [rows, setRows] = useState([]);
+  const initialState = {
+    rows: [],
+    startTime: dayjs(),
+    endTime: dayjs().add(1, "hour"),
+    executeTime: "hour",
+    price: "dayRate",
+    timeAlert: false,
+  };
+  const [rows, setRows] = useState(initialState.rows);
   const [startTime, setStartTime] = useState(dayjs());
   const [endTime, setEndTime] = useState(dayjs().add(1, "hour"));
   const [executeTime, setExecuteTime] = useState("hour");
   const [price, setPrice] = useState("dayRate");
   const [timeAlert, setTimeAlert] = useState(false);
+
+  const resetState = () => {
+    setRows((prevRows) => prevRows.map((row) => ({ ...row, quantity: 0 })));
+    setStartTime(initialState.startTime);
+    setEndTime(initialState.endTime);
+    setExecuteTime(initialState.executeTime);
+    setPrice(initialState.price);
+    setTimeAlert(initialState.timeAlert);
+    // setRows(initialRows);
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -142,6 +160,9 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
   };
 
   const handleConfirmBooking = () => {
+    if (timeAlert) {
+      return;
+    }
     const selectedRows = rows
       .filter((row) => row.quantity !== null && row.quantity !== 0)
       .map((row) => {
@@ -160,11 +181,15 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
         };
       });
     confirmBooking(selectedRows);
+    resetState();
   };
 
   const handleEndTimeChange = (newValue) => {
     if (newValue.isAfter(startTime)) {
       setEndTime(newValue);
+      if (timeAlert) {
+        setTimeAlert(false);
+      }
     } else {
       setTimeAlert(true);
     }
@@ -334,7 +359,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                             max: row.listRoomNumber.length,
                             min: 0,
                           }}
-                          defaultValue={0}
+                          value={row.quantity}
                           onChange={(e) =>
                             handleChangeQuantity(index, e.target.value)
                           }
