@@ -8,8 +8,12 @@ import org.springframework.stereotype.Component;
 
 import com.example.HotelManager.Repository.UserAccountRepository;
 import com.example.HotelManager.Repository.UserRepository;
+
+import com.example.HotelManager.Repository.UserSessionRepository;
 import com.example.HotelManager.Entity.User;
 import com.example.HotelManager.Entity.UserAccount;
+import com.example.HotelManager.Entity.UserSession;
+
 
 @Component
 public class UserServiceImp implements UserService{
@@ -19,6 +23,12 @@ public class UserServiceImp implements UserService{
 	@Autowired
 	private UserAccountRepository userAccRepo;
 	
+
+	@Autowired
+    private UserSessionRepository userSessionRepository;
+	
+	@Autowired
+	private UserSessionRepository userSessionRepo;
 	@Override
 	public boolean check_existed(String userAcc) {
 		Optional<UserAccount> userOptional = userAccRepo.findByUserName(userAcc);
@@ -31,6 +41,19 @@ public class UserServiceImp implements UserService{
 	}
 	
 	@Override
+
+	public boolean checkSessionExisted(String userSession) {
+		Optional<UserSession> uSession = userSessionRepo.findById(userSession);
+
+		if (uSession.isPresent()) {
+		    return true;
+		} else {
+		    return false;
+		}
+	}
+	
+	@Override
+
 	public User saveDetails(User user) {	
 		BCryptPasswordEncoder crypt = new BCryptPasswordEncoder();
 		String encryptedPass = crypt.encode(user.getUser_password());

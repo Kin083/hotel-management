@@ -1,0 +1,81 @@
+.verify-body-page {
+    background-image: url('https://i.pinimg.com/originals/b9/7e/82/b97e82067d730807d99a962a1d851063.gif');
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.verify-container {
+    background-color: #fff;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 768px;
+    max-width: 100%;
+    min-height: 480px;
+}
+
+.verify-container button {
+    background-color: #512da8;
+    color: #fff;
+    font-size: 20px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.verify-container button:hover {
+    background-color: #1ed4c2;
+}
+
+.verify-container i {
+    font-size: 50px
+}
+
+.verify-container header {
+    height: 65px;
+    width: 65px;
+    background-color: #512da8;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.verify-container form {
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 30%;
+    width: 70%;
+
+}
+
+.input-field-vertify {
+    height: 30%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.input-field-vertify input {
+    height: 100%;
+    width: 80%;
+    margin-left: 70px;
+}

@@ -1,26 +1,32 @@
 package com.example.HotelManager.Controller;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.HotelManager.Repository.UserAccountRepository;
 import com.example.HotelManager.Repository.UserRepository;
+
+import com.example.HotelManager.Repository.UserSessionRepository;
+
 import com.example.HotelManager.Service.EmailSenderService;
 import com.example.HotelManager.Service.UserService;
 import com.example.HotelManager.Service.UserService.UserInput;
 import com.example.HotelManager.Entity.User;
+
+import com.example.HotelManager.Entity.UserSession;
+
 
 @RestController
 public class UserController {
@@ -31,33 +37,38 @@ public class UserController {
 	private final UserRepository userRepo;
 	private final UserAccountRepository userAccRepo;
 
+	private final UserSessionRepository userSessionRepo;
+	
 	private HashMap<String, User> check_valid = new HashMap<>();
 
 	@Autowired
-	public UserController(EmailSenderService emailService, UserRepository userRepo, UserAccountRepository userAccRepo) {
+	public UserController(EmailSenderService emailService, UserRepository userRepo, UserAccountRepository userAccRepo, UserSessionRepository userSessionRepo) {
 		this.emailService = emailService;
 		this.userRepo = userRepo;
 		this.userAccRepo = userAccRepo;
+		this.userSessionRepo = userSessionRepo;
+
 	}
 
 	@PostMapping(value = "/register")
 	public ResponseEntity<?> createUser(@RequestBody User userRequest) {
-		
+
+		System.out.println("goi duoc xu ly logic register");
+
 		if (userService.check_existed(userRequest.getUser_name())) {
 			System.out.println(userRequest.getUser_name());
 			
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Tên người dùng đã tồn tại");
 		}
-		/*
+
 		String uuid = emailService.sendAuthenticationEmail(userRequest.getEmail());
-		check_valid.put("1", userRequest);
+		check_valid.put(uuid, userRequest);
 		System.out.println("uuid:" + uuid);
-		*/
-		userService.saveDetails(userRequest);
 		return ResponseEntity.status(HttpStatus.OK).body("Vui lòng kiểm tra email của bạn");
 	}
 
-	@PostMapping(value = "/register/validation")
+	@PostMapping(value = "register/validation")
+
 	public ResponseEntity<?> validation(@RequestBody UserInput user_input) {
 		String input = user_input.userInput();
 		System.out.println("user_input:" + input);
@@ -82,97 +93,33 @@ public class UserController {
 	}
 	*/
 	
-	/*
-	@PatchMapping(value = "/admin/update/{id}")
-	public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody UserRequest userRequest) {
-		User user = userService.getUserById(id);
-		if (user == null)
-			return (ResponseEntity<?>) ResponseEntity.notFound();
-		if (userRequest.full_name() != null)
-			user.setFull_name(userRequest.full_name());
-		if (userRequest.user_name() != null)
-			user.setUser_name(userRequest.user_name());
-		if (userRequest.phone() != null)
-			user.setPhone(userRequest.phone());
-		if (userRequest.email() != null)
-			user.setEmail(userRequest.email());
-		if (userRequest.user_password() != null)
-			user.setUser_password(userRequest.user_password());
-		userService.saveDetails(user);
-		return ResponseEntity.ok(user);
-	}
-	*/
 
-	@DeleteMapping(value = "/admin/delete/{id}")
-	public ResponseEntity<?> deleteUser(@PathVariable int id) {
-		userService.removeUserById(id);
-		return ResponseEntity.ok(null);
-	}
 	
-	@GetMapping(value = "/home")
-	public ResponseEntity<?> homepage() {
-		System.out.println("this is home page");
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null && authentication.isAuthenticated()) {
-		    // Lấy danh sách các vai trò (Granted Authorities) của người dùng
-			System.out.println("name xac thuc " + authentication.getName());
-		    for (GrantedAuthority authority : authentication.getAuthorities()) {
-		        // Kiểm tra từng vai trò của người dùng
-		        String role = authority.getAuthority();
-		        System.out.print("vai tro cua " + authentication.getName() + " la: " + role);
-		    }
-		}
-		return ResponseEntity.status(HttpStatus.OK).body("This is home page!");
-	}
-	
-	@GetMapping(value = "/admin")
-	public ResponseEntity<?> admin_notify() {
+	@PostMapping("/home")
+	public String homepage(@RequestBody UserSession userSession) {
+		System.out.println("this is home page with id: " +userSession);
 		
-		return ResponseEntity.status(HttpStatus.OK).body("Hello admin!");
-	}
-	
-	@GetMapping(value = "/manager")
-	public ResponseEntity<?> manager_notify() {
-		
-		return ResponseEntity.status(HttpStatus.OK).body("Hello manager!");
-	}
-	
-	@GetMapping(value = "/receptionist")
-	public ResponseEntity<?> receptionist_notify() {
-		
-		return ResponseEntity.status(HttpStatus.OK).body("Hello receptionist!");
+		if (userService.checkSessionExisted(userSession.getSessionId())) {
+			// xu ly tiep 
+			System.out.println("Đang truy cập với tư cách là: ");
+			System.out.println("SessionId: " + userSession.getSessionId());
+	 		System.out.println("Username: " + userSession.getUsername());
+			System.out.println("Role: " + userSession.getRole());
+			return "/main";
+		}	
+		return "/login";
 	}
 
-	/*
-	@GetMapping(value = "/login")
-	public ResponseEntity<?> login(@RequestBody LoginRequest userLoginRequest, HttpSession session, Model model) {
-		// Thực hiện xác thực người dùng và trả về kết quả
-		User user = userRepo.findByUserName(userLoginRequest.user_name());
-		if (user != null) {
-			if (user.getUser_password().equals(userLoginRequest.user_password())) {
-				session.setAttribute("user", userLoginRequest.user_name());
-				return ResponseEntity.status(HttpStatus.OK).body("Đăng nhập thành công");
-			}
-
-		}
-		model.addAttribute("error", "Invalid User name or password");
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Tên người dùng hoặc mật khẩu không đúng");
-	}
-	
-	*/
-
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout() {
+    @PostMapping("/logoutt")
+    public String logout(@RequestBody UserSession userSession) {
     	System.out.println("goi logout");
-        try {
-            // Xóa thông tin xác thực khỏi SecurityContextHolder
-            SecurityContextHolder.clearContext();
-            // Đăng xuất thành công, trả về mã trạng thái 200 OK
-            return ResponseEntity.ok("Đăng xuất thành công!");
-        } catch (Exception e) {
-            // Xảy ra lỗi khi đăng xuất, trả về mã trạng thái 500 và thông báo lỗi
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi đăng xuất: " + e.getMessage());
-        }
+    	if (userService.checkSessionExisted(userSession.getSessionId())) {
+			// xu ly tiep 
+			userSessionRepo.delete(userSession);
+			ResponseEntity.status(HttpStatus.OK).body("Đăng xuất thành công!");
+			return "/login";
+		}	
+    	ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Đăng xuất không thành công!");
+		return "/login";
     }
-
 }

@@ -1,6 +1,8 @@
 package com.example.HotelManager.Service;
 
+
 import com.example.HotelManager.Entity.*;
+
 import com.example.HotelManager.Repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,18 +10,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.awt.print.Book;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 @Service
 public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
+
     @Autowired
     private GuestService guestService;
     @Autowired
     private RoomService roomService;
+
     public Iterable<BookingEntity> getAllBooking() {
         return bookingRepository.findAll();
     }
@@ -84,6 +90,7 @@ public class BookingService {
 //        bookingRepository.save(booking);
         return (long) (giatien*daysDifference*soluong);
     }
+
     public List<BookingEntity> getUniqueUsingRoom() {
         List<BookingEntity> listBookingUsing = bookingRepository.findTest();
         Map<Integer,BookingEntity> mapRoomIDToBooking = new HashMap<>();
@@ -215,4 +222,5 @@ public class BookingService {
         }
         return lisGuest;
     }
+
 }

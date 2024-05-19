@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+
 @Service
 public class PaymentsService {
     @Autowired
@@ -32,7 +33,6 @@ public class PaymentsService {
     public List<PaymentEntity> getByYear(String year) {
         return paymentRepository.findByPaymentYear(year);
     }
-
     public Map<String,Double> getBenefitByPaymentsByYear(String time){
         Map<String,Double> ans = new HashMap<>();
         for(int i = 1; i <= 12; i ++) {
@@ -52,4 +52,5 @@ public class PaymentsService {
         TreeMap<String,Double> sortedmap = new TreeMap<>(ans);
         return sortedmap;
     }
+
 }
