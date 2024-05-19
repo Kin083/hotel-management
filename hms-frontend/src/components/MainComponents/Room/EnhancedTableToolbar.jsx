@@ -73,14 +73,15 @@ function EnhancedTableToolbar({
 
   const saveBooking = (bookingData) => {
     if (cusInfor && Object.keys(cusInfor).length > 0) {
-      const combinedData = { ...bookingData, ...cusInfor };
-      combinedData.rooms.forEach((room) => {
+      bookingData.rooms.forEach((room) => {
         const roomData = {
-          totalPrice: room.money,
-          gestID: combinedData.firstname,
-          checkinDate: room.startTime,
-          checkoutDate: room.endTime,
-          roomNumber: room.name,
+          ...cusInfor,
+          name: room.name,
+          startTime: room.startTime,
+          endTime: room.endTime,
+          money: room.money,
+          typeOfRate: room.typeOfRate,
+          cusNotes: bookingData.cusNotes,
         };
         userApi
           .addBooking(roomData)
@@ -160,7 +161,7 @@ function EnhancedTableToolbar({
         saveBooking={saveBooking}
         openCusInfor={openCusInfor}
         detailData={detailData}
-        cusName={cusInfor.firstname}
+        cusName={cusInfor.cusName}
       />
 
       <CustomerInforDialog

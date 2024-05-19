@@ -376,13 +376,6 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
           <Button
             className={`MuiButton-${price}`}
             variant="contained"
-            onClick={closeBooking}
-          >
-            Cancel
-          </Button>
-          <Button
-            className={`MuiButton-${price}`}
-            variant="contained"
             onClick={handleConfirmBooking}
           >
             Confirm
