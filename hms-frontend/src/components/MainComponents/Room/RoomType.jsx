@@ -34,7 +34,6 @@ import userApi from "../../../api/userApi";
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#ebf5ee",
-    // fontSize: 20,
     color: "#1f2224",
     fontSize: 14,
     border: 0,
@@ -49,7 +48,6 @@ const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(even)": {
     backgroundColor: "#f7f8f9",
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
@@ -82,24 +80,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function RoomType({ typeList }) {
-  const data = typeList.map((item) =>
-    createData(
-      item.typeID,
-      item.name,
-      item.description,
-      item.pricepernight,
-      item.dayRate,
-      item.dailyRate,
-      item.overtimePay,
-      item.capacity
-    )
-  );
-  const [rows, setRows] = React.useState(data);
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [selectedRow, setSelectedRow] = React.useState(null);
+  const [rows, setRows] = React.useState([]);
 
   const initialFormState = {
-    typeID: "",
     name: "",
     description: "",
     pricepernight: "",
@@ -110,108 +93,10 @@ function RoomType({ typeList }) {
   };
 
   const [formState, setFormState] = React.useState(initialFormState);
-
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormState({ ...formState, [id]: value });
-  };
-
-  const addType = async () => {
-    setSelectedRow(null);
-    setFormState(initialFormState);
-    setOpenDialog(true);
-  };
-
-  const adjustType = (index) => {
-    setSelectedRow(rows[index]);
-  };
-
-  const deleteType = async (index) => {
-    const typeIDToDelete = rows[index].typeID;
-    try {
-      setRows((prevRows) => prevRows.filter((_, idx) => idx !== index));
-      await userApi.deleteType(typeIDToDelete);
-    } catch (error) {
-      console.error("Error deleting type:", error);
-    }
-  };
-
-  const handleClose = () => {
-    setOpenDialog(false);
-  };
-
-  const saveChange = async () => {
-    const {
-      typeID,
-      name,
-      description,
-      pricepernight,
-      dayRate,
-      dailyRate,
-      overtimePay,
-      capacity,
-    } = formState;
-
-    if (
-      !typeID ||
-      !name ||
-      !description ||
-      !pricepernight ||
-      !dayRate ||
-      !dailyRate ||
-      !overtimePay ||
-      !capacity
-    ) {
-      setOpenDialog(false);
-      return;
-    }
-
-    const newData = {
-      typeID: parseInt(typeID),
-      name,
-      description,
-      pricepernight: parseFloat(pricepernight),
-      dayRate: parseFloat(dayRate),
-      dailyRate: parseFloat(dailyRate),
-      overtimePay: parseFloat(overtimePay),
-      capacity: parseInt(capacity),
-    };
-
-    try {
-      if (selectedRow !== null) {
-        setRows((prevRows) =>
-          prevRows.map((row) =>
-            row.typeID === selectedRow.typeID ? newData : row
-          )
-        );
-        await userApi.updateType(selectedRow.typeID, newData);
-      } else {
-        setRows((prevRows) => [...prevRows, newData]);
-        await userApi.addType(newData);
-      }
-    } catch (error) {
-      console.error("Error saving change:", error);
-    } finally {
-      setOpenDialog(false);
-      setFormState(initialFormState);
-    }
-  };
-
-  React.useEffect(() => {
-    if (selectedRow !== null) {
-      setFormState({
-        typeID: selectedRow.typeID,
-        name: selectedRow.name,
-        description: selectedRow.description,
-        pricepernight: selectedRow.pricepernight,
-        dayRate: selectedRow.dayRate,
-        dailyRate: selectedRow.dailyRate,
-        overtimePay: selectedRow.overtimePay,
-        capacity: selectedRow.capacity,
-      });
-      setOpenDialog(true);
-    }
-  }, [selectedRow]);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [selectedRow, setSelectedRow] = React.useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [deleteIndex, setDeleteIndex] = React.useState(null);
 
   React.useEffect(() => {
     setRows(
@@ -229,6 +114,121 @@ function RoomType({ typeList }) {
       )
     );
   }, [typeList]);
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormState({ ...formState, [id]: value });
+  };
+
+  const addType = () => {
+    setSelectedRow(null);
+    setFormState(initialFormState);
+    setOpenDialog(true);
+  };
+
+  const adjustType = (index) => {
+    setSelectedRow(rows[index]);
+  };
+
+  const confirmDeleteType = (index) => {
+    setDeleteIndex(index);
+    setOpenDeleteDialog(true);
+  };
+
+  const deleteType = async () => {
+    const typeIDToDelete = rows[deleteIndex].typeID;
+    try {
+      setRows((prevRows) => prevRows.filter((_, idx) => idx !== deleteIndex));
+      // await userApi.deleteType(typeIDToDelete);
+    } catch (error) {
+      console.error("Error deleting type:", error);
+    } finally {
+      setOpenDeleteDialog(false);
+      setDeleteIndex(null);
+    }
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleDeleteClose = () => {
+    setOpenDeleteDialog(false);
+    setDeleteIndex(null);
+  };
+
+  const saveChange = async () => {
+    const {
+      name,
+      description,
+      pricepernight,
+      dayRate,
+      dailyRate,
+      overtimePay,
+      capacity,
+    } = formState;
+
+    if (
+      !name ||
+      !description ||
+      !pricepernight ||
+      !dayRate ||
+      !dailyRate ||
+      !overtimePay ||
+      !capacity
+    ) {
+      alert("Please provide enough information");
+      return;
+    }
+
+    const newID =
+      rows.length > 0 ? Math.max(...rows.map((row) => row.typeID)) + 1 : 1;
+
+    const newData = {
+      typeID: selectedRow ? selectedRow.typeID : newID,
+      name,
+      description,
+      pricepernight: parseFloat(pricepernight),
+      dayRate: parseFloat(dayRate),
+      dailyRate: parseFloat(dailyRate),
+      overtimePay: parseFloat(overtimePay),
+      capacity: parseInt(capacity),
+    };
+
+    try {
+      if (selectedRow !== null) {
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.typeID === selectedRow.typeID ? newData : row
+          )
+        );
+        // await userApi.updateType(selectedRow.typeID, newData);
+      } else {
+        setRows((prevRows) => [...prevRows, newData]);
+        // await userApi.addType(newData);
+      }
+    } catch (error) {
+      console.error("Error saving change:", error);
+    } finally {
+      setOpenDialog(false);
+      setFormState(initialFormState);
+    }
+  };
+
+  React.useEffect(() => {
+    if (selectedRow !== null) {
+      setFormState({
+        name: selectedRow.name,
+        description: selectedRow.description,
+        pricepernight: selectedRow.pricepernight,
+        dayRate: selectedRow.dayRate,
+        dailyRate: selectedRow.dailyRate,
+        overtimePay: selectedRow.overtimePay,
+        capacity: selectedRow.capacity,
+      });
+      setOpenDialog(true);
+    }
+  }, [selectedRow]);
 
   function getTitle() {
     const title =
@@ -255,13 +255,11 @@ function RoomType({ typeList }) {
         <Typography sx={{ flex: "1 1 100%" }} variant="h3" component="div">
           Room Category
         </Typography>
-
         <IconButton onClick={addType}>
           <AddIcon />
         </IconButton>
       </Toolbar>
 
-      {/* TABLE OF ROOM'S TYPES */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -301,7 +299,7 @@ function RoomType({ typeList }) {
                   </IconButton>
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <IconButton onClick={() => deleteType(index)}>
+                  <IconButton onClick={() => confirmDeleteType(index)}>
                     <DeleteIcon />
                   </IconButton>
                 </StyledTableCell>
@@ -403,12 +401,29 @@ function RoomType({ typeList }) {
           <Button onClick={saveChange}>Save</Button>
         </DialogActions>
       </Dialog>
+
+      {/* CONFIRM DELETE DIALOG */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleDeleteClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent id="delete-dialog-description">
+          Are you sure you want to delete this room type?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={deleteType}>Yes</Button>
+          <Button onClick={handleDeleteClose}>No</Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 }
 
 RoomType.propTypes = {
-  typeList: PropTypes.array,
+  typeList: PropTypes.array.isRequired,
 };
 
 export default RoomType;

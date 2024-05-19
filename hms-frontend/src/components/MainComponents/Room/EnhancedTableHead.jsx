@@ -74,6 +74,18 @@ function EnhancedTableHead(props) {
       disablePadding: false,
       label: "Pay",
     },
+    {
+      id: "edit",
+      numeric: false,
+      disablePadding: false,
+      label: "Edit",
+    },
+    {
+      id: "expand",
+      numeric: false,
+      disablePadding: false,
+      label: "Expand",
+    },
   ];
   const {
     onSelectAllClick,

@@ -17,7 +17,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import RoomImage from "./RoomImage";
-import BuildIcon from "@mui/icons-material/Build";
+import EditIcon from "@mui/icons-material/Edit";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useEffect } from "react";
@@ -31,6 +31,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Snackbar from "@mui/material/Snackbar";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
@@ -93,13 +100,17 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const [rowsPerPage, setRowsPerPage] = React.useState(8);
   const [expandedRows, setExpandedRows] = React.useState({});
   const [roomInforTab, setRoomInforTab] = React.useState("1");
-  const [hoveredRowId, setHoveredRowId] = React.useState(null);
   const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
   const [specificRoomData, setSpecificRoomData] = React.useState(null);
   const [roomNames, setRoomNames] = React.useState([]);
   const [openPayDialog, setOpenPayDialog] = React.useState(false);
   const [openBackdrop, setOpenBackDrop] = React.useState(false);
   const [successAlert, setSuccessAlert] = React.useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+
+  const handleDeleteClose = () => {
+    setOpenDeleteDialog(false);
+  };
 
   // Call API
   useEffect(() => {
@@ -384,14 +395,11 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                 {visibleRows.map((row, index) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
-                  const isHovered = hoveredRowId === row.id;
 
                   return (
                     <React.Fragment key={row.id}>
                       <StyledTableRow
                         hover
-                        onMouseEnter={() => setHoveredRowId(row.id)}
-                        onMouseLeave={() => setHoveredRowId(null)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
@@ -417,31 +425,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                           scope="row"
                           padding="none"
                         >
-                          {isHovered && (
-                            <IconButton
-                              onClick={() => handleClickExpand(row.id)}
-                              sx={{
-                                transition: "transform 0.5s ease-in-out",
-                                transform: expandedRows[row.id]
-                                  ? "rotate(180deg)"
-                                  : "rotate(0deg)",
-                              }}
-                            >
-                              {expandedRows[row.id] ? (
-                                <ExpandLessIcon />
-                              ) : (
-                                <ExpandMoreIcon />
-                              )}
-                            </IconButton>
-                          )}
                           {row.roomName}
-                          {isHovered && (
-                            <IconButton
-                              onClick={() => handleClickAdjust(row.id)}
-                            >
-                              <BuildIcon />
-                            </IconButton>
-                          )}
                         </StyledTableCell>
                         <StyledTableCell align="right">
                           {row.type}
@@ -479,6 +463,28 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                             <AccountBalanceWalletIcon />
                           </IconButton>
                         </StyledTableCell>
+                        <StyledTableCell align="right">
+                          <IconButton onClick={() => handleClickAdjust(row.id)}>
+                            <EditIcon />
+                          </IconButton>
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          <IconButton
+                            onClick={() => handleClickExpand(row.id)}
+                            sx={{
+                              transition: "transform 0.5s ease-in-out",
+                              transform: expandedRows[row.id]
+                                ? "rotate(180deg)"
+                                : "rotate(0deg)",
+                            }}
+                          >
+                            {expandedRows[row.id] ? (
+                              <ExpandLessIcon />
+                            ) : (
+                              <ExpandMoreIcon />
+                            )}
+                          </IconButton>
+                        </StyledTableCell>
                       </StyledTableRow>
 
                       {/* Expand Row */}
@@ -486,7 +492,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                         <TableRow key={`${row.id}-expand`}>
                           <StyledTableCell
                             padding="none"
-                            colSpan={10}
+                            colSpan={12}
                             sx={{ width: "100%" }}
                           >
                             <TabContext value={roomInforTab}>
@@ -498,17 +504,13 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                                   aria-label="room infor tab"
                                 >
                                   <Tab label="Images" value="1" />
-                                  <Tab label="Booking History" value="2" />
-                                  <Tab label="Transaction History" value="3" />
-                                  <Tab label="Cleanup History" value="4" />
+                                  {/* <Tab label="Booking History" value="2" /> */}
                                 </TabList>
                               </Box>
-                              <TabPanel sx={{ height: "300px" }} value="1">
+                              <TabPanel sx={{ height: "450px" }} value="1">
                                 <RoomImage />
                               </TabPanel>
-                              <TabPanel value="2">Item Two</TabPanel>
-                              <TabPanel value="3">Item Three</TabPanel>
-                              <TabPanel value="4">Item four</TabPanel>
+                              {/* <TabPanel value="2">Customer Information</TabPanel> */}
                             </TabContext>
                           </StyledTableCell>
                         </TableRow>
@@ -522,7 +524,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                       height: (dense ? 33 : 53) * emptyRows,
                     }}
                   >
-                    <TableCell colSpan={10} />
+                    <TableCell colSpan={12} />
                   </TableRow>
                 )}
               </TableBody>
@@ -588,6 +590,22 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
           </Alert>
         </Snackbar>
       )}
+      {/* CONFIRM DELETE DIALOG */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleDeleteClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent id="delete-dialog-description">
+          Are you sure you want to delete this rooms?
+        </DialogContent>
+        <DialogActions>
+          {/* <Button onClick={deleteType}>Yes</Button> */}
+          <Button onClick={handleDeleteClose}>No</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
