@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.awt.print.Book;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -16,6 +18,8 @@ public class BookingService {
     private BookingRepository bookingRepository;
     @Autowired
     private GuestService guestService;
+    @Autowired
+    private RoomService roomService;
     public Iterable<BookingEntity> getAllBooking() {
         return bookingRepository.findAll();
     }
@@ -127,7 +131,88 @@ public class BookingService {
     }
     public List<GuestEntity> handleDataRecieve(RequestForBooking booking) {
         String cusID = booking.getCusID();
+
         List<GuestEntity> lisGuest = guestService.getByCusID(cusID);
+        if(lisGuest.isEmpty()) {
+            GuestEntity newGuest = new GuestEntity();
+            newGuest.setCusDoB(booking.getCusDoB());
+            newGuest.setCusEmail(booking.getCusEmail());
+            newGuest.setCusGender(booking.getCusGender());
+            newGuest.setFirstname(booking.getCusName());
+            newGuest.setCusImg(booking.getCusImg());
+            newGuest.setLastname("nothing");
+            newGuest.setCusPhone(booking.getCusPhone());
+            newGuest.setCusNotes(booking.getCusNotes());
+            newGuest.setCusID(cusID);
+            guestService.saveDetails(newGuest);
+
+            List<GuestEntity> newListGuest = guestService.getByCusID(cusID);
+            Integer guestID = newListGuest.get(0).getGuestID();
+            List<RoomEntity> listRoom = roomService.getRoomByRoomName(booking.getName());
+            Integer roomnumber = listRoom.get(0).getRoomnumber();
+            roomService.updateStatusActive2Using(roomnumber);
+
+
+            BookingEntity newBooking = new BookingEntity();
+            newBooking.setTotalPrice(booking.getMoney());
+            newBooking.setGestID(guestID);
+            newBooking.setRoomNumber(roomnumber);
+
+
+            String dateCheckinString = booking.getStartTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date checkinDate = new Date();
+            try {
+                checkinDate = formatter.parse(dateCheckinString);
+                System.out.println(checkinDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            String dateCheckoutString = booking.getEndTime();
+            Date checkoutDate = new Date();
+            try {
+                 checkoutDate = formatter.parse(dateCheckoutString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            newBooking.setCheckinDate(checkinDate);
+            newBooking.setCheckoutDate(checkoutDate);
+            bookingRepository.save(newBooking);
+        } else {
+            Integer guestID = lisGuest.get(0).getGuestID();
+            List<RoomEntity> listRoom = roomService.getRoomByRoomName(booking.getName());
+            Integer roomnumber = listRoom.get(0).getRoomnumber();
+            roomService.updateStatusActive2Using(roomnumber);
+
+
+            BookingEntity newBooking = new BookingEntity();
+            newBooking.setTotalPrice(booking.getMoney());
+            newBooking.setGestID(guestID);
+            newBooking.setRoomNumber(roomnumber);
+
+
+            String dateCheckinString = booking.getStartTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date checkinDate = new Date();
+            try {
+                checkinDate = formatter.parse(dateCheckinString);
+                System.out.println(checkinDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            String dateCheckoutString = booking.getEndTime();
+            Date checkoutDate = new Date();
+            try {
+                checkoutDate = formatter.parse(dateCheckoutString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            newBooking.setCheckinDate(checkinDate);
+            newBooking.setCheckoutDate(checkoutDate);
+            bookingRepository.save(newBooking);
+        }
         return lisGuest;
     }
 }
