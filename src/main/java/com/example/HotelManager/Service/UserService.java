@@ -14,6 +14,9 @@ public interface UserService {
 
 	public boolean check_existed(String user);
 
+	public boolean checkSessionExisted(String sessionId);
+
+
 	public record UserRequest(String full_name, String user_name, String phone, String email, String user_password) {
 
 	}
@@ -29,4 +32,9 @@ public interface UserService {
 	public record AddAccount(String user_name, String user_password, boolean active, String role) {
 		
 	}
+
+	public record ChangePassword(String old_pass, String new_pass, String repeat) {
+		
+	}
+
 }

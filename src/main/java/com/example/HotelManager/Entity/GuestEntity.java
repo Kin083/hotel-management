@@ -16,66 +16,100 @@ public class GuestEntity {
     @Column(name = "LastName")
     private String Lastname;
     @Column(name = "DateOfBirth")
-    private Date Dateofbirth;
-    @Column(name = "Address")
-    private String Address;
+    private Date cusDoB;
+    @Column(name = "Gender")
+    private String cusGender;
+    @Column(name = "CCCD")
+    private String cusID;
     @Column(name = "Phone")
-    private String phone;
+    private String cusPhone;
     @Column(name = "Email")
-    private String Email;
+    private String cusEmail;
+
     public Integer getGuestID() {
         return GuestID;
-    }
-
-    public String getFirstname() {
-        return Firstname;
-    }
-
-    public String getLastname() {
-        return Lastname;
     }
 
     public void setGuestID(Integer guestID) {
         GuestID = guestID;
     }
 
+    public String getFirstname() {
+        return Firstname;
+    }
+
     public void setFirstname(String firstname) {
         Firstname = firstname;
+    }
+
+    public String getLastname() {
+        return Lastname;
     }
 
     public void setLastname(String lastname) {
         Lastname = lastname;
     }
 
-    public void setDateofbirth(Date dateofbirth) {
-        Dateofbirth = dateofbirth;
+    public Date getCusDoB() {
+        return cusDoB;
     }
 
-    public void setAddress(String address) {
-        Address = address;
+    public void setCusDoB(Date cusDoB) {
+        this.cusDoB = cusDoB;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public String getCusGender() {
+        return cusGender;
     }
 
-    public void setEmail(String email) {
-        Email = email;
+    public void setCusGender(String cusGender) {
+        this.cusGender = cusGender;
     }
 
-    public Date getDateofbirth() {
-        return Dateofbirth;
+    public String getCusID() {
+        return cusID;
     }
 
-    public String getAddress() {
-        return Address;
+    public void setCusID(String cusID) {
+        this.cusID = cusID;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getCusPhone() {
+        return cusPhone;
     }
 
-    public String getEmail() {
-        return Email;
+    public void setCusPhone(String cusPhone) {
+        this.cusPhone = cusPhone;
     }
+
+    public String getCusEmail() {
+        return cusEmail;
+    }
+
+    public void setCusEmail(String cusEmail) {
+        this.cusEmail = cusEmail;
+    }
+
+    public String getCusNotes() {
+        return cusNotes;
+    }
+
+    public void setCusNotes(String cusNotes) {
+        this.cusNotes = cusNotes;
+    }
+
+    public String getCusImg() {
+        return cusImg;
+    }
+
+    public void setCusImg(String cusImg) {
+        this.cusImg = cusImg;
+    }
+
+    @Column(name = "Notes")
+    private String cusNotes;
+    @Column(name = "Image")
+    private String cusImg;
+
+
 }

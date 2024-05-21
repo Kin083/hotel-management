@@ -18,4 +18,12 @@ public class GuestService {
         guestRepository.save(guest);
         return guest;
     }
+
+    public List<GuestEntity> getByID(String id) {
+        return guestRepository.findByGuestID(id);
+    }
+    public List<GuestEntity> getByCusID(String id) {
+        return guestRepository.findByCusID(id);
+    }
+
 }

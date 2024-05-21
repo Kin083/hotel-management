@@ -3,14 +3,15 @@ package com.example.HotelManager.Controller;
 import com.example.HotelManager.Entity.PaymentEntity;
 import com.example.HotelManager.Service.PaymentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class PaymentsController {
@@ -61,7 +62,8 @@ public class PaymentsController {
             }
             ans.put(dateString,sum);
         }
-        return ans;
+        TreeMap<String,Double> sortedmap = new TreeMap<>(ans);
+        return sortedmap;
     }
 
     public List<String> splitString(String date) {
@@ -85,5 +87,31 @@ public class PaymentsController {
         listdate.add(end);
         return listdate;
     }
+    @GetMapping(path = "/getRevenue/Payments/{year}")
+    public List<Double> getRevenue(@PathVariable String year) {
+        System.out.println(year);
+        return getBenefitByPaymentsByYear(year,paymentsService);
+    }
 
+
+    public List<Double> getBenefitByPaymentsByYear(String time,PaymentsService paymentsService){
+        List<Double> ans = new ArrayList<>();
+        for(int i = 1; i <= 12; i ++) {
+            String t = String.valueOf(i);
+            if(i<10) {
+                t='0'+t;
+            }
+            String monthQuerry = time +'-'+t;
+            System.out.println(monthQuerry);
+            List<PaymentEntity> listPayMonth = paymentsService.getByYear(monthQuerry);
+            System.out.println(listPayMonth);
+            Double sum = 0.0;
+            for (PaymentEntity PayMonth : listPayMonth) {
+                sum+=PayMonth.getAmount();
+            }
+            ans.add(sum);
+        }
+
+        return ans;
+    }
 }

@@ -1,5 +1,9 @@
 package com.example.HotelManager.Controller;
 
+
+import com.example.HotelManager.Entity.*;
+import com.example.HotelManager.Service.*;
+
 import com.example.HotelManager.Entity.BookingEntity;
 import com.example.HotelManager.Entity.PaymentEntity;
 import com.example.HotelManager.Entity.RoomEntity;
@@ -8,6 +12,7 @@ import com.example.HotelManager.Service.BookingService;
 import com.example.HotelManager.Service.PaymentsService;
 import com.example.HotelManager.Service.RoomService;
 import com.example.HotelManager.Service.RoomTypeService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +25,9 @@ import java.util.List;
 public class BookingController {
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private GuestService guestService;
 
     @Autowired
     private RoomService roomService;
@@ -111,4 +119,15 @@ public class BookingController {
         }
         return listpay;
     }
+
+    @GetMapping("/gettest")
+    public List<ResponseForUsingRoomInformation> gettest() {
+        return bookingService.getInforBookingAndGuest(guestService);
+    }
+    @PostMapping(path = "/addBookingDetails")
+    public List<GuestEntity> getDataReturn(@RequestBody RequestForBooking booking) {
+        System.out.println("ok bro");
+        return bookingService.handleDataRecieve(booking);
+    }
+
 }

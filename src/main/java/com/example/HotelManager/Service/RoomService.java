@@ -27,8 +27,10 @@ public class RoomService {
     public String updateStatusUsing2Active(int id) {
         RoomEntity room = roomRepository.findById(id).get();
         String ans = room.getStatus();
-        if(ans.equals("using")) {
-            room.setStatus("ACtive");
+
+        if(ans.equals("Using")) {
+            room.setStatus("Available");
+
             roomRepository.save(room);
             return "Done";
         }
@@ -40,8 +42,10 @@ public class RoomService {
     public String updateStatusActive2Using(int id) {
         RoomEntity room = roomRepository.findById(id).get();
         String ans = room.getStatus();
-        if(ans.equals("ACtive")) {
-            room.setStatus("using");
+
+        if(ans.equals("Available")) {
+            room.setStatus("Using");
+
             roomRepository.save(room);
             return "Done";
         }
@@ -51,6 +55,11 @@ public class RoomService {
     }
     public List<RoomEntity> getAllByHotelID(String HotelID) {
         return roomRepository.findByhotelID(HotelID);
+    }
+
+
+    public List<RoomEntity> getRoomByRoomName(String name) {
+        return roomRepository.findByRoomName(name);
     }
 
     public int countByRtype(int roomtype) {

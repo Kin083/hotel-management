@@ -1,8 +1,8 @@
 package com.example.HotelManager.Service;
 
-import com.example.HotelManager.Entity.BookingEntity;
-import com.example.HotelManager.Entity.RoomEntity;
-import com.example.HotelManager.Entity.RoomTypeEntity;
+
+import com.example.HotelManager.Entity.*;
+
 import com.example.HotelManager.Repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,13 +10,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.awt.print.Book;
-import java.util.Date;
-import java.util.List;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 
 @Service
 public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private GuestService guestService;
+    @Autowired
+    private RoomService roomService;
+
     public Iterable<BookingEntity> getAllBooking() {
         return bookingRepository.findAll();
     }
@@ -81,4 +90,137 @@ public class BookingService {
 //        bookingRepository.save(booking);
         return (long) (giatien*daysDifference*soluong);
     }
+
+    public List<BookingEntity> getUniqueUsingRoom() {
+        List<BookingEntity> listBookingUsing = bookingRepository.findTest();
+        Map<Integer,BookingEntity> mapRoomIDToBooking = new HashMap<>();
+        for(BookingEntity booking : listBookingUsing) {
+            Integer roomumber = booking.getRoomNumber();
+            Date checkinDate = booking.getCheckinDate();
+            if (mapRoomIDToBooking.containsKey(roomumber)) {
+                Date checkin = mapRoomIDToBooking.get(roomumber).getCheckinDate();
+                if (checkinDate.after(checkin)) {
+                    mapRoomIDToBooking.put(roomumber, booking);
+                }
+            }
+            else {
+                mapRoomIDToBooking.put(roomumber,booking);
+            }
+        }
+        return bookingRepository.findTest();
+    }
+    public List<ResponseForUsingRoomInformation> getInforBookingAndGuest(GuestService guestService) {
+        List<BookingEntity> lisUniqueBooing = getUniqueUsingRoom();
+        List<ResponseForUsingRoomInformation> listans = new ArrayList<>();
+        for (BookingEntity book : lisUniqueBooing) {
+            ResponseForUsingRoomInformation res = new ResponseForUsingRoomInformation();
+            Date starttime = book.getCheckinDate();
+            Date endtime = book.getCheckoutDate();
+            res.setStartTime(starttime);
+            res.setEndTime(endtime);
+            Float money = book.getTotalPrice();
+            res.setMoney(money);
+            Integer guestID = book.getGestID();
+            List<GuestEntity> lisguestTMP = guestService.getByID(String.valueOf(guestID));
+            GuestEntity guestTMP = lisguestTMP.get(0);
+            String firstname = guestTMP.getFirstname();
+            String cusID = guestTMP.getCusID();
+            String gender = guestTMP.getCusGender();
+            String Phone = guestTMP.getCusPhone();
+            res.setFirstname(firstname);
+            res.setCusID(cusID);
+            res.setGender(gender);
+            res.setPhone(Phone);
+
+            listans.add(res);
+        }
+        return listans;
+    }
+    public List<GuestEntity> handleDataRecieve(RequestForBooking booking) {
+        String cusID = booking.getCusID();
+
+        List<GuestEntity> lisGuest = guestService.getByCusID(cusID);
+        if(lisGuest.isEmpty()) {
+            GuestEntity newGuest = new GuestEntity();
+            newGuest.setCusDoB(booking.getCusDoB());
+            newGuest.setCusEmail(booking.getCusEmail());
+            newGuest.setCusGender(booking.getCusGender());
+            newGuest.setFirstname(booking.getCusName());
+            newGuest.setCusImg(booking.getCusImg());
+            newGuest.setLastname("nothing");
+            newGuest.setCusPhone(booking.getCusPhone());
+            newGuest.setCusNotes(booking.getCusNotes());
+            newGuest.setCusID(cusID);
+            guestService.saveDetails(newGuest);
+
+            List<GuestEntity> newListGuest = guestService.getByCusID(cusID);
+            Integer guestID = newListGuest.get(0).getGuestID();
+            List<RoomEntity> listRoom = roomService.getRoomByRoomName(booking.getName());
+            Integer roomnumber = listRoom.get(0).getRoomnumber();
+            roomService.updateStatusActive2Using(roomnumber);
+
+
+            BookingEntity newBooking = new BookingEntity();
+            newBooking.setTotalPrice(booking.getMoney());
+            newBooking.setGestID(guestID);
+            newBooking.setRoomNumber(roomnumber);
+
+
+            String dateCheckinString = booking.getStartTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date checkinDate = new Date();
+            try {
+                checkinDate = formatter.parse(dateCheckinString);
+                System.out.println(checkinDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            String dateCheckoutString = booking.getEndTime();
+            Date checkoutDate = new Date();
+            try {
+                 checkoutDate = formatter.parse(dateCheckoutString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            newBooking.setCheckinDate(checkinDate);
+            newBooking.setCheckoutDate(checkoutDate);
+            bookingRepository.save(newBooking);
+        } else {
+            Integer guestID = lisGuest.get(0).getGuestID();
+            List<RoomEntity> listRoom = roomService.getRoomByRoomName(booking.getName());
+            Integer roomnumber = listRoom.get(0).getRoomnumber();
+            roomService.updateStatusActive2Using(roomnumber);
+
+
+            BookingEntity newBooking = new BookingEntity();
+            newBooking.setTotalPrice(booking.getMoney());
+            newBooking.setGestID(guestID);
+            newBooking.setRoomNumber(roomnumber);
+
+
+            String dateCheckinString = booking.getStartTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date checkinDate = new Date();
+            try {
+                checkinDate = formatter.parse(dateCheckinString);
+                System.out.println(checkinDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            String dateCheckoutString = booking.getEndTime();
+            Date checkoutDate = new Date();
+            try {
+                checkoutDate = formatter.parse(dateCheckoutString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            newBooking.setCheckinDate(checkinDate);
+            newBooking.setCheckoutDate(checkoutDate);
+            bookingRepository.save(newBooking);
+        }
+        return lisGuest;
+    }
+
 }

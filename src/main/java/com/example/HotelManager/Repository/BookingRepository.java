@@ -13,4 +13,12 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<BookingEntity, Integer> {
     @Query("SELECT p FROM BookingEntity p WHERE p.GuestID = :GuestID")
     List<BookingEntity> findByGestID(String GuestID);
+
+    @Query(
+            "(select p from BookingEntity p where p.RoomName in " +
+            "(select roomnumber from RoomEntity where Status = 'Using')" +
+            ")" )
+
+    List<BookingEntity> findTest();
+
 }

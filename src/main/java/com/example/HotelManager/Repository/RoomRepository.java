@@ -11,4 +11,9 @@ public interface RoomRepository extends JpaRepository<RoomEntity,Integer> {
     List<RoomEntity> findByhotelID(String HotelID);
     @Query("SELECT count(p) FROM RoomEntity p where p.typeID = :roomtypeid and p.Status = :status")
     int countRoom(int roomtypeid,String status);
+
+
+    @Query("SELECT p FROM RoomEntity p where p.RoomName = :name")
+    List<RoomEntity> findByRoomName(String name);
+
 }
