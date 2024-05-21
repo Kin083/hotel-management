@@ -10,7 +10,7 @@ const userApi = {
     return axiosClient.get(url, { params: params });
   },
   getType(params) {
-    const url = "getAllRoomType";
+    const url = "/getallRoomType";
     return axiosClient.get(url, { params: params });
   },
 
@@ -19,12 +19,12 @@ const userApi = {
     return axiosClient.post(url, data);
   },
 
-  updateType(typeID,data) {
+  updateType(typeID, data) {
     const url = `/update/roomTYpe/${typeID}`;
     return axiosClient.post(url, data);
   },
 
-   deleteType(typeID) {
+  deleteType(typeID) {
     const url = `/Roomtype/delete/${typeID}`;
     return axiosClient.delete(url);
   },
@@ -35,8 +35,57 @@ const userApi = {
   },
 
   addBooking(data) {
-    const url = "/BookingInfomation/add";
+    const url = "/addBookingDetails";
     return axiosClient.post(url, data);
+  },
+
+  getRevenue(params) {
+    const url = "getRevenue/Payments/" + params;
+    console.log(url);
+    return axiosClient.get(url, params);
+  },
+
+  getLogin({ username, password }) {
+    const url = "login";
+    return axiosClient.post(url, {
+      user_name: username,
+      user_password: password,
+    });
+  },
+
+  getSignUp({ username, password, email, fullname, value }) {
+    const url = "register";
+    return axiosClient.post(url, {
+      user_name: username,
+      user_password: password,
+      full_name: fullname,
+      email: email,
+      phone: value,
+    });
+  },
+  getValidCode({ verificationCode }) {
+    const url = "register/validation";
+    return axiosClient.post(url, {
+      userInput: verificationCode,
+    });
+  },
+
+  getLogout({ sessionId, userName, role }) {
+    const url = "logoutt";
+    return axiosClient.post(url, {
+      sessionId: sessionId,
+      username: userName,
+      role: role,
+    });
+  },
+
+  getHome({ sessionId, userName, role }) {
+    const url = "home";
+    return axiosClient.post(url, {
+      sessionId: sessionId,
+      username: userName,
+      role: role,
+    });
   },
   //   update(data) {
   //     const url = `/users/${data.id}`;

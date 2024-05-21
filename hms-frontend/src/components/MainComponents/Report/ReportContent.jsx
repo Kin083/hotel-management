@@ -16,14 +16,21 @@ export const dataRoom = [
     ["12", 180, "#3366CC"],
     ["15", 70, "#3366CC"],
     ["28", 120, "#3366CC"],
-    ["30", 500, "#3366CC"]
+    ["30", 500, "#3366CC"],
+    ["31", 600, "#3366CC"],
+    ["31", 600, "#3366CC"],
+    ["31", 600, "#3366CC"],
+    ["31", 600, "#3366CC"]
 ]
 
-export function RevenueReportContent({ selectedDisplayType, selectedDateRange }) {
+export function RevenueReportContent({ selectedDisplayType, selectedDateRange, dataRevenue, year }) {
     return (
         <>
-            {selectedDisplayType === 'report-chart' && <RevenueReportChart selectedDateRange={selectedDateRange} />}
-            {selectedDisplayType === 'report-pdf' && <TableToPDF />}
+            {selectedDisplayType === 'report-chart' && <RevenueReportChart selectedDateRange={selectedDateRange}
+                                                                            dataRevenue={dataRevenue}
+                                                                            year={year} />}
+            {selectedDisplayType === 'report-pdf' && <TableToPDF dataRevenue={dataRevenue}
+                                                                year={year} />}
         </>
     )
 }

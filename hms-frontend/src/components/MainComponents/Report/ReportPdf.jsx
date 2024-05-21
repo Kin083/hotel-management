@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { dataRevenue } from "./ReportContent";
 import classNames from "classnames/bind";
 import styles from "./Report.module.css";
 
 const cx = classNames.bind(styles);
-const TableToPDF = () => {
+const TableToPDF = ({dataRevenue}) => {
     const [pdfUrl, setPdfUrl] = useState('');
 
     useEffect(() => {
         exportPDF();
-    }, []);
+    }, [dataRevenue]);
 
     const exportPDF = () => {
         const unit = 'pt';
@@ -23,8 +22,10 @@ const TableToPDF = () => {
         doc.setFontSize(15);
 
         const title = 'Báo cáo Doanh thu';
-        const headers = [['Ngày', 'Doanh thu(USD)']];
-        const body = dataRevenue.map((row) => [row[0], row[1]]);
+        const headers = [['Tháng', 'Doanh thu(USD)']];
+        const tmpArr = dataRevenue.slice(1);
+    
+        const body = tmpArr.map((row) => [row[0], row[1]]);
 
         const content = {
             startY: 50,

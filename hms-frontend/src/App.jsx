@@ -6,16 +6,18 @@ import Main from "./pages/Main/Main";
 import Revenue from "./components/MainComponents/Report/Revenue";
 import RoomBooking from "./components/MainComponents/Report/RoomBooking";
 import Verification from "./pages/Login/Verification";
-
+import { useState } from "react";
 const App = () => {
+  const [session, setSession] = useState();
+
   return (
     <>
       <div className="app">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/main" element={<Main />} />
-          <Route path="/room" element={<Main />} />
+          <Route path="/login" element={<Login session={session} setSession={setSession}/>} />
+          <Route path="/main" element={<Main session={session} />} />
+          {/* <Route path="/room" element={<Main />} /> */}
           <Route path="/revenue" element={<Revenue />} />
           <Route path="/roombooking-report" element={<RoomBooking />} />
           <Route path="/verification" element={<Verification />} />

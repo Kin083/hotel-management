@@ -25,6 +25,10 @@ import PropTypes from "prop-types";
 import classNames from "classnames/bind";
 import styles from "./Report.module.css";
 
+import InputLabel from '@mui/material/InputLabel';
+
+
+
 const cx = classNames.bind(styles);
 const StyledBox = styled(Box)(() => ({
     width: "100%",
@@ -36,38 +40,17 @@ const StyledBox = styled(Box)(() => ({
 }));
 
 
-export function RevenueReportSideBar({ onDisplayTypeSelected, onDateRangeSelected }) {
+export function RevenueReportSideBar({ onDisplayTypeSelected, onDateRangeSelected, onYearSelected, year }) {
     const [statusExpanded, setStatusExpanded] = useState(true);
     const [timeExpanded, setTimeExpanded] = useState(true);
     const [value, setValue] = useState("report-chart");
-    // date state
-    const [range, setRange] = useState([
-        {
-            startDate: new Date(),
-            endDate: addDays(new Date(), 7),
-            key: 'selection'
-        }
-    ])
-    const shortcuts = [
-        {
-            label: 'This week',
-            dates: [startOfWeek(new Date()), endOfWeek(new Date())],
-        },
-        {
-            label: 'Last week',
-            dates: [startOfWeek(addDays(new Date(), -7)), endOfWeek(addDays(new Date(), -7))],
-        },
-        ,
-        {
-            label: 'This month',
-            dates: [startOfMonth(new Date()), endOfMonth(new Date())],
-        },
-        {
-            label: 'This year',
-            dates: [startOfYear(new Date()), new Date()],
-        },
 
-    ];
+
+    const handleChange = (e) => {
+        onYearSelected(e.target.value);
+      };
+
+    
     // open close
     const [open, setOpen] = useState(false)
 
@@ -99,57 +82,28 @@ export function RevenueReportSideBar({ onDisplayTypeSelected, onDateRangeSelecte
         setValue(selectedDisplayType);
         onDisplayTypeSelected(selectedDisplayType);
     };
-    const handleDateRangeChange = (item) => {
-        const newRange = [item.selection];
-        setRange(newRange); // Cập nhật state range
-        onDateRangeSelected(newRange[0]); // Gọi callback với khoảng thời gian mới
+
+    const CalendarLabel = () => {
+        return (
+        <FormControl fullWidth>
+        <InputLabel id="year-select-label">Year</InputLabel>
+        <Select
+            labelId="year-select-label"
+            id="year-select"
+            value={year}
+            label="Year"
+            onChange={handleChange}
+        >
+            <MenuItem value={2020}>2020</MenuItem>
+            <MenuItem value={2021}>2021</MenuItem>
+            <MenuItem value={2022}>2022</MenuItem>
+            <MenuItem value={2023}>2023</MenuItem>
+            <MenuItem value={2024}>2024</MenuItem>
+        </Select>
+        </FormControl>
+        )
     };
-
-    const CalendarLabel = () => (
-        <div className={cx("calendarWrap")}>
-
-            <input
-                value={`${format(range[0].startDate, "dd/MM/yyyy")} to ${format(range[0].endDate, "dd/MM/yyyy")}`}
-
-                className={cx("inputBox")}
-                onClick={() => setOpen(open => !open)}
-            />
-
-            <div ref={refOne}>
-                {open &&
-                    <DateRangePicker
-                        onChange={
-                            item => {
-                                handleDateRangeChange(item)
-                            }
-                        }
-                        editableDateInputs={true}
-                        moveRangeOnFirstSelection={false}
-                        ranges={range}
-                        months={2}
-                        direction="horizontal"
-                        className={cx("calendarElement")}
-                    />
-                }
-                <div className="shortcuts">
-                    <Select
-
-                    >
-                        {shortcuts.map((shortcut) => (
-                            <MenuItem
-                                key={shortcut.label}
-                                onClick={() => setRange([{ startDate: shortcut.dates[0], endDate: shortcut.dates[1], key: 'selection' }])}
-                            >
-                                {shortcut.label}
-                            </MenuItem>
-
-                        ))}
-                    </Select>
-                </div>
-
-            </div>
-        </div>
-    );
+        
     return (
         <Stack
             spacing={2}
@@ -212,7 +166,7 @@ export function RevenueReportSideBar({ onDisplayTypeSelected, onDateRangeSelecte
                         aria-controls="status-content"
                         id="status-header"
                     >
-                        Time
+                        Year
                     </AccordionSummary>
                     <AccordionDetails>
                         <CalendarLabel />
@@ -441,7 +395,3 @@ export function RoomBookingReportSideBar({ onDisplayTypeSelected }) {
 
     )
 }
-
-
-
-

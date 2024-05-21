@@ -6,11 +6,18 @@ import { BsXLg } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
+import userApi from "../../api/userApi";
+import { useNavigate } from 'react-router-dom';
 
-
-const Login = () => {
+const Login = ({ session, setSession }) => {
     const [isActive, setIsActive] = useState(false);
     const [value, setValue] = useState(); // cho phan PhoneNumber
+    const [username, setUsername] = useState();
+    const [password, setPassword] = useState();
+    const [email, setEmail] = useState();   
+    const [fullname, setFullname] = useState();
+    const navigate = useNavigate();
+
     // Hàm xử lý sự kiện khi nhấn nút Register
     const handleRegisterClick = () => {
         setIsActive(true);
@@ -20,6 +27,35 @@ const Login = () => {
     const handleLoginClick = () => {
         setIsActive(false);
     };
+
+    const handleOnLogin = async(e) => {
+        e.preventDefault();
+        const response = await userApi.getLogin({username, password});
+        if(response ) {
+            const sessionData = {
+                Username: response.username,
+                Role: response.role,
+                SessionId: response.sessionId
+            };
+            setSession(sessionData); 
+            navigate("/main");
+        } else {
+            alert("Đăng nhập không thành công");
+        }
+    };
+
+    const handleOnSignUp = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await userApi.getSignUp({ username, password, email, fullname, value });
+            console.log("response:", response);
+            navigate("/verification");
+        } catch (error) {
+            alert("Thông tin đăng ký không hợp lệ");
+            console.error("Đăng ký không thành công", error);
+        }
+    };
+    
 
 
     return (
@@ -34,14 +70,14 @@ const Login = () => {
                                 <i className="fa-brands fa-google-plus-g google"></i>
                             </div>
                             <span>or use your email for registration</span>
-                            <input type="text" placeholder="Name" />
-                            <input type="text" placeholder="Username" />
-                            <input type="email" placeholder="Email" />
+                            <input type="text" placeholder="Name" value={fullname} onChange={(e) => setFullname(e.target.value)} />
+                            <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+                            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                             <PhoneInput placeholder="Nhập số điện thoại" value={value}
                                 onChange={setValue} className="PhoneInputInput"
                             />
-                            <input type="password" placeholder="Password" />
-                            <Link to="/verification"><button type="submit">Sign Up</button></Link>
+                            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                            <button type="submit" onClick={handleOnSignUp}>Sign Up</button>
                         </form>
                     </div>
                     <div className="form-container sign-in">
@@ -51,10 +87,10 @@ const Login = () => {
                                 <i className="fa-brands fa-google-plus-g google"></i>
                             </div>
                             <span>or use your email password</span>
-                            <input type="email" placeholder="Email" />
-                            <input type="password" placeholder="Password" />
+                            <input type="username" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                             <a href="#">Forget Your Password?</a>
-                            <Link to="/main"><button type="submit">Sign In</button></Link>
+                            <button type="submit" onClick={handleOnLogin}>Sign In</button>
                         </form>
                     </div>
                     <div className="toggle-container">

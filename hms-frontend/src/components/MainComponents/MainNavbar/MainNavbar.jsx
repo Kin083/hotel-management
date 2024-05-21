@@ -73,7 +73,7 @@ const BUTTON_LIST = [
   },
   {
     id: "room-button",
-    href: "/room",
+    href: "/main",
     text: "Room",
     icon: <NightShelterIcon />,
   },
@@ -143,14 +143,6 @@ function Navbar() {
               <MenuItem onClick={() => navigate("/revenue")} disableRipple>
                 <ReceiptLongIcon />
                 Revenue
-              </MenuItem>
-              <MenuItem onClick={handleClose} disableRipple>
-                <FaceRetouchingNaturalIcon />
-                Customer
-              </MenuItem>
-              <MenuItem onClick={handleClose} disableRipple>
-                <TrendingUpIcon />
-                Finance
               </MenuItem>
             </StyledMenu>
           </Stack>
