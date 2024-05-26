@@ -18,10 +18,10 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import NightShelterIcon from "@mui/icons-material/NightShelter";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural";
+// import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+// import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
-import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+// import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import { useNavigate } from "react-router-dom";
 
 const theme = createTheme({
@@ -133,13 +133,6 @@ function Navbar() {
               open={Boolean(reportAnchorEl)}
               onClose={handleClose}
             >
-              <MenuItem
-                onClick={() => navigate("/roombooking-report")}
-                disableRipple
-              >
-                <EventAvailableIcon />
-                Room Booking
-              </MenuItem>
               <MenuItem onClick={() => navigate("/revenue")} disableRipple>
                 <ReceiptLongIcon />
                 Revenue

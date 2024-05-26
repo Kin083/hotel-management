@@ -11,19 +11,18 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = ({ session, setSession }) => {
     const [isActive, setIsActive] = useState(false);
-    const [value, setValue] = useState(); // cho phan PhoneNumber
+    const [value, setValue] = useState(); 
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
     const [email, setEmail] = useState();   
     const [fullname, setFullname] = useState();
     const navigate = useNavigate();
 
-    // Hàm xử lý sự kiện khi nhấn nút Register
+
     const handleRegisterClick = () => {
         setIsActive(true);
     };
 
-    // Hàm xử lý sự kiện khi nhấn nút Login
     const handleLoginClick = () => {
         setIsActive(false);
     };
@@ -40,7 +39,7 @@ const Login = ({ session, setSession }) => {
             setSession(sessionData); 
             navigate("/main");
         } else {
-            alert("Đăng nhập không thành công");
+            alert("Login failed");
         }
     };
 
@@ -51,8 +50,8 @@ const Login = ({ session, setSession }) => {
             console.log("response:", response);
             navigate("/verification");
         } catch (error) {
-            alert("Thông tin đăng ký không hợp lệ");
-            console.error("Đăng ký không thành công", error);
+            alert("Invalid registration information.");
+            console.error("Registration failed", error);
         }
     };
     
@@ -73,7 +72,7 @@ const Login = ({ session, setSession }) => {
                             <input type="text" placeholder="Name" value={fullname} onChange={(e) => setFullname(e.target.value)} />
                             <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
                             <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                            <PhoneInput placeholder="Nhập số điện thoại" value={value}
+                            <PhoneInput placeholder="Enter phone number." value={value}
                                 onChange={setValue} className="PhoneInputInput"
                             />
                             <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>

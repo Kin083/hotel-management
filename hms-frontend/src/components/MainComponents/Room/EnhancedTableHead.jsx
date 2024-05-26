@@ -66,7 +66,7 @@ function EnhancedTableHead(props) {
       id: "maximumCapacity",
       numeric: true,
       disablePadding: false,
-      label: "Maximun Capacity",
+      label: "Maximum Capacity",
     },
     {
       id: "pay",

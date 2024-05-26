@@ -73,7 +73,7 @@ const MainHeader = ({ session }) => {
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
               >
-                <Avatar sx={{ width: 40, height: 40 }}>BM</Avatar>
+                <Avatar sx={{ width: 40, height: 40 }}>TA</Avatar>
               </IconButton>
             </Tooltip>
           </Box>

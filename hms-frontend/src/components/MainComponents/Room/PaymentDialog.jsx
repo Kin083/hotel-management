@@ -24,7 +24,7 @@ import {
 import Slide from "@mui/material/Slide";
 import PropTypes from "prop-types";
 import CloseIcon from "@mui/icons-material/Close";
-import QRCode from "qrcode.react"; // Import thư viện QRCode
+import QRCode from "qrcode.react";
 
 function createData(
   roomName,
@@ -156,8 +156,21 @@ function PaymentDialog(props) {
   };
 
   const handleDiscountChange = (event) => {
-    setDiscount(event.target.value);
+    let discountValue = event.target.value;
+    
+    if (discountValue < 0) {
+      alert("Discount value cannot be negative. Setting discount to 0.");
+      discountValue = 0;
+    }
+    
+    if (discountValue > 100) {
+      alert("Discount value cannot exceed 100%. Setting discount to 100.");
+      discountValue = 100;
+    }
+  
+    setDiscount(discountValue);
   };
+  
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
