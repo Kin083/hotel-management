@@ -10,7 +10,7 @@ public class HotelController {
     @Autowired
     private HotelService hotelService;
 
-    @GetMapping(path = "/getallHotel")
+    @GetMapping(path = "/hotel/getAll")
     public @ResponseBody Iterable<HotelEntity> getAllHotel() {
         return hotelService.getAllHotel();
     }
@@ -19,7 +19,7 @@ public class HotelController {
 
     //This function will set from using room to Active room
 
-    @PostMapping(path="/HotelInformation/add")
+    @PostMapping(path="/hotel/add")
     public HotelEntity addHotelInfor(@RequestBody HotelEntity hotel) {
         return hotelService.saveDetails(hotel);
     }

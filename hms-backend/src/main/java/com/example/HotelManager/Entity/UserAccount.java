@@ -15,8 +15,6 @@ import lombok.Setter;
 @Data
 @Entity
 @Table(name="user_account")
-@Setter
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Component

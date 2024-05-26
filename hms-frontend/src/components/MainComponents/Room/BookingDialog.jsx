@@ -8,7 +8,6 @@ import {
   Alert,
   Box,
   Button,
-  ButtonGroup,
   DialogActions,
   IconButton,
   Paper,
@@ -17,7 +16,6 @@ import {
   TableCell,
   TableRow,
   TextField,
-  TableContainer,
   TableHead,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -35,81 +33,89 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
+const SUN_THEME = {
+  background: "linear-gradient(to right, #f8b195, #f67280)",
+  color: "black",
+};
+
+const DAILY_THEME = {
+  background: "linear-gradient(to right, #f67280, #c06c84, #6c5b7b)",
+  color: "black",
+};
+
+const NIGHT_THEME = {
+  background: "linear-gradient(to right, #6c5b7b, #355c7d)",
+  color: "white",
+};
+
 const customTheme = createTheme({
   components: {
     MuiAlert: {
       variants: [
         {
           props: { severity: "sun" },
-          style: {
-            background: "linear-gradient(to right, #f8b195, #f67280)",
-            color: "black",
-          },
+          style: SUN_THEME,
         },
         {
           props: { severity: "daily" },
-          style: {
-            background: "linear-gradient(to right, #f67280, #c06c84, #6c5b7b)",
-            color: "black",
-          },
+          style: DAILY_THEME,
         },
         {
           props: { severity: "moon" },
-          style: {
-            background: "linear-gradient(to right, #6c5b7b, #355c7d)",
-            color: "white",
-          },
+          style: NIGHT_THEME,
         },
       ],
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.MuiButton-dayRate": SUN_THEME,
+          "&.MuiButton-dailyRate": DAILY_THEME,
+          "&.MuiButton-nightRate": NIGHT_THEME,
+        },
+      },
     },
   },
 });
 
-const StyledAlert = styled(Alert)(() => ({
-  "&.MuiAlert-standardSun": {
-    backgroundColor: "#fff9c4",
-    color: "black",
-  },
-  "&.MuiAlert-standardMoon": {
-    backgroundColor: "#311b92",
-    color: "white",
-  },
-  "&.MuiAlert-standardDaily": {
-    background: "linear-gradient(to right, #f67280, #c06c84, #6c5b7b)",
-    color: "black",
-  },
-}));
-
-const StyledTableHead = styled(TableHead)(({ rateType }) => ({
+const StyledTableHead = styled(TableHead, {
+  shouldForwardProp: (prop) => prop !== "rateType",
+})(({ rateType }) => ({
   background:
     rateType === "dayRate"
-      ? "linear-gradient(to right, #f8b195, #f67280)"
+      ? SUN_THEME.background
       : rateType === "nightRate"
-      ? "linear-gradient(to right, #6c5b7b, #355c7d)"
-      : "linear-gradient(to right, #f67280, #c06c84, #6c5b7b)",
+      ? NIGHT_THEME.background
+      : DAILY_THEME.background,
   "& th": {
     color: rateType === "nightRate" ? "white" : "black",
   },
 }));
 
-const StyledTableContainer = styled(TableContainer)(({ rateType }) => ({
-  border: `2px solid ${
-    rateType === "dayRate"
-      ? "#f8b195"
-      : rateType === "nightRate"
-      ? "#355c7d"
-      : "#f67280"
-  }`,
-  borderRadius: "8px",
-}));
-
 function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
-  const [rows, setRows] = useState([]);
+  const initialState = {
+    rows: [],
+    startTime: dayjs(),
+    endTime: dayjs().add(1, "hour"),
+    executeTime: "hour",
+    price: "dayRate",
+    timeAlert: false,
+  };
+  const [rows, setRows] = useState(initialState.rows);
   const [startTime, setStartTime] = useState(dayjs());
   const [endTime, setEndTime] = useState(dayjs().add(1, "hour"));
   const [executeTime, setExecuteTime] = useState("hour");
   const [price, setPrice] = useState("dayRate");
   const [timeAlert, setTimeAlert] = useState(false);
+
+  const resetState = () => {
+    setRows((prevRows) => prevRows.map((row) => ({ ...row, quantity: 0 })));
+    setStartTime(initialState.startTime);
+    setEndTime(initialState.endTime);
+    setExecuteTime(initialState.executeTime);
+    setPrice(initialState.price);
+    setTimeAlert(initialState.timeAlert);
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -138,6 +144,9 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
   };
 
   const handleConfirmBooking = () => {
+    if (timeAlert) {
+      return;
+    }
     const selectedRows = rows
       .filter((row) => row.quantity !== null && row.quantity !== 0)
       .map((row) => {
@@ -156,18 +165,22 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
         };
       });
     confirmBooking(selectedRows);
+    resetState();
   };
 
   const handleEndTimeChange = (newValue) => {
     if (newValue.isAfter(startTime)) {
       setEndTime(newValue);
+      if (timeAlert) {
+        setTimeAlert(false);
+      }
     } else {
       setTimeAlert(true);
     }
   };
 
   return (
-    <ThemeProvider theme={customTheme}>
+    <ThemeProvider theme={{ ...customTheme, rateType: price }}>
       <Dialog
         open={openBookingDialog}
         TransitionComponent={Transition}
@@ -207,27 +220,27 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
           >
             <Box sx={{ height: "140px" }}>
               <div style={{ display: "flex", paddingBottom: "10px" }}>
-                <StyledAlert
+                <Alert
                   icon={<WbSunnyIcon fontSize="inherit" />}
                   severity="sun"
                   sx={{ width: "33.33333%" }}
                 >
                   Day hour: 6h00 - 18h00
-                </StyledAlert>
-                <StyledAlert
+                </Alert>
+                <Alert
                   icon={<Brightness4Icon fontSize="inherit" />}
                   severity="daily"
                   sx={{ width: "33.33333%", marginLeft: "5px" }}
                 >
                   A Day: 0h00 - 23h59
-                </StyledAlert>
-                <StyledAlert
+                </Alert>
+                <Alert
                   icon={<DarkModeIcon fontSize="inherit" />}
                   severity="moon"
                   sx={{ width: "33.33333%", marginLeft: "5px" }}
                 >
                   Moon hour: 18h00 - 6h00
-                </StyledAlert>
+                </Alert>
               </div>
               <Box
                 sx={{
@@ -237,29 +250,38 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                   padding: "10px 0",
                 }}
               >
-                <ButtonGroup variant="outlined" sx={{ height: "56px" }}>
+                <Box sx={{ height: "56px" }}>
                   <Button
+                    variant="contained"
+                    className="MuiButton-dayRate"
                     onClick={() => {
                       setExecuteTime("hour"), setPrice("dayRate");
                     }}
+                    sx={{ height: "100%" }}
                   >
-                    Day Hour
+                    Day Rate
                   </Button>
                   <Button
+                    variant="contained"
+                    className="MuiButton-dailyRate"
                     onClick={() => {
                       setExecuteTime("day"), setPrice("dailyRate");
                     }}
+                    sx={{ height: "100%", marginLeft: "5px" }}
                   >
-                    Days
+                    Daily Rate
                   </Button>
                   <Button
+                    variant="contained"
+                    className="MuiButton-nightRate"
                     onClick={() => {
                       setExecuteTime("hour"), setPrice("nightRate");
                     }}
+                    sx={{ height: "100%", marginLeft: "5px" }}
                   >
-                    Night Hour
+                    Night Rate
                   </Button>
-                </ButtonGroup>
+                </Box>
                 <LocalizationProvider
                   dateAdapter={AdapterDayjs}
                   adapterLocale="en-gb"
@@ -300,60 +322,64 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                 )} ${executeTime}`}</Paper>
               </Box>
             </Box>
-            <StyledTableContainer>
-              <Table>
-                <StyledTableHead rateType={price}>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell align="center">Capacity</TableCell>
-                    <TableCell align="center">Available</TableCell>
-                    <TableCell align="center">Quantity</TableCell>
-                    <TableCell align="center">Price</TableCell>
-                    <TableCell align="center">Overtime Pay</TableCell>
+
+            <Table>
+              <StyledTableHead rateType={price}>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell align="center">Capacity</TableCell>
+                  <TableCell align="center">Available</TableCell>
+                  <TableCell align="center">Quantity</TableCell>
+                  <TableCell align="center">Price</TableCell>
+                  <TableCell align="center">Overtime Pay</TableCell>
+                </TableRow>
+              </StyledTableHead>
+              <TableBody sx={{ paddingBottom: 0 }}>
+                {rows.map((row, index) => (
+                  <TableRow key={row.type}>
+                    <TableCell component="th" scope="row">
+                      {row.type}
+                    </TableCell>
+                    <TableCell align="center">{row.capicity}</TableCell>
+                    <TableCell align="center">
+                      {row.listRoomNumber.length}
+                    </TableCell>
+                    <TableCell align="center">
+                      <TextField
+                        type="number"
+                        variant="standard"
+                        inputProps={{
+                          max: row.listRoomNumber.length,
+                          min: 0,
+                        }}
+                        value={row.quantity}
+                        onChange={(e) =>
+                          handleChangeQuantity(index, e.target.value)
+                        }
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      {price === "dayRate"
+                        ? row.dayRate
+                        : price === "nightRate"
+                        ? row.nightRate
+                        : row.dailyRate}
+                    </TableCell>
+                    <TableCell align="center">{row.overtimePay}</TableCell>
                   </TableRow>
-                </StyledTableHead>
-                <TableBody sx={{ paddingBottom: 0 }}>
-                  {rows.map((row, index) => (
-                    <TableRow key={row.type}>
-                      <TableCell component="th" scope="row">
-                        {row.type}
-                      </TableCell>
-                      <TableCell align="center">{row.capicity}</TableCell>
-                      <TableCell align="center">
-                        {row.listRoomNumber.length}
-                      </TableCell>
-                      <TableCell align="center">
-                        <TextField
-                          type="number"
-                          variant="standard"
-                          inputProps={{
-                            max: row.listRoomNumber.length,
-                            min: 0,
-                          }}
-                          defaultValue={0}
-                          onChange={(e) =>
-                            handleChangeQuantity(index, e.target.value)
-                          }
-                        />
-                      </TableCell>
-                      <TableCell align="center">
-                        {price === "dayRate"
-                          ? row.dayRate
-                          : price === "nightRate"
-                          ? row.nightRate
-                          : row.dailyRate}
-                      </TableCell>
-                      <TableCell align="center">{row.overtimePay}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </StyledTableContainer>
+                ))}
+              </TableBody>
+            </Table>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={closeBooking}>Cancel</Button>
-          <Button onClick={handleConfirmBooking}>Confirm</Button>
+          <Button
+            className={`MuiButton-${price}`}
+            variant="contained"
+            onClick={handleConfirmBooking}
+          >
+            Confirm
+          </Button>
         </DialogActions>
       </Dialog>
     </ThemeProvider>

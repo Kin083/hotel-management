@@ -29,31 +29,30 @@ public class BookingController {
     @Autowired
     private PaymentsService paymentsService;
 
-    @GetMapping(path="/getallBooking")
+    @GetMapping(path="/booking/getAll")
     public @ResponseBody Iterable<BookingEntity> getAllBooking() {
-        System.out.println("ok da vao den day");
         // This returns a JSON or XML with the users
         return bookingService.getAllBooking();
     }
-    //hàm này để update các ttiin về booking, cho trường hợp khách muốn đổi ngày checkin-checkout,
+    //hàm này để update các infor về booking, cho trường hợp khách muốn đổi ngày checkin-checkout,
     //hàm này chưa tính tiền ontime, sẽ có bổ sung.
-    @PostMapping(path = "/updateBooking/{id}")
+    @PostMapping(path = "/booking/update/{id}")
     public BookingEntity updateBookingInfo(@PathVariable int id, @RequestBody BookingEntity bookEntity)
     {
         return bookingService.updateBookingInfo(id,bookEntity);
     }
-    @PostMapping(path = "/BookingInfomation/add")
-    public BookingEntity addBookingInfor(@RequestBody BookingEntity booking) {
-        return bookingService.addBookingInfor(booking);
+    @PostMapping(path = "/booking/add")
+    public BookingEntity addBooking(@RequestBody BookingEntity booking) {
+        return bookingService.addBooking(booking);
     }
-    @PostMapping(path = "/booking/addInforcaculate")
-    public Long addBookingInforCaculate(@RequestBody BookingEntity booking,@RequestParam int soluong) {
+    @PostMapping(path = "/booking/addInforCaculate")
+    public Long addBookingInforCaculate(@RequestBody BookingEntity booking,@RequestParam int amount) {
 
-        int roomnumber = booking.getRoomNumber();
-        RoomEntity room = roomService.getRoom(roomnumber);
-        Integer roomTypeID = room.getTypeID();
+        int roomNumber = booking.getRoomNumber();
+        RoomEntity room = roomService.getRoom(roomNumber);
+        Integer roomTypeID = room.getTypeId();
         RoomTypeEntity roomType = roomTypeService.getRoomTypeByID(roomTypeID);
-        return bookingService.addBookingInforCaculate(booking,room,roomType,soluong);
+        return bookingService.addBookingInforCaculate(booking, room, roomType, amount);
     }
 
     //hàm này để tính tiền phòng dụư kiến (chưa kể phí dịch vụ và thời gian ở thêm)
@@ -62,23 +61,23 @@ public class BookingController {
     @GetMapping(path = "/payments/getPaymentsPending")
     public List<BookingEntity> getBookingWithoutPays() {
         List<PaymentEntity> listPay = paymentsService.getAllPayments();
-        List<BookingEntity> lisBooking = bookingService.getAllBook();
-        return getAllBookingPendings(listPay,lisBooking);
+        List<BookingEntity> listBooking = (List<BookingEntity>) bookingService.getAllBooking();
+        return getAllBookingPending(listPay,listBooking);
     }
 
-    private List<BookingEntity> getAllBookingPendings(List<PaymentEntity> listPay ,List<BookingEntity> lisBooking) {
+    private List<BookingEntity> getAllBookingPending(List<PaymentEntity> listPay, List<BookingEntity> lisBooking) {
         List<BookingEntity> lisPendBooking = new ArrayList<>();
         for (BookingEntity book : lisBooking) {
-            Integer bookingID = book.getBookingID();
+            Integer bookingId = book.getBookingId();
             boolean needAdded = true;
             for (PaymentEntity pay : listPay) {
-                Integer bookingId_pay = pay.getBookingid();
-                if (bookingID == bookingId_pay) {
+                Integer bookingId_pay = pay.getBookingId();
+                if (bookingId == bookingId_pay) {
                     needAdded = false;
                     break;
                 }
             }
-            if (needAdded == true){
+            if (needAdded){
                 lisPendBooking.add(book);
             }
         }
@@ -86,7 +85,7 @@ public class BookingController {
     }
 
     //hàm này dùng để đẩy các booking đã thanh toán vào payments
-    @GetMapping(path = "/payments/addpaymentsFromBooking")
+    @GetMapping(path = "/payments/addPaymentsFromBooking")
     public List<PaymentEntity> addPaymentsFromBooking(@RequestBody List<String> listBookID) {
         List<PaymentEntity> listpay = new ArrayList<>();
         for (String bookID : listBookID) {
@@ -94,7 +93,7 @@ public class BookingController {
             Integer book_ID = Integer.valueOf(part[0]);
             String MethodPayments = part[1];
             BookingEntity book = bookingService.getBookingByID(book_ID);
-            Float Price = book.getTotalPrice();
+            Double Price = book.getTotalPrice();
             PaymentEntity payment = new PaymentEntity();
 
             LocalDate today = LocalDate.now();
@@ -103,7 +102,7 @@ public class BookingController {
             payment.setPaymentDate(formattedDateString);
             payment.setPaymentMethod(MethodPayments);
             payment.setAmount(Price);
-            payment.setBookingid(book_ID);
+            payment.setBookingId(book_ID);
             listpay.add(payment);
         }
         for (PaymentEntity pay : listpay) {

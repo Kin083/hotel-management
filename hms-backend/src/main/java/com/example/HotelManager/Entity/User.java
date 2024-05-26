@@ -16,31 +16,29 @@ import lombok.Setter;
 
 @Data
 @Entity
-@Table(name="user")
-@Setter
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="user")
 @Component
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="HotelID")
+	@Column(name = "HotelID")
 	private int id;
 	
-	@Column(name="full_name")
+	@Column(name = "full_name")
 	private String full_name;
 
-	@Column(name="user_name")
+	@Column(name = "user_name")
 	private String user_name;
 	
-	@Column(name="phone")
+	@Column(name = "phone")
 	private String phone;
 	
-	@Column(name="email")
+	@Column(name = "email")
 	private String email;
 	
-	@Column(name="user_password")
+	@Column(name = "user_password")
 	private String user_password;
 	
 }

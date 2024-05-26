@@ -29,7 +29,7 @@ function Revenue() {
           const arr = revenues.map((data, index) => [index+1, data, "#3366CC"]);
           console.log(arr);
           
-           const arrTmp = [["Tháng", "Doanh thu(USD)", { role: "style" }], ...arr];
+           const arrTmp = [["Month", "Revenue(USD)", { role: "style" }], ...arr];
            console.log(arrTmp);
            setDataRevenue(arrTmp);
         };

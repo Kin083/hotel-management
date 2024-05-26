@@ -2,13 +2,13 @@ import { RevenueReportChart } from "./ReportChart"
 import { RoomBookingReportChart } from "./ReportChart";
 import TableToPDF from "./ReportPdf"
 
-export const dataRevenue = [
-    ["Ngày", "Doanh thu(USD)", { role: "style" }],
-    ["12/05/2024", 250, "#3366CC"],
-    ["15/05/2024", 110, "#3366CC"],
-    ["28/05/2024", 120, "#3366CC"],
-    ["30/05/2024", 590, "#3366CC"],
-];
+// export const dataRevenue = [
+//     ["Ngày", "Doanh thu(USD)", { role: "style" }],
+//     ["12/05/2024", 250, "#3366CC"],
+//     ["15/05/2024", 110, "#3366CC"],
+//     ["28/05/2024", 120, "#3366CC"],
+//     ["30/05/2024", 590, "#3366CC"],
+// ];
 
 
 export const dataRoom = [

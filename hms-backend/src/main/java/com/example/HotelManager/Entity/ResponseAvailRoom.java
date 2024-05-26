@@ -1,70 +1,17 @@
 package com.example.HotelManager.Entity;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class ResponseAvailRoom {
     private String type;
-    private String capicity;
-    List<String> listRoomNumber;
-    private Float dayRate;
+    private String capacity;
+    private List<String> listRoomNumber;
+    private Double dayRate;
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getCapicity() {
-        return capicity;
-    }
-
-    public void setCapicity(String capicity) {
-        this.capicity = capicity;
-    }
-
-    public List<String> getListRoomNumber() {
-        return listRoomNumber;
-    }
-
-    public void setListRoomNumber(List<String> listRoomNumber) {
-        this.listRoomNumber = listRoomNumber;
-    }
-
-    public Float getDayRate() {
-        return dayRate;
-    }
-
-    public void setDayRate(Float dayRate) {
-        this.dayRate = dayRate;
-    }
-
-    public Float getNightRate() {
-        return nightRate;
-    }
-
-    public void setNightRate(Float nightRate) {
-        this.nightRate = nightRate;
-    }
-
-    public Float getDailyRate() {
-        return dailyRate;
-    }
-
-    public void setDailyRate(Float dailyRate) {
-        this.dailyRate = dailyRate;
-    }
-
-    public Float getOvetimePay() {
-        return ovetimePay;
-    }
-
-    public void setOvetimePay(Float ovetimePay) {
-        this.ovetimePay = ovetimePay;
-    }
-
-    private Float nightRate;
-    private Float dailyRate;
-    private Float ovetimePay;
+    private Double nightRate;
+    private Double dailyRate;
+    private Double overtimePay;
 }

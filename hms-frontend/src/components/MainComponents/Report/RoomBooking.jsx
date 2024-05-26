@@ -9,27 +9,24 @@ import styles from "./Report.module.css";
 
 const cx = classNames.bind(styles);
 function RoomBooking() {
-
-    const [typeSelected, setTypeSelected] = useState("report-chart");
-    const handleTypeSelected = (type) => {
-        setTypeSelected(type);
-    }
-    return (
-        <>
-            <MainNavbar />
-            <MainHeader />
-            <div className={cx("container")}>
-
-                <div className={cx("inner")}>
-                    <RoomBookingReportSideBar
-                        onDisplayTypeSelected={handleTypeSelected}
-                    />
-                    <RoomBookingReportContent selectedDisplayType={typeSelected}
-                    />
-                </div>
-            </div>
-        </>
-    );
+  const [typeSelected, setTypeSelected] = useState("report-chart");
+  const handleTypeSelected = (type) => {
+    setTypeSelected(type);
+  };
+  return (
+    <>
+      <MainNavbar />
+      <MainHeader />
+      <div className={cx("container")}>
+        <div className={cx("inner")}>
+          <RoomBookingReportSideBar
+            onDisplayTypeSelected={handleTypeSelected}
+          />
+          <RoomBookingReportContent selectedDisplayType={typeSelected} />
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default RoomBooking;

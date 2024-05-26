@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 public class GuestController {
     @Autowired
     private GuestService guestService;
-    @GetMapping(path= "/getallGuest")
+    @GetMapping(path= "/guest/getAll")
     public @ResponseBody Iterable<GuestEntity> getAllGuests() {
         return guestService.getAllGuest();
     }
 
 
-    @PostMapping(path = "/Guest/add")
+    @PostMapping(path = "/guest/add")
     public GuestEntity addRoom(@RequestBody GuestEntity guest) {
         return guestService.saveDetails(guest);
     }

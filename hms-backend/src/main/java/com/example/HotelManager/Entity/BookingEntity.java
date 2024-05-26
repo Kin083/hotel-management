@@ -1,73 +1,28 @@
 package com.example.HotelManager.Entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Date;
 
+@Data
 @Entity
-@Table( name = "booking")
+@Table(name = "booking")
 public class BookingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BookingID")
-    private int BookingID;
+    @Column(name = "booking_id")
+    private int bookingId;
 
-    public void setBookingID(int bookingID) {
-        BookingID = bookingID;
-    }
+    @Column(name = "guest_id")
+    private int guestId;
+    @Column(name = "room_number")
+    private int roomNumber;
+    @Column(name = "checkin_date")
+    private Date checkinDate;
+    @Column(name = "checkout_date")
+    private Date checkoutDate;
+    @Column(name = "total_price")
+    private Double totalPrice;
 
-    public void setGestID(int guestID) {
-        GuestID = guestID;
-    }
-
-    public void setRoomNumber(int roomNumber) {
-        RoomName = roomNumber;
-    }
-
-    public void setCheckinDate(Date checkinDate) {
-        CheckinDate = checkinDate;
-    }
-
-    public void setCheckoutDate(Date checkoutDate) {
-        CheckoutDate = checkoutDate;
-    }
-
-    public void setTotalPrice(float totalPrice) {
-        TotalPrice = totalPrice;
-    }
-
-    @Column(name = "GuestID")
-    private int GuestID;
-    @Column(name = "RoomNumber")
-    private int RoomName;
-    @Column(name = "CheckinDate")
-    private Date CheckinDate;
-    @Column(name = "CheckoutDate")
-    private Date CheckoutDate;
-    @Column(name = "TotalPrice")
-    private float TotalPrice;
-
-    public int getBookingID() {
-        return BookingID;
-    }
-
-    public int getGestID() {
-        return GuestID;
-    }
-
-    public int getRoomNumber() {
-        return RoomName;
-    }
-
-    public Date getCheckinDate() {
-        return CheckinDate;
-    }
-
-    public Date getCheckoutDate() {
-        return CheckoutDate;
-    }
-
-    public float getTotalPrice() {
-        return TotalPrice;
-    }
 }

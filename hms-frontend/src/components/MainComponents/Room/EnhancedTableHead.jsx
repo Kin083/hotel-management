@@ -2,10 +2,21 @@ import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
 import Checkbox from "@mui/material/Checkbox";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { visuallyHidden } from "@mui/utils";
+import { styled } from "@mui/material/styles";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+
+const StyledTableCell = styled(TableCell)(() => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#ebf5ee",
+    color: "#1f2224",
+    fontSize: 14,
+    border: 0,
+    padding: 10,
+  },
+}));
 
 function EnhancedTableHead(props) {
   const headCells = [
@@ -55,13 +66,25 @@ function EnhancedTableHead(props) {
       id: "maximumCapacity",
       numeric: true,
       disablePadding: false,
-      label: "Maximun Capacity",
+      label: "Maximum Capacity",
     },
     {
-      id: "notes",
+      id: "pay",
       numeric: false,
       disablePadding: false,
-      label: "Notes",
+      label: "Pay",
+    },
+    {
+      id: "edit",
+      numeric: false,
+      disablePadding: false,
+      label: "Edit",
+    },
+    {
+      id: "expand",
+      numeric: false,
+      disablePadding: false,
+      label: "Expand",
     },
   ];
   const {
@@ -80,7 +103,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+        <StyledTableCell padding="checkbox">
           <Checkbox
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -90,9 +113,9 @@ function EnhancedTableHead(props) {
               "aria-label": "select all rooms",
             }}
           />
-        </TableCell>
+        </StyledTableCell>
         {headCells.map((headCell) => (
-          <TableCell
+          <StyledTableCell
             key={headCell.id}
             align="right"
             padding={headCell.disablePadding ? "none" : "normal"}
@@ -110,7 +133,7 @@ function EnhancedTableHead(props) {
                 </Box>
               ) : null}
             </TableSortLabel>
-          </TableCell>
+          </StyledTableCell>
         ))}
       </TableRow>
     </TableHead>

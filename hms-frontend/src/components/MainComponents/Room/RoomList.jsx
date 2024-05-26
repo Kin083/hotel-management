@@ -4,7 +4,6 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
@@ -18,13 +17,50 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import RoomImage from "./RoomImage";
-import BuildIcon from "@mui/icons-material/Build";
+import EditIcon from "@mui/icons-material/Edit";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { useEffect } from "react";
 import userApi from "../../../api/userApi";
-import { IconButton } from "@mui/material";
+import { Alert, IconButton } from "@mui/material";
 import AdjustRoomDialog from "./AdjustRoomDialog";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import PaymentDialog from "./PaymentDialog";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Snackbar from "@mui/material/Snackbar";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+
+const StyledTableCell = styled(TableCell)(() => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#ebf5ee",
+    color: "#1f2224",
+    fontSize: 14,
+    border: 0,
+    padding: 10,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    padding: 10,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(() => ({
+  "&:nth-of-type(even)": {
+    backgroundColor: "#f7f8f9",
+  },
+  "& td, & th": {
+    border: 0,
+  },
+}));
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -64,11 +100,19 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const [rowsPerPage, setRowsPerPage] = React.useState(8);
   const [expandedRows, setExpandedRows] = React.useState({});
   const [roomInforTab, setRoomInforTab] = React.useState("1");
-  const [hoveredRowId, setHoveredRowId] = React.useState(null);
   const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
   const [specificRoomData, setSpecificRoomData] = React.useState(null);
-  const [roomNames, setRoomNames] = React.useState([]);
+  const [roomNumbers, setroomNumbers] = React.useState([]);
+  const [openPayDialog, setOpenPayDialog] = React.useState(false);
+  const [openBackdrop, setOpenBackDrop] = React.useState(false);
+  const [successAlert, setSuccessAlert] = React.useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
+  const handleDeleteClose = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  // Call API
   useEffect(() => {
     const fetchRooms = async () => {
       const roomList = await userApi.getAll();
@@ -77,23 +121,172 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
         id: index,
       }));
 
-      setRoomNames(roomList.map((room) => room.roomName));
+      setroomNumbers(roomList.map((room) => room.roomNumber));
       setRows(rowsWithId);
     };
 
     fetchRooms();
   }, []);
 
+  // ADJUST ROOM
+  const handleClickAdjust = (id) => {
+    setOpenAdjustDialog(true);
+    const clickedRoom = rows.find((room) => room.id === id);
+    setSpecificRoomData(clickedRoom);
+  };
+
+  const closeAdjustDialog = () => {
+    setOpenAdjustDialog(false);
+  };
+
+  // Render Room information is changed.
+  const saveChange = (updatedData) => {
+    const currentRoomData = specificRoomData;
+
+    // Checking are there any changes? If not -> Do not create new object
+    const isDataChanged = Object.keys(updatedData).some(
+      (key) => updatedData[key] !== currentRoomData[key]
+    );
+
+    if (!isDataChanged) {
+      setOpenAdjustDialog(false);
+      return;
+    }
+
+    const updatedRoomData = {
+      ...currentRoomData,
+      roomNumber:
+        updatedData.name !== currentRoomData.roomNumber &&
+        updatedData.roomNumber !== undefined
+          ? updatedData.roomNumber
+          : currentRoomData.roomNumber,
+      type:
+        updatedData.type !== currentRoomData.type &&
+        updatedData.type !== undefined
+          ? updatedData.type
+          : currentRoomData.type,
+      status:
+        updatedData.status !== currentRoomData.status &&
+        updatedData.status !== undefined
+          ? updatedData.status
+          : currentRoomData.status,
+      notes:
+        updatedData.notes !== currentRoomData.notes &&
+        updatedData.notes !== undefined
+          ? updatedData.notes
+          : currentRoomData.notes,
+    };
+
+    if (updatedRoomData.type !== currentRoomData.type) {
+      const updatedType = typeList.find(
+        (type) => type.name === updatedRoomData.type
+      );
+      if (updatedType) {
+        updatedRoomData.dailyRate = updatedType.dailyRate;
+        updatedRoomData.dayRate = updatedType.dayRate;
+        updatedRoomData.nightRate = updatedType.nightRate;
+        updatedRoomData.overtimeRate = updatedType.overtimePay;
+        updatedRoomData.maximumCapacity = updatedType.capacity;
+      }
+    }
+
+    const updatedUIRow = rows.map((room) => {
+      if (room.id === updatedRoomData.id) {
+        return updatedRoomData;
+      }
+      return room;
+    });
+
+    setRows(updatedUIRow);
+    setOpenAdjustDialog(false);
+  };
+
+  // Render New Room
+  const updateRoomList = (newRoomData) => {
+    // Get type details from typeList
+    const typeDetails = typeList.find((type) => type.name === newRoomData.type);
+
+    // If type details found, update newRoomData with corresponding fields
+    if (typeDetails) {
+      newRoomData.dayRate = typeDetails.dayRate;
+      newRoomData.nightRate = typeDetails.nightRate;
+      newRoomData.dailyRate = typeDetails.dailyRate;
+      newRoomData.overtimeRate = typeDetails.overtimePay;
+      newRoomData.maximumCapacity = typeDetails.capacity;
+    }
+
+    // Update rows with newRoomData
+    setRows([...rows, newRoomData]);
+  };
+
+  // PAYMENT DIALOG
+  const openPaymentDialog = (id) => {
+    setOpenPayDialog(true);
+    const clickedRoom = rows.find((room) => room.id === id);
+    setSpecificRoomData(clickedRoom);
+  };
+
+  const closePaymentDialog = () => {
+    setOpenPayDialog(false);
+  };
+
+  const updateRoomStatusAfterPayment = () => {
+    // Update room status to "Using" after successful payment
+    const updatedRoomData = {
+      ...specificRoomData,
+      status: "Available",
+    };
+
+    const updatedRoomList = rows.map((room) =>
+      room.id === specificRoomData.id ? updatedRoomData : room
+    );
+
+    setRows(updatedRoomList);
+  };
+
+  const savePayment = () => {
+    setOpenPayDialog(false);
+    setOpenBackDrop(true);
+    updateRoomStatusAfterPayment();
+
+    setTimeout(() => {
+      setOpenBackDrop(false);
+      setSuccessAlert(true);
+      setTimeout(() => {
+        setSuccessAlert(false);
+      }, 2000);
+    }, 3000);
+  };
+
+  const handleCloseBackDrop = () => {
+    setOpenBackDrop(false);
+  };
+
+  const closeAlert = () => {
+    setSuccessAlert(false);
+  };
+
+  // Render expand information of specific row when Click Expand btn.
+  const handleClickExpand = (id) => {
+    setExpandedRows((prevExpandedRows) => ({
+      ...prevExpandedRows,
+      [id]: !prevExpandedRows[id],
+    }));
+  };
+
+  // Change Inner Tab in expand row
   const handleChangeTab = (event, newValue) => {
     setRoomInforTab(newValue);
   };
 
+  // Sort by specific attribute
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
+  // CHECK BOX
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.id);
@@ -122,104 +315,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     setSelected(newSelected);
   };
 
-  const handleClickAdjust = (id) => {
-    setOpenAdjustDialog(true);
-    const clickedRoom = rows.find((room) => room.id === id);
-    setSpecificRoomData(clickedRoom);
-  };
-
-  const closeAdjustDialog = () => {
-    setOpenAdjustDialog(false);
-  };
-
-  // Render Room information is changed.
-  const saveChange = (updatedData) => {
-    const currentRoomData = specificRoomData;
-
-    // Checking are there any changes? If not -> Do not create new object
-    const isDataChanged = Object.keys(updatedData).some(
-      (key) => updatedData[key] !== currentRoomData[key]
-    );
-
-    if (!isDataChanged) {
-      setOpenAdjustDialog(false);
-      return;
-    }
-
-    const updatedRoomData = {
-      ...currentRoomData,
-      roomName:
-        updatedData.name !== currentRoomData.roomName &&
-        updatedData.roomName !== undefined
-          ? updatedData.roomName
-          : currentRoomData.roomName,
-      type:
-        updatedData.type !== currentRoomData.type &&
-        updatedData.type !== undefined
-          ? updatedData.type
-          : currentRoomData.type,
-      status:
-        updatedData.status !== currentRoomData.status &&
-        updatedData.status !== undefined
-          ? updatedData.status
-          : currentRoomData.status,
-      notes:
-        updatedData.notes !== currentRoomData.notes &&
-        updatedData.notes !== undefined
-          ? updatedData.notes
-          : currentRoomData.notes,
-    };
-
-    if (updatedRoomData.type !== currentRoomData.type) {
-      const updatedType = typeList.find(
-        (type) => type.name === updatedRoomData.type
-      );
-      if (updatedType) {
-        updatedRoomData.dailyRate = updatedType.dailyRate;
-        updatedRoomData.dayRate = updatedType.dayRate;
-        updatedRoomData.nightRate = updatedType.pricepernight;
-        updatedRoomData.overtimeRate = updatedType.overtimePay;
-        updatedRoomData.maxiumCapacity = updatedType.capacity;
-      }
-    }
-
-    const updatedUIRow = rows.map((room) => {
-      if (room.id === updatedRoomData.id) {
-        return updatedRoomData;
-      }
-      return room;
-    });
-
-    setRows(updatedUIRow);
-    setOpenAdjustDialog(false);
-  };
-
-  // Render New Room
-  const updateRoomList = (newRoomData) => {
-    // Get type details from typeList
-    const typeDetails = typeList.find((type) => type.name === newRoomData.type);
-
-    // If type details found, update newRoomData with corresponding fields
-    if (typeDetails) {
-      newRoomData.dayRate = typeDetails.dayRate;
-      newRoomData.nightRate = typeDetails.pricepernight;
-      newRoomData.dailyRate = typeDetails.dailyRate;
-      newRoomData.overtimeRate = typeDetails.overtimePay;
-      newRoomData.maxiumCapacity = typeDetails.capacity;
-    }
-
-    // Update rows with newRoomData
-    setRows([...rows, newRoomData]);
-  };
-
-  // Render expand information of specific row when Click Expand btn.
-  const handleClickExpand = (id) => {
-    setExpandedRows((prevExpandedRows) => ({
-      ...prevExpandedRows,
-      [id]: !prevExpandedRows[id],
-    }));
-  };
-
+  // CHANGE PAGE
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -238,6 +334,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  // FILLER TABLE FROM STATUS AND TYPE
   const visibleRows = stableSort(
     rows.filter((row) => {
       if (selectedType === null && selectedStatus === null) {
@@ -269,6 +366,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     getComparator(order, orderBy)
   ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+  // UI
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -276,7 +374,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
           <EnhancedTableToolbar
             numSelected={selected.length}
             typeList={typeList}
-            roomNames={roomNames}
+            roomNumbers={roomNumbers}
             updateRoomList={updateRoomList}
           />
           <TableContainer>
@@ -297,21 +395,18 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                 {visibleRows.map((row, index) => {
                   const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
-                  const isHovered = hoveredRowId === row.id;
 
                   return (
                     <React.Fragment key={row.id}>
-                      <TableRow
+                      <StyledTableRow
                         hover
-                        onMouseEnter={() => setHoveredRowId(row.id)}
-                        onMouseLeave={() => setHoveredRowId(null)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
                         selected={isItemSelected}
                         sx={{ cursor: "pointer" }}
                       >
-                        <TableCell padding="checkbox">
+                        <StyledTableCell padding="checkbox">
                           <Checkbox
                             color="primary"
                             checked={isItemSelected}
@@ -322,62 +417,82 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                               handleClickCheckbox(event, row.id)
                             }
                           />
-                        </TableCell>
-                        <TableCell
+                        </StyledTableCell>
+                        <StyledTableCell
                           align="center"
                           component="th"
                           id={labelId}
                           scope="row"
                           padding="none"
                         >
-                          {isHovered && (
-                            <IconButton
-                              onClick={() => handleClickExpand(row.id)}
-                              sx={{
-                                transition: "transform 0.5s ease-in-out",
-                                transform: expandedRows[row.id]
-                                  ? "rotate(180deg)"
-                                  : "rotate(0deg)",
-                              }}
-                            >
-                              {expandedRows[row.id] ? (
-                                <ExpandLessIcon />
-                              ) : (
-                                <ExpandMoreIcon />
-                              )}
-                            </IconButton>
-                          )}
-                          {row.roomName}
-                          {isHovered && (
-                            <IconButton
-                              onClick={() => handleClickAdjust(row.id)}
-                            >
-                              <BuildIcon />
-                            </IconButton>
-                          )}
-                        </TableCell>
-                        <TableCell align="right">{row.type}</TableCell>
-                        <TableCell align="right">{row.dayRate}</TableCell>
-                        <TableCell align="right">{row.nightRate}</TableCell>
-                        <TableCell align="right">{row.dailyRate}</TableCell>
-                        <TableCell align="right">
+                          {row.roomNumber}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.type}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.dayRate}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.nightRate}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.dailyRate}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
                           {row.status === "Available"
                             ? "Available"
                             : "Unavailable"}
-                        </TableCell>
-                        <TableCell align="right">{row.overtimeRate}</TableCell>
-                        <TableCell align="right">
-                          {row.maxiumCapacity}
-                        </TableCell>
-                        <TableCell align="right">{row.notes}</TableCell>
-                      </TableRow>
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.overtimeRate}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {row.maximumCapacity}
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          <IconButton
+                            color={
+                              row.status === "Available"
+                                ? "secondary"
+                                : "primary"
+                            }
+                            disabled={row.status === "Available"}
+                            onClick={() => openPaymentDialog(row.id)}
+                          >
+                            <AccountBalanceWalletIcon />
+                          </IconButton>
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          <IconButton onClick={() => handleClickAdjust(row.id)}>
+                            <EditIcon />
+                          </IconButton>
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          <IconButton
+                            onClick={() => handleClickExpand(row.id)}
+                            sx={{
+                              transition: "transform 0.5s ease-in-out",
+                              transform: expandedRows[row.id]
+                                ? "rotate(180deg)"
+                                : "rotate(0deg)",
+                            }}
+                          >
+                            {expandedRows[row.id] ? (
+                              <ExpandLessIcon />
+                            ) : (
+                              <ExpandMoreIcon />
+                            )}
+                          </IconButton>
+                        </StyledTableCell>
+                      </StyledTableRow>
 
                       {/* Expand Row */}
                       {expandedRows[row.id] && (
                         <TableRow key={`${row.id}-expand`}>
-                          <TableCell
+                          <StyledTableCell
                             padding="none"
-                            colSpan={10}
+                            colSpan={12}
                             sx={{ width: "100%" }}
                           >
                             <TabContext value={roomInforTab}>
@@ -389,19 +504,15 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                                   aria-label="room infor tab"
                                 >
                                   <Tab label="Images" value="1" />
-                                  <Tab label="Booking History" value="2" />
-                                  <Tab label="Transaction History" value="3" />
-                                  <Tab label="Cleanup History" value="4" />
+                                  {/* <Tab label="Booking History" value="2" /> */}
                                 </TabList>
                               </Box>
-                              <TabPanel sx={{ height: "300px" }} value="1">
+                              <TabPanel sx={{ height: "450px" }} value="1">
                                 <RoomImage />
                               </TabPanel>
-                              <TabPanel value="2">Item Two</TabPanel>
-                              <TabPanel value="3">Item Three</TabPanel>
-                              <TabPanel value="4">Item four</TabPanel>
+                              {/* <TabPanel value="2">Customer Information</TabPanel> */}
                             </TabContext>
-                          </TableCell>
+                          </StyledTableCell>
                         </TableRow>
                       )}
                     </React.Fragment>
@@ -413,7 +524,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                       height: (dense ? 33 : 53) * emptyRows,
                     }}
                   >
-                    <TableCell colSpan={10} />
+                    <TableCell colSpan={12} />
                   </TableRow>
                 )}
               </TableBody>
@@ -441,9 +552,60 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
           saveChange={saveChange}
           specificRoomData={specificRoomData}
           typeList={typeList}
-          roomNames={roomNames}
+          roomNumbers={roomNumbers}
         />
       )}
+      {openPayDialog && (
+        <PaymentDialog
+          openPayDialog={openPayDialog}
+          closePaymentDialog={closePaymentDialog}
+          savePayment={savePayment}
+          specificRoomData={specificRoomData}
+        />
+      )}
+
+      {openBackdrop && (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={openBackdrop}
+          onClick={handleCloseBackDrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
+
+      {successAlert && (
+        <Snackbar
+          open={successAlert}
+          autoHideDuration={2000}
+          onClose={closeAlert}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={closeAlert}
+            severity="success"
+            sx={{ width: "100%", borderRadius: "1.6rem" }}
+          >
+            Payment success
+          </Alert>
+        </Snackbar>
+      )}
+      {/* CONFIRM DELETE DIALOG */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleDeleteClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent id="delete-dialog-description">
+          Are you sure you want to delete this rooms?
+        </DialogContent>
+        <DialogActions>
+          {/* <Button onClick={deleteType}>Yes</Button> */}
+          <Button onClick={handleDeleteClose}>No</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

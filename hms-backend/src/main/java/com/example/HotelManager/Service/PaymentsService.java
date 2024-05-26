@@ -13,7 +13,7 @@ public class PaymentsService {
     private PaymentRepository paymentRepository;
 
     public PaymentEntity getPaymentByID(int id) {
-        return paymentRepository.findById(id).get();
+        return paymentRepository.findById(id).orElse(null);
     }
     public List<PaymentEntity> getAllPayments()  {
         return paymentRepository.findAll();

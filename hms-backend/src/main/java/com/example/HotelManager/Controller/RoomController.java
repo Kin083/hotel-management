@@ -34,38 +34,38 @@ public class RoomController {
     public String updateStatusActive2Using(@PathVariable int id) {
         return roomService.updateStatusActive2Using(id);
     }
-    @PostMapping(path = "/Room/add")
-    public RoomEntity addRoom(@RequestBody RoomEntity roomen) {
-        return  roomService.savedetails(roomen);
+    @PostMapping(path = "/room/add")
+    public RoomEntity addRoom(@RequestBody RoomEntity room) {
+        return  roomService.saveDetails(room);
     }
-    @GetMapping(path = "/getListRoom/{hotelid}")
-    public List<ResponseForListRoom> getListRoom(@PathVariable String hotelid) {
-        return lisResponse(hotelid,roomService,roomTypeService);
+    @GetMapping(path = "/room/getAll/{hotelId}")
+    public List<ResponseForListRoom> getListRoom(@PathVariable String hotelId) {
+        return lisResponse(hotelId, roomService, roomTypeService);
     }
 
-    public List<ResponseForListRoom> lisResponse(String hotelid, RoomService roomService, RoomTypeService roomTypeService) {
-        List<RoomEntity> listRoom =   roomService.getAllByHotelID(hotelid);
+    public List<ResponseForListRoom> lisResponse(String hotelId, RoomService roomService, RoomTypeService roomTypeService) {
+        List<RoomEntity> listRoom =   roomService.getAllByHotelID(hotelId);
         List<ResponseForListRoom> listResponse = new ArrayList<>();
         for(RoomEntity room : listRoom) {
-            String roomNum = room.getRoomName();
-            int rtype = room.getTypeID();
-            RoomTypeEntity roomtype = roomTypeService.getRoomTypeByID(rtype);
+            String roomNum = room.getRoomNumber();
+            int typeId = room.getTypeId();
+            RoomTypeEntity roomType = roomTypeService.getRoomTypeByID(typeId);
             ResponseForListRoom res = new ResponseForListRoom();
-            res.setType(roomtype.getName());
-            res.setRoomName(roomNum);
-            res.setDailyRate(roomtype.getPricepernight());
+            res.setType(roomType.getName());
+            res.setRoomNumber(roomNum);
+            res.setDailyRate(roomType.getNightRate());
             res.setStatus(room.getStatus());
-            res.setMaxiumCapacity(roomtype.getCapacity());
-            res.setNotes(roomtype.getDescription());
-            res.setOvertimeRate(roomtype.getOvertimePay());
-            res.setDayRate(roomtype.getDayRate());
-            res.setNightRate(roomtype.getPricepernight());
+            res.setMaximumCapacity(roomType.getCapacity());
+            res.setNotes(roomType.getDescription());
+            res.setOvertimeRate(roomType.getOvertimePay());
+            res.setDayRate(roomType.getDayRate());
+            res.setNightRate(roomType.getNightRate());
             listResponse.add(res);
         }
         return listResponse;
     }
 
-    @GetMapping(path = "/getAvailRoom/{id}")
+    @GetMapping(path = "/room/getAvailRoom/{id}")
     public List<ResponseAvailRoom> getAvailRoom(@PathVariable String id) {
         List<ResponseForListRoom> lisResponseDetail =lisResponse(id, roomService, roomTypeService);
         List<String> listType = new ArrayList<>();
@@ -83,30 +83,32 @@ public class RoomController {
         List<ResponseAvailRoom> ans = new ArrayList<>();
         for (String type : listType) {
             String capa = "";
-            float dayrate = 0;
-            float nightrate = 0;
-            float dailyrate = 0;
-            float overtimepay = 0;
+            Double dayrate = (double) 0;
+            Double nightrate = (double) 0;
+            Double dailyrate = (double) 0;
+            Double overtimepay = (double) 0;
             List<String> lisRoomNumber = new ArrayList<>();
             ResponseAvailRoom resAvail = new ResponseAvailRoom();
             int count = 0;
             for (ResponseForListRoom lis : lisResponseDetail) {
                 String typeName = lis.getType();
                 if (typeName.equals(type)) {
-                    lisRoomNumber.add(lis.getRoomName());
-                    capa = lis.getMaxiumCapacity();
-                    dayrate = lis.getDailyRate();
-                    nightrate = lis.getDailyRate();
+                    lisRoomNumber.add(lis.getRoomNumber());
+                    capa = lis.getMaximumCapacity();
+                    dayrate = lis.getDayRate();
+                    nightrate = lis.getNightRate();
                     dailyrate = lis.getDailyRate();
-                    overtimepay = lis.getDailyRate();
+                    overtimepay = lis.getOvertimeRate();
                 }
 
             }
-            resAvail.setCapicity(capa);
+            resAvail.setCapacity(capa);
             resAvail.setDailyRate(dailyrate);
             resAvail.setType(type);
             resAvail.setDayRate(dayrate);
             resAvail.setListRoomNumber(lisRoomNumber);
+            resAvail.setNightRate(nightrate);
+            resAvail.setOvertimePay(overtimepay);
             ans.add(resAvail);
         }
         return ans;

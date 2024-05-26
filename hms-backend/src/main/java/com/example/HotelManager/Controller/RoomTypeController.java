@@ -15,16 +15,16 @@ public class RoomTypeController {
     @Autowired
     private RoomTypeService roomTypeService;
 
-    @PostMapping(path = "/update/roomTYpe")
-    public RoomTypeEntity updateRoomtype(@RequestBody RoomTypeEntity roomType) {
+    @PostMapping(path = "/roomType/update")
+    public RoomTypeEntity updateRoomType(@RequestBody RoomTypeEntity roomType) {
         return roomTypeService.updateRoomType(roomType);
     }
 
-    @PostMapping(path = "/Roomtype/add")
-    public RoomTypeEntity addRoomType(@RequestBody RoomTypeEntity roomtype) {
-        return roomTypeService.saveDetails(roomtype);
+    @PostMapping(path = "/roomType/add")
+    public RoomTypeEntity addRoomType(@RequestBody RoomTypeEntity roomType) {
+        return roomTypeService.saveDetails(roomType);
     }
-    @GetMapping(path = "/getallRoomType")
+    @GetMapping(path = "/roomType/getAll")
     public List<RoomTypeEntity> getRoomType() {
         return roomTypeService.getAllRoomType();
     }

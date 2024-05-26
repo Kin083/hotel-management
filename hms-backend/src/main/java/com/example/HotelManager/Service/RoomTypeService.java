@@ -15,7 +15,7 @@ public class RoomTypeService {
         return roomTypeRepository.findAll();
     }
     public RoomTypeEntity getRoomTypeByID(int RoomTypeID) {
-        return roomTypeRepository.findById(RoomTypeID).get();
+        return roomTypeRepository.findById(RoomTypeID).orElse(null);
     }
     public RoomTypeEntity saveDetails(RoomTypeEntity roomType) {
         roomTypeRepository.save(roomType);
@@ -23,17 +23,18 @@ public class RoomTypeService {
     }
 
     public RoomTypeEntity updateRoomType(RoomTypeEntity roomType) {
-        Integer typeId = roomType.getTypeID();
-        RoomTypeEntity room  = roomTypeRepository.findById(typeId).get();
-        Integer Capacity = Integer.valueOf(roomType.getCapacity());
+        Integer typeId = roomType.getTypeId();
+        RoomTypeEntity room  = roomTypeRepository.findById(typeId).orElse(null);
+        if (room == null) return null;
+        Integer capacity = Integer.valueOf(roomType.getCapacity());
         String Description = roomType.getDescription();
         String name = roomType.getName();
-        Float price = roomType.getPricepernight();
+        Double price = roomType.getNightRate();
 
-        room.setCapacity(Capacity.toString());
+        room.setCapacity(capacity.toString());
         room.setName(name);
         room.setDescription(Description);
-        room.setPricepernight(price);
+        room.setNightRate(price);
         roomTypeRepository.save(room);
         return room;
     }

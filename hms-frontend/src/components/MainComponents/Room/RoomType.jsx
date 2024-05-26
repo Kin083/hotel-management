@@ -29,115 +29,203 @@ import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl from "@mui/material/FormControl";
 import CloseIcon from "@mui/icons-material/Close";
+import userApi from "../../../api/userApi";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#009394",
-    color: theme.palette.common.white,
-    fontSize: 20,
+    backgroundColor: "#ebf5ee",
+    color: "#1f2224",
+    fontSize: 14,
+    border: 0,
+    padding: 10,
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
+const StyledTableRow = styled(TableRow)(() => ({
+  "&:nth-of-type(even)": {
+    backgroundColor: "#f7f8f9",
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
 
-function createData(id, name, dayRate, nightRate, dailyRate, overtimePay) {
-  return { id, name, dayRate, nightRate, dailyRate, overtimePay };
+function createData(
+  typeId,
+  name,
+  description,
+  nightRate,
+  dayRate,
+  dailyRate,
+  overtimePay,
+  capacity
+) {
+  return {
+    typeId,
+    name,
+    description,
+    nightRate,
+    dayRate,
+    dailyRate,
+    overtimePay,
+    capacity,
+  };
 }
-
-const data = [
-  createData(1, "VIP", 500, 700, 1000, 250),
-  createData(2, "TWO SINGLE BED", 350, 400, 800, 200),
-  createData(3, "ONE SINGLE BED", 200, 300, 700, 100),
-  createData(4, "ONE QUEEN-SIZED BED", 400, 500, 800, 250),
-  createData(5, "ONE SINGLE BED, ONE QUEEN-SIZED BED", 450, 700, 900, 300),
-];
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
 function RoomType({ typeList }) {
-  const [rows, setRows] = React.useState(data);
-  const [hoveredRow, setHoveredRow] = React.useState(null);
+  const [rows, setRows] = React.useState([]);
+
+  const initialFormState = {
+    name: "",
+    description: "",
+    nightRate: "",
+    dayRate: "",
+    dailyRate: "",
+    overtimePay: "",
+    capacity: "",
+  };
+
+  const [formState, setFormState] = React.useState(initialFormState);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [deleteIndex, setDeleteIndex] = React.useState(null);
 
-  const [id, setId] = React.useState("");
-  const [name, setName] = React.useState("");
-  const [dayRate, setDayRate] = React.useState("");
-  const [nightRate, setNightRate] = React.useState("");
-  const [dailyRate, setDailyRate] = React.useState("");
-  const [overtimePay, setOvertimePay] = React.useState("");
+  React.useEffect(() => {
+    setRows(
+      typeList.map((item) =>
+        createData(
+          item.typeId,
+          item.name,
+          item.description,
+          item.nightRate,
+          item.dayRate,
+          item.dailyRate,
+          item.overtimePay,
+          item.capacity
+        )
+      )
+    );
+  }, [typeList]);
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormState({ ...formState, [id]: value });
+  };
 
   const addType = () => {
+    setSelectedRow(null);
+    setFormState(initialFormState);
     setOpenDialog(true);
   };
+
   const adjustType = (index) => {
     setSelectedRow(rows[index]);
   };
-  const deleteType = (index) => {
-    setRows(rows.filter((_, idx) => idx !== index));
+
+  const confirmDeleteType = (index) => {
+    setDeleteIndex(index);
+    setOpenDeleteDialog(true);
+  };
+
+  const deleteType = async () => {
+    const typeIdToDelete = rows[deleteIndex].typeId;
+    try {
+      setRows((prevRows) => prevRows.filter((_, idx) => idx !== deleteIndex));
+      // await userApi.deleteType(typeIdToDelete);
+    } catch (error) {
+      console.error("Error deleting type:", error);
+    } finally {
+      setOpenDeleteDialog(false);
+      setDeleteIndex(null);
+    }
   };
 
   const handleClose = () => {
     setOpenDialog(false);
   };
 
-  const saveChange = () => {
-    if (!id || !name || !dayRate || !nightRate || !dailyRate || !overtimePay) {
-      setOpenDialog(false);
+  const handleDeleteClose = () => {
+    setOpenDeleteDialog(false);
+    setDeleteIndex(null);
+  };
+
+  const saveChange = async () => {
+    const {
+      name,
+      description,
+      nightRate,
+      dayRate,
+      dailyRate,
+      overtimePay,
+      capacity,
+    } = formState;
+
+    if (
+      !name ||
+      !description ||
+      !nightRate ||
+      !dayRate ||
+      !dailyRate ||
+      !overtimePay ||
+      !capacity
+    ) {
+      alert("Please provide enough information");
       return;
     }
 
-    const newData = createData(
-      parseInt(id),
+    const newID =
+      rows.length > 0 ? Math.max(...rows.map((row) => row.typeId)) + 1 : 1;
+
+    const newData = {
+      typeId: selectedRow ? selectedRow.typeId : newID,
       name,
-      parseFloat(dayRate),
-      parseFloat(nightRate),
-      parseFloat(dailyRate),
-      parseFloat(overtimePay)
-    );
+      description,
+      nightRate: parseFloat(nightRate),
+      dayRate: parseFloat(dayRate),
+      dailyRate: parseFloat(dailyRate),
+      overtimePay: parseFloat(overtimePay),
+      capacity: parseInt(capacity),
+    };
 
-    if (selectedRow !== null) {
-      const updatedRows = rows.map((row) => {
-        if (row.id === selectedRow.id) {
-          return newData;
-        }
-        return row;
-      });
-      setRows(updatedRows);
-    } else {
-      setRows([...rows, newData]);
+    try {
+      if (selectedRow !== null) {
+        setRows((prevRows) =>
+          prevRows.map((row) =>
+            row.typeId === selectedRow.typeId ? newData : row
+          )
+        );
+        // await userApi.updateType(selectedRow.typeId, newData);
+      } else {
+        setRows((prevRows) => [...prevRows, newData]);
+        // await userApi.addType(newData);
+      }
+    } catch (error) {
+      console.error("Error saving change:", error);
+    } finally {
+      setOpenDialog(false);
+      setFormState(initialFormState);
     }
-
-    setOpenDialog(false);
-    setId("");
-    setName("");
-    setDayRate("");
-    setNightRate("");
-    setDailyRate("");
-    setOvertimePay("");
   };
 
   React.useEffect(() => {
     if (selectedRow !== null) {
-      setId(selectedRow.id);
-      setName(selectedRow.name);
-      setDayRate(selectedRow.dayRate);
-      setNightRate(selectedRow.nightRate);
-      setDailyRate(selectedRow.dailyRate);
-      setOvertimePay(selectedRow.overtimePay);
+      setFormState({
+        name: selectedRow.name,
+        description: selectedRow.description,
+        nightRate: selectedRow.nightRate,
+        dayRate: selectedRow.dayRate,
+        dailyRate: selectedRow.dailyRate,
+        overtimePay: selectedRow.overtimePay,
+        capacity: selectedRow.capacity,
+      });
       setOpenDialog(true);
     }
   }, [selectedRow]);
@@ -167,51 +255,53 @@ function RoomType({ typeList }) {
         <Typography sx={{ flex: "1 1 100%" }} variant="h3" component="div">
           Room Category
         </Typography>
-
         <IconButton onClick={addType}>
           <AddIcon />
         </IconButton>
       </Toolbar>
 
-      {/* TABLE OF ROOM'S TYPES */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell>ID</StyledTableCell>
               <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell>Description</StyledTableCell>
               <StyledTableCell align="right">Day Rate</StyledTableCell>
               <StyledTableCell align="right">Night Rate</StyledTableCell>
               <StyledTableCell align="right">Daily Rate</StyledTableCell>
               <StyledTableCell align="right">Overtime Pay $/h</StyledTableCell>
+              <StyledTableCell align="right">Capacity</StyledTableCell>
+              <StyledTableCell align="right">Edit</StyledTableCell>
+              <StyledTableCell align="right">Delete</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {rows.map((row, index) => (
-              <StyledTableRow
-                key={row.id}
-                onMouseEnter={() => setHoveredRow(index)}
-                onMouseLeave={() => setHoveredRow(null)}
-              >
-                <StyledTableCell align="left">{row.id}</StyledTableCell>
+              <StyledTableRow key={row.typeId}>
+                <StyledTableCell align="left">{row.typeId}</StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   {row.name}
-                  {hoveredRow === index && (
-                    <>
-                      <IconButton onClick={() => adjustType(index)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => deleteType(index)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  )}
                 </StyledTableCell>
+                <StyledTableCell>{row.description}</StyledTableCell>
                 <StyledTableCell align="right">{row.dayRate}</StyledTableCell>
-                <StyledTableCell align="right">{row.nightRate}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {row.nightRate}
+                </StyledTableCell>
                 <StyledTableCell align="right">{row.dailyRate}</StyledTableCell>
                 <StyledTableCell align="right">
                   {row.overtimePay}
+                </StyledTableCell>
+                <StyledTableCell align="right">{row.capacity}</StyledTableCell>
+                <StyledTableCell align="right">
+                  <IconButton onClick={() => adjustType(index)}>
+                    <EditIcon />
+                  </IconButton>
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  <IconButton onClick={() => confirmDeleteType(index)}>
+                    <DeleteIcon />
+                  </IconButton>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
@@ -234,21 +324,19 @@ function RoomType({ typeList }) {
           <Stack spacing={2} sx={{ width: "100%" }} component="form">
             <TextField
               required
-              fullWidth
-              id="id"
-              label="ID"
-              type="number"
-              variant="standard"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-            />
-            <TextField
-              required
               id="name"
               label="Name"
               variant="standard"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formState.name}
+              onChange={handleInputChange}
+            />
+            <TextField
+              required
+              id="description"
+              label="Description"
+              variant="standard"
+              value={formState.description}
+              onChange={handleInputChange}
             />
             <FormControl fullWidth sx={{ m: 1 }}>
               <InputLabel htmlFor="dayRate">Day Rate</InputLabel>
@@ -258,8 +346,8 @@ function RoomType({ typeList }) {
                   <InputAdornment position="start">$</InputAdornment>
                 }
                 label="Day Rate"
-                value={dayRate}
-                onChange={(e) => setDayRate(e.target.value)}
+                value={formState.dayRate}
+                onChange={handleInputChange}
               />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
@@ -270,8 +358,8 @@ function RoomType({ typeList }) {
                   <InputAdornment position="start">$</InputAdornment>
                 }
                 label="Night Rate"
-                value={nightRate}
-                onChange={(e) => setNightRate(e.target.value)}
+                value={formState.nightRate}
+                onChange={handleInputChange}
               />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
@@ -282,26 +370,52 @@ function RoomType({ typeList }) {
                   <InputAdornment position="start">$</InputAdornment>
                 }
                 label="Daily Rate"
-                value={dailyRate}
-                onChange={(e) => setDailyRate(e.target.value)}
+                value={formState.dailyRate}
+                onChange={handleInputChange}
               />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
-              <InputLabel htmlFor="overtime-pay">Overtime Pay</InputLabel>
+              <InputLabel htmlFor="overtimePay">Overtime Pay</InputLabel>
               <OutlinedInput
-                id="overtime-pay"
+                id="overtimePay"
                 startAdornment={
                   <InputAdornment position="start">$/h</InputAdornment>
                 }
                 label="Overtime Pay"
-                value={overtimePay}
-                onChange={(e) => setOvertimePay(e.target.value)}
+                value={formState.overtimePay}
+                onChange={handleInputChange}
               />
             </FormControl>
+            <TextField
+              required
+              id="capacity"
+              label="Capacity"
+              type="number"
+              variant="standard"
+              value={formState.capacity}
+              onChange={handleInputChange}
+            />
           </Stack>
         </DialogContent>
         <DialogActions>
           <Button onClick={saveChange}>Save</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* CONFIRM DELETE DIALOG */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleDeleteClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent id="delete-dialog-description">
+          Are you sure you want to delete this room type?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={deleteType}>Yes</Button>
+          <Button onClick={handleDeleteClose}>No</Button>
         </DialogActions>
       </Dialog>
     </Paper>
@@ -309,7 +423,7 @@ function RoomType({ typeList }) {
 }
 
 RoomType.propTypes = {
-  typeList: PropTypes.array,
+  typeList: PropTypes.array.isRequired,
 };
 
 export default RoomType;

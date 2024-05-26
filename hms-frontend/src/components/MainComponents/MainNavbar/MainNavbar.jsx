@@ -17,17 +17,12 @@ import {
 } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import NightShelterIcon from "@mui/icons-material/NightShelter";
-import Person3Icon from "@mui/icons-material/Person3";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import Settings from "@mui/icons-material/Settings";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural";
+// import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+// import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
-import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import { useNavigate } from 'react-router-dom';
-
+// import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme({
   palette: {
@@ -78,14 +73,9 @@ const BUTTON_LIST = [
   },
   {
     id: "room-button",
-    href: "/room",
+    href: "/main",
     text: "Room",
     icon: <NightShelterIcon />,
-  },
-  {
-    id: "staff-button",
-    text: "Staff",
-    icon: <Person3Icon />,
   },
   {
     id: "report-button",
@@ -95,21 +85,15 @@ const BUTTON_LIST = [
 ];
 
 function Navbar() {
-  const [staffAnchorEl, setStaffAnchorEl] = useState(null);
   const [reportAnchorEl, setReportAnchorEl] = useState(null);
 
   const navigate = useNavigate();
-
-  const handleStaffClick = (event) => {
-    setStaffAnchorEl(event.currentTarget);
-  };
 
   const handleReportClick = (event) => {
     setReportAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
-    setStaffAnchorEl(null);
     setReportAnchorEl(null);
   };
 
@@ -132,45 +116,12 @@ function Navbar() {
                   },
                 }}
                 onClick={
-                  button.id === "staff-button"
-                    ? handleStaffClick
-                    : button.id === "report-button"
-
-                      ? handleReportClick
-                      : null
-
+                  button.id === "report-button" ? handleReportClick : null
                 }
               >
                 {button.text}
               </Button>
             ))}
-            {/* Staff Menu */}
-            <StyledMenu
-              id="staff-menu"
-              MenuListProps={{
-                "aria-labelledby": "staff-button",
-              }}
-              anchorEl={staffAnchorEl}
-              open={Boolean(staffAnchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose} disableRipple>
-                <Person3Icon />
-                Staffs
-              </MenuItem>
-              <MenuItem onClick={handleClose} disableRipple>
-                <CalendarMonthIcon />
-                Attendance Tracking
-              </MenuItem>
-              <MenuItem onClick={handleClose} disableRipple>
-                <AssignmentIndIcon />
-                Payroll Spreadsheet
-              </MenuItem>
-              <MenuItem onClick={handleClose} disableRipple>
-                <Settings />
-                Staff General Setting
-              </MenuItem>
-            </StyledMenu>
 
             {/* Report Menu  */}
             <StyledMenu
@@ -182,23 +133,9 @@ function Navbar() {
               open={Boolean(reportAnchorEl)}
               onClose={handleClose}
             >
-
-              <MenuItem onClick={() => navigate('/roombooking-report')} disableRipple>
-                <EventAvailableIcon />
-                Room Booking
-              </MenuItem>
-              <MenuItem onClick={() => navigate('/revenue')} disableRipple>
-
+              <MenuItem onClick={() => navigate("/revenue")} disableRipple>
                 <ReceiptLongIcon />
                 Revenue
-              </MenuItem>
-              <MenuItem onClick={handleClose} disableRipple>
-                <FaceRetouchingNaturalIcon />
-                Customer
-              </MenuItem>
-              <MenuItem onClick={handleClose} disableRipple>
-                <TrendingUpIcon />
-                Finance
               </MenuItem>
             </StyledMenu>
           </Stack>

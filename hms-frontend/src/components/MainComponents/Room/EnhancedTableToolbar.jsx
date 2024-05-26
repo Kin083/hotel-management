@@ -6,12 +6,15 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import PaidIcon from "@mui/icons-material/Paid";
-
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Snackbar from "@mui/material/Snackbar";
 import BookingDialog from "./BookingDialog";
 import DetailBooking from "./DetailBooking";
 import CustomerInforDialog from "./CustomerInforDialog";
 import AddRoomDialog from "./AddRoomDialog";
 import userApi from "../../../api/userApi";
+import { Alert } from "@mui/material";
 
 function EnhancedTableToolbar({
   numSelected,
@@ -25,6 +28,8 @@ function EnhancedTableToolbar({
   const [openCusInforDialog, setOpenCusInforDialog] = React.useState(false);
   const [detailData, setDetailData] = React.useState([]);
   const [cusInfor, setCusInfor] = React.useState({});
+  const [openBackdrop, setOpenBackDrop] = React.useState(false);
+  const [successAlert, setSuccessAlert] = React.useState(false);
 
   const openAdd = () => {
     setOpenAddDialog(true);
@@ -70,11 +75,48 @@ function EnhancedTableToolbar({
   const closeDetailBooking = () => {
     setOpenDetailBooking(false);
   };
+  const closeAlert = () => {
+    setSuccessAlert(false);
+  };
 
+  const handleCloseBackDrop = () => {
+    setOpenBackDrop(false);
+  };
   const saveBooking = (bookingData) => {
-    const combinedData = { ...bookingData, ...cusInfor };
-    console.log(combinedData);
-    setOpenDetailBooking(false);
+    if (cusInfor && Object.keys(cusInfor).length > 0) {
+      bookingData.rooms.forEach((room) => {
+        const roomData = {
+          ...cusInfor,
+          name: room.name,
+          startTime: room.startTime,
+          endTime: room.endTime,
+          money: room.money,
+          typeOfRate: room.typeOfRate,
+          cusNotes: bookingData.cusNotes,
+        };
+        userApi
+          .addBooking(roomData)
+          .then(() => {
+            console.log("Room booked successfully:", roomData);
+          })
+          .catch((error) => {
+            console.error("Error booking room:", error);
+          });
+      });
+
+      setOpenDetailBooking(false);
+      setOpenBackDrop(true);
+      setTimeout(() => {
+        setOpenBackDrop(false);
+        setSuccessAlert(true);
+        setTimeout(() => {
+          setSuccessAlert(false);
+        }, 2000);
+      }, 3000);
+      setCusInfor({});
+    } else {
+      alert("Please provide customer information");
+    }
   };
 
   const openCusInfor = () => {
@@ -138,7 +180,7 @@ function EnhancedTableToolbar({
         saveBooking={saveBooking}
         openCusInfor={openCusInfor}
         detailData={detailData}
-        cusName={cusInfor.firstname}
+        cusName={cusInfor.cusName}
       />
 
       <CustomerInforDialog
@@ -155,6 +197,33 @@ function EnhancedTableToolbar({
           typeList={typeList}
           roomNames={roomNames}
         />
+      )}
+
+      {openBackdrop && (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={openBackdrop}
+          onClick={handleCloseBackDrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
+
+      {successAlert && (
+        <Snackbar
+          open={successAlert}
+          autoHideDuration={2000}
+          onClose={closeAlert}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={closeAlert}
+            severity="success"
+            sx={{ width: "100%", borderRadius: "1.6rem" }}
+          >
+            Booking success
+          </Alert>
+        </Snackbar>
       )}
     </>
   );

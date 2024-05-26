@@ -1,62 +1,24 @@
 package com.example.HotelManager.Entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "payment")
 public class PaymentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PaymentID")
-    private Integer paymentID;
-    @Column(name = "BookingID")
-    private Integer bookingid;
-    @Column(name = "Amount")
-    private Float amount;
+    @Column(name = "payment_id")
+    private Integer paymentId;
+    @Column(name = "booking_id")
+    private Integer bookingId;
 
-    public Integer getPaymentID() {
-        return paymentID;
-    }
-
-    public void setPaymentID(Integer paymentID) {
-        this.paymentID = paymentID;
-    }
-
-    public Integer getBookingid() {
-        return bookingid;
-    }
-
-    public void setBookingid(Integer bookingid) {
-        this.bookingid = bookingid;
-    }
-
-    public Float getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Float amount) {
-        this.amount = amount;
-    }
-
-    public String getPaymentDate() {
-        return paymentDate;
-    }
-
-    public void setPaymentDate(String paymentDate) {
-        this.paymentDate = paymentDate;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    @Column(name = "PaymentDate")
+    private Double amount;
+    
+    @Column(name = "payment_date")
     private String paymentDate;
-    @Column(name = "PaymentMethod")
+    @Column(name = "payment_method")
     private String paymentMethod;
 
 }

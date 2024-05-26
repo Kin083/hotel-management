@@ -15,20 +15,22 @@ public class RoomService {
     @Autowired
     private RoomRepository roomRepository;
 
-    public RoomEntity savedetails(RoomEntity room) {
+    public RoomEntity saveDetails(RoomEntity room) {
         roomRepository.save(room);
         return room;
     }
-    public RoomEntity getRoom(int roomnumber) {
-        return roomRepository.findById(roomnumber).get();
+    public RoomEntity getRoom(int roomNumber) {
+        return roomRepository.findById(roomNumber).orElse(null);
     }
 
 
     public String updateStatusUsing2Active(int id) {
-        RoomEntity room = roomRepository.findById(id).get();
+        RoomEntity room = roomRepository.findById(id).orElse(null);
+        if (room == null) return null;
+
         String ans = room.getStatus();
         if(ans.equals("using")) {
-            room.setStatus("ACtive");
+            room.setStatus("Active");
             roomRepository.save(room);
             return "Done";
         }
@@ -38,9 +40,10 @@ public class RoomService {
     }
 
     public String updateStatusActive2Using(int id) {
-        RoomEntity room = roomRepository.findById(id).get();
+        RoomEntity room = roomRepository.findById(id).orElse(null);
+        if (room == null) return null;
         String ans = room.getStatus();
-        if(ans.equals("ACtive")) {
+        if(ans.equals("Active")) {
             room.setStatus("using");
             roomRepository.save(room);
             return "Done";
@@ -49,11 +52,11 @@ public class RoomService {
             return "Fail!!!";
         }
     }
-    public List<RoomEntity> getAllByHotelID(String HotelID) {
-        return roomRepository.findByhotelID(HotelID);
+    public List<RoomEntity> getAllByHotelID(String hotelId) {
+        return roomRepository.findByHotelId(hotelId);
     }
 
-    public int countByRtype(int roomtype) {
-        return roomRepository.countRoom(roomtype,"Available");
+    public int countByRoomType(int roomType) {
+        return roomRepository.countRoom(roomType,"Available");
     }
 }

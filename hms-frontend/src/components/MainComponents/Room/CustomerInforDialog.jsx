@@ -32,9 +32,9 @@ const styleInput = {
   borderRadius: "4px",
 };
 
-const StackItem = ({ label, standard, date, selection, onChange }) => {
-  const [value, setValue] = React.useState(dayjs());
-  const [selectedGender, setSelectedGender] = React.useState("");
+const StackItem = ({ label, standard, date, selection, onChange, value }) => {
+  const [valueDate, setValueDate] = React.useState(dayjs());
+  const [selectedGender, setSelectedGender] = React.useState(value);
 
   const handleGenderChange = (event) => {
     setSelectedGender(event.target.value);
@@ -43,7 +43,7 @@ const StackItem = ({ label, standard, date, selection, onChange }) => {
 
   const handleDateChange = (newValue) => {
     const formattedDate = dayjs(newValue).format("DD/MM/YYYY");
-    setValue(newValue);
+    setValueDate(newValue);
     onChange(formattedDate);
   };
 
@@ -64,12 +64,17 @@ const StackItem = ({ label, standard, date, selection, onChange }) => {
       </div>
 
       {standard && (
-        <input type="text" style={styleInput} onChange={handleInputChange} />
+        <input
+          type="text"
+          value={value}
+          style={styleInput}
+          onChange={handleInputChange}
+        />
       )}
       {date && (
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
           <DatePicker
-            value={value}
+            value={valueDate}
             onChange={handleDateChange}
             sx={{ width: "60%", height: "42px" }}
           />
@@ -96,7 +101,7 @@ function CustomerInforDialog({
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [cusInfor, setCusInfor] = React.useState({
     cusID: "",
-    firstname: "",
+    cusName: "",
     cusDoB: "",
     cusGender: "",
     cusEmail: "",
@@ -121,13 +126,23 @@ function CustomerInforDialog({
   };
 
   const handleSave = () => {
-    const { cusID, firstname, cusGender, cusPhone } = cusInfor;
-    if (!cusID || !firstname || !cusGender || !cusPhone) {
+    const { cusID, cusName, cusGender, cusPhone } = cusInfor;
+    if (!cusID || !cusName || !cusGender || !cusPhone) {
       setShowAlert(true);
       return;
     }
     setShowAlert(false);
     saveCusInfor(cusInfor);
+    setCusInfor({
+      cusID: "",
+      cusName: "",
+      cusDoB: "",
+      cusGender: "",
+      cusEmail: "",
+      cusPhone: "",
+      cusImg: "",
+    });
+    setSelectedImage(null);
   };
 
   return (
@@ -213,12 +228,14 @@ function CustomerInforDialog({
             <StackItem
               label="Identification Number *"
               standard
+              value={cusInfor.cusID}
               onChange={handleInputChange("cusID")}
             />
             <StackItem
               label="Customer name *"
               standard
-              onChange={handleInputChange("firstname")}
+              value={cusInfor.cusName}
+              onChange={handleInputChange("cusName")}
             />
             <StackItem
               label="Date of Birth"
@@ -228,16 +245,19 @@ function CustomerInforDialog({
             <StackItem
               label="Gender *"
               selection
+              value={cusInfor.cusGender}
               onChange={handleInputChange("cusGender")}
             />
             <StackItem
               label="Email"
               standard
+              value={cusInfor.cusEmail}
               onChange={handleInputChange("cusEmail")}
             />
             <StackItem
               label="Phone number *"
               standard
+              value={cusInfor.cusPhone}
               onChange={handleInputChange("cusPhone")}
             />
           </Stack>
@@ -263,6 +283,7 @@ StackItem.propTypes = {
   selection: PropTypes.bool,
   notes: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
+  value: PropTypes.string,
 };
 
 export default CustomerInforDialog;

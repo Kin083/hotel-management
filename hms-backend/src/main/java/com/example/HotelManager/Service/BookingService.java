@@ -6,8 +6,6 @@ import com.example.HotelManager.Entity.RoomTypeEntity;
 import com.example.HotelManager.Repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.awt.print.Book;
 import java.util.Date;
@@ -21,29 +19,28 @@ public class BookingService {
         return bookingRepository.findAll();
     }
 
-    public List<BookingEntity> getAllBook() {
-        return bookingRepository.findAll();
-    }
-    public BookingEntity addBookingInfor(BookingEntity booking) {
+    public BookingEntity addBooking(BookingEntity booking) {
         bookingRepository.save(booking);
         return booking;
     }
     public BookingEntity getBookingByID(int id) {
         return bookingRepository.findById(id).get();
     }
-    public BookingEntity updateBookingInfo(int id,BookingEntity bookEntity)
+    public BookingEntity updateBookingInfo(int id,BookingEntity bookingEntity)
     {
-        BookingEntity booking = bookingRepository.findById(id).get();
-        Integer guetid = bookEntity.getGestID();
-        Integer roomnumber = bookEntity.getRoomNumber();
-        Date checkinDate = bookEntity.getCheckinDate();
-        Date checkoutDate  = bookEntity.getCheckoutDate();
-        Float totalP = bookEntity.getTotalPrice();
-        if (guetid != null) {
-            booking.setGestID(guetid);
+        BookingEntity booking = bookingRepository.findById(id).orElse(null);
+        if (booking == null) return null;
+        
+        Integer guestId = bookingEntity.getGuestId();
+        Integer roomNumber = bookingEntity.getRoomNumber();
+        Date checkinDate = bookingEntity.getCheckinDate();
+        Date checkoutDate  = bookingEntity.getCheckoutDate();
+        Double totalPrice = bookingEntity.getTotalPrice();
+        if (guestId != null) {
+            booking.setGuestId(guestId);
         }
-        if (roomnumber != null) {
-            booking.setRoomNumber(roomnumber);
+        if (roomNumber != null) {
+            booking.setRoomNumber(roomNumber);
         }
         if (checkinDate != null) {
             booking.setCheckinDate(checkinDate);
@@ -51,14 +48,14 @@ public class BookingService {
         if (checkoutDate != null) {
             booking.setCheckoutDate(checkoutDate);
         }
-        if(totalP != null) {
-            booking.setTotalPrice(totalP);
+        if(totalPrice != null) {
+            booking.setTotalPrice(totalPrice);
         }
         bookingRepository.save(booking);
         return booking;
     }
 
-    public Long addBookingInforCaculate(BookingEntity booking,RoomEntity room,RoomTypeEntity roomType,int soluong) {
+    public Long addBookingInforCaculate(BookingEntity booking, RoomEntity room, RoomTypeEntity roomType, int amount) {
         Date checkinDate = booking.getCheckinDate();
         Date checkoutDate = booking.getCheckoutDate();
         long checkinTime = checkinDate.getTime();
@@ -73,12 +70,12 @@ public class BookingService {
         if (statusRoom.equals("Using")) {
             return (long) -1;
         }
-        Integer roomTypeID = room.getTypeID();
-        Float giatien = roomType.getPricepernight();
+        Integer roomTypeID = room.getTypeId();
+        Double price = roomType.getNightRate();
 
-        Float thanhtien = (Float) (giatien*daysDifference);
-        booking.setTotalPrice(thanhtien);
+        Double total = (Double) (price*daysDifference);
+        booking.setTotalPrice(total);
 //        bookingRepository.save(booking);
-        return (long) (giatien*daysDifference*soluong);
+        return (long) (price*daysDifference*amount);
     }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
@@ -10,15 +11,20 @@ import Tooltip from "@mui/material/Tooltip";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import Divider from "@mui/material/Divider";
-
+import { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./MainHeader.module.css";
+import userApi from "../../../api/userApi";
+import { useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
-const MainHeader = () => {
-  const userName = "BlackMamba";
-  const [anchorEl, setAnchorEl] = React.useState(null);
+const MainHeader = ({ session }) => {
+  const navigate = useNavigate();
+  const userName = session ? session.Username : " ";
+  const role = session ? session.Role : " ";
+  const sessionId = session ? session.SessionId : " ";
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -28,12 +34,29 @@ const MainHeader = () => {
     setAnchorEl(null);
   };
 
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await userApi.getLogout({ sessionId, userName, role });
+      alert("Đăng xuất thành công");
+      navigate(response);
+    } catch (error) {
+      alert("Đăng xuất không thành công");
+      console.error("Đăng xuất không thành công", error);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener("unload", handleLogout);
+    return () => {
+      window.removeEventListener("unload", handleLogout);
+    };
+  }, []);
   return (
     <header className={cx("wrapper")}>
       <div className={cx("inner")}>
         <a href="/" className={cx("logo")}>
           {/* <img src="hms-frontend\src\assets\transylvania_logo.png" alt="Transylvania" title="Transylvania" /> */}
-          logo
+          Transylvania
         </a>
 
         <React.Fragment>
@@ -50,7 +73,7 @@ const MainHeader = () => {
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
               >
-                <Avatar sx={{ width: 40, height: 40 }}>BM</Avatar>
+                <Avatar sx={{ width: 40, height: 40 }}>TA</Avatar>
               </IconButton>
             </Tooltip>
           </Box>
@@ -103,7 +126,7 @@ const MainHeader = () => {
               Settings
             </MenuItem>
             <Divider />
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <Logout fontSize="medium" />
               </ListItemIcon>
