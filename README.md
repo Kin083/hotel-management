@@ -1,7 +1,7 @@
 # Hotel Management Web Application
 
 ## Contributors
-- Hoàng Đăng Khải (leader, Fronted for Home Page, Backend)
+- Hoàng Đăng Khải (Leader, Fronted for Home Page, Backend)
 - Trần Duy Tuấn Anh (Frontend)
 - Trần Duy Anh Quốc (Backend)
 - Vũ Việt Hùng (Frontend)
@@ -9,11 +9,9 @@
 
 ## Introduction
 
-<h3>Group assignment for Software Engineering Subject.</h3>
-Hotel Management System software is a comprehensive technology solution designed to manage and automate daily hotel operations.
-<hr>
-It includes many functions such as room management, room booking and revenue report.
-<hr>
+Group assignment for Software Engineering Subject.<br>
+Hotel Management System software is a comprehensive technology solution designed to manage and automate daily hotel operations.<br>
+It includes many functions such as room management, room booking and revenue report.<br>
 This software helps hotels optimize work processes, reduce time and effort, thereby improving performance and service quality.
 
 
