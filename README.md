@@ -9,9 +9,11 @@
 
 ## Introduction
 
-Group assignment for Software Engineering Subject.
+<h3>Group assignment for Software Engineering Subject.</h3>
 Hotel Management System software is a comprehensive technology solution designed to manage and automate daily hotel operations.
+<hr>
 It includes many functions such as room management, room booking and revenue report.
+<hr>
 This software helps hotels optimize work processes, reduce time and effort, thereby improving performance and service quality.
 
 
