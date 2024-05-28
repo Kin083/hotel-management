@@ -2,35 +2,35 @@ import axiosClient from "./axiosClient";
 
 const userApi = {
   getAll(params) {
-    const url = "getListRoom/1";
+    const url = "room/getAll/1";
     return axiosClient.get(url, { params: params });
   },
   getAvailRoom(params) {
-    const url = "getAvailRoom/1";
+    const url = "room/getAvailRoom/1";
     return axiosClient.get(url, { params: params });
   },
   getType(params) {
-    const url = "/getallRoomType";
+    const url = "/roomType/getAll";
     return axiosClient.get(url, { params: params });
   },
 
   addType(data) {
-    const url = "/Roomtype/add";
+    const url = "/roomType/add";
     return axiosClient.post(url, data);
   },
 
-  updateType(typeID, data) {
-    const url = `/update/roomTYpe/${typeID}`;
+  updateType(typeId, data) {
+    const url = `/roomType/add/${typeId}`;
     return axiosClient.post(url, data);
   },
 
   deleteType(typeID) {
-    const url = `/Roomtype/delete/${typeID}`;
+    const url = `/roomType/delete/${typeID}`;
     return axiosClient.delete(url);
   },
 
   addRoom(data) {
-    const url = "/Room/add";
+    const url = "/room/add";
     return axiosClient.post(url, data);
   },
 
@@ -87,14 +87,7 @@ const userApi = {
       role: role,
     });
   },
-  //   update(data) {
-  //     const url = `/users/${data.id}`;
-  //     return axiosClient.patch(url, data);
-  //   },
-  //   remove(id) {
-  //     const url = `/users/${id}`;
-  //     return axiosClient.delete(url);
-  //   },
+ 
 };
 
 export default userApi;

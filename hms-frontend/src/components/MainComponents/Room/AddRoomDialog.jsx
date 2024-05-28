@@ -41,12 +41,12 @@ const GridRow = ({ label, value }) => {
 };
 
 function AddRoomDialog(props) {
-  const { openAddDialog, closeAdd, saveAdd, typeList, roomNames } = props;
+  const { openAddDialog, closeAdd, saveAdd, typeList, roomNumbers } = props;
   const [newRoomData, setNewRoomData] = useState({
-    roomName: "",
+    roomNumber: "",
     type: "",
-    hotelID: "1",
-    typeID: "",
+    hotelId: "1",
+    typeId: "",
     status: "",
     notes: "",
   });
@@ -63,7 +63,7 @@ function AddRoomDialog(props) {
       [name]: value,
     }));
 
-    if (name === "roomName" && roomNames.includes(value)) {
+    if (name === "roomNumber" && roomNumbers.includes(value)) {
       setNameError(true);
     } else {
       setNameError(false);
@@ -74,7 +74,7 @@ function AddRoomDialog(props) {
       if (selectedType) {
         setPrice({
           dayRate: selectedType.dayRate,
-          nightRate: selectedType.pricepernight,
+          nightRate: selectedType.nightRate,
           dailyRate: selectedType.dailyRate,
           overtimeRate: selectedType.overtimePay,
           capacity: selectedType.capacity,
@@ -82,14 +82,14 @@ function AddRoomDialog(props) {
 
         setNewRoomData((prevData) => ({
           ...prevData,
-          typeID: selectedType.typeID,
+          typeId: selectedType.typeId,
         }));
       }
     }
   };
 
   const saveRoom = () => {
-    if (newRoomData.roomName && newRoomData.type && newRoomData.status) {
+    if (newRoomData.roomNumber && newRoomData.type && newRoomData.status) {
       saveAdd(newRoomData);
       closeAdd();
     } else {
@@ -141,9 +141,9 @@ function AddRoomDialog(props) {
                 <TextField
                   required
                   id="room-name"
-                  name="roomName"
+                  name="roomNumber"
                   label="Name"
-                  value={newRoomData.roomName}
+                  value={newRoomData.roomNumber}
                   variant="standard"
                   onChange={handleChange}
                   error={nameError}
@@ -166,7 +166,7 @@ function AddRoomDialog(props) {
                     onChange={handleChange}
                   >
                     {typeList.map((type) => (
-                      <MenuItem key={type.typeID} value={type.name}>
+                      <MenuItem key={type.typeId} value={type.name}>
                         {type.name}
                       </MenuItem>
                     ))}
@@ -242,7 +242,7 @@ AddRoomDialog.propTypes = {
   closeAdd: PropTypes.func.isRequired,
   saveAdd: PropTypes.func.isRequired,
   typeList: PropTypes.array.isRequired,
-  roomNames: PropTypes.array.isRequired,
+  roomNumbers: PropTypes.array.isRequired,
 };
 
 GridRow.propTypes = {

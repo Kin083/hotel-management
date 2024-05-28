@@ -27,7 +27,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import QRCode from "qrcode.react";
 
 function createData(
-  roomName,
+  roomNumber,
   type,
   startTime,
   endTime,
@@ -41,7 +41,7 @@ function createData(
   phone
 ) {
   return {
-    roomName,
+    roomNumber,
     type,
     startTime,
     endTime,
@@ -229,7 +229,7 @@ function PaymentDialog(props) {
           alignItems: "center",
         }}
       >
-        {"PAYMENT OF ROOM: " + data.roomName}
+        {"PAYMENT OF ROOM: " + data.roomNumber}
         <IconButton onClick={closePaymentDialog}>
           <CloseIcon />
         </IconButton>

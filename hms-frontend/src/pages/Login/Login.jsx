@@ -28,19 +28,21 @@ const Login = ({ session, setSession }) => {
     };
 
     const handleOnLogin = async(e) => {
-        e.preventDefault();
-        const response = await userApi.getLogin({username, password});
-        if(response ) {
-            const sessionData = {
-                Username: response.username,
-                Role: response.role,
-                SessionId: response.sessionId
-            };
-            setSession(sessionData); 
-            navigate("/main");
-        } else {
-            alert("Login failed");
-        }
+        navigate("/main");
+        // tạm thời comment đoạn xác thực login
+        // e.preventDefault();
+        // const response = await userApi.getLogin({username, password});
+        // if(response ) {
+        //     const sessionData = {
+        //         Username: response.username,
+        //         Role: response.role,
+        //         SessionId: response.sessionId
+        //     };
+        //     setSession(sessionData); 
+        //     navigate("/main");
+        // } else {
+        //     alert("Login failed");
+        // }
     };
 
     const handleOnSignUp = async (e) => {

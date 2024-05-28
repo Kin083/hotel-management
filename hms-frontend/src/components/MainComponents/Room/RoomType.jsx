@@ -54,20 +54,20 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 function createData(
-  typeID,
+  typeId,
   name,
   description,
-  pricepernight,
+  nightRate,
   dayRate,
   dailyRate,
   overtimePay,
   capacity
 ) {
   return {
-    typeID,
+    typeId,
     name,
     description,
-    pricepernight,
+    nightRate,
     dayRate,
     dailyRate,
     overtimePay,
@@ -85,7 +85,7 @@ function RoomType({ typeList }) {
   const initialFormState = {
     name: "",
     description: "",
-    pricepernight: "",
+    nightRate: "",
     dayRate: "",
     dailyRate: "",
     overtimePay: "",
@@ -102,10 +102,10 @@ function RoomType({ typeList }) {
     setRows(
       typeList.map((item) =>
         createData(
-          item.typeID,
+          item.typeId,
           item.name,
           item.description,
-          item.pricepernight,
+          item.nightRate,
           item.dayRate,
           item.dailyRate,
           item.overtimePay,
@@ -136,10 +136,10 @@ function RoomType({ typeList }) {
   };
 
   const deleteType = async () => {
-    const typeIDToDelete = rows[deleteIndex].typeID;
+    const typeIdToDelete = rows[deleteIndex].typeId;
     try {
       setRows((prevRows) => prevRows.filter((_, idx) => idx !== deleteIndex));
-      // await userApi.deleteType(typeIDToDelete);
+      // await userApi.deleteType(typeIdToDelete);
     } catch (error) {
       console.error("Error deleting type:", error);
     } finally {
@@ -161,7 +161,7 @@ function RoomType({ typeList }) {
     const {
       name,
       description,
-      pricepernight,
+      nightRate,
       dayRate,
       dailyRate,
       overtimePay,
@@ -171,7 +171,7 @@ function RoomType({ typeList }) {
     if (
       !name ||
       !description ||
-      !pricepernight ||
+      !nightRate ||
       !dayRate ||
       !dailyRate ||
       !overtimePay ||
@@ -182,13 +182,13 @@ function RoomType({ typeList }) {
     }
 
     const newID =
-      rows.length > 0 ? Math.max(...rows.map((row) => row.typeID)) + 1 : 1;
+      rows.length > 0 ? Math.max(...rows.map((row) => row.typeId)) + 1 : 1;
 
     const newData = {
-      typeID: selectedRow ? selectedRow.typeID : newID,
+      typeId: selectedRow ? selectedRow.typeId : newID,
       name,
       description,
-      pricepernight: parseFloat(pricepernight),
+      nightRate: parseFloat(nightRate),
       dayRate: parseFloat(dayRate),
       dailyRate: parseFloat(dailyRate),
       overtimePay: parseFloat(overtimePay),
@@ -199,10 +199,10 @@ function RoomType({ typeList }) {
       if (selectedRow !== null) {
         setRows((prevRows) =>
           prevRows.map((row) =>
-            row.typeID === selectedRow.typeID ? newData : row
+            row.typeId === selectedRow.typeId ? newData : row
           )
         );
-        // await userApi.updateType(selectedRow.typeID, newData);
+        // await userApi.updateType(selectedRow.typeId, newData);
       } else {
         setRows((prevRows) => [...prevRows, newData]);
         // await userApi.addType(newData);
@@ -220,7 +220,7 @@ function RoomType({ typeList }) {
       setFormState({
         name: selectedRow.name,
         description: selectedRow.description,
-        pricepernight: selectedRow.pricepernight,
+        nightRate: selectedRow.nightRate,
         dayRate: selectedRow.dayRate,
         dailyRate: selectedRow.dailyRate,
         overtimePay: selectedRow.overtimePay,
@@ -278,15 +278,15 @@ function RoomType({ typeList }) {
           </TableHead>
           <TableBody>
             {rows.map((row, index) => (
-              <StyledTableRow key={row.typeID}>
-                <StyledTableCell align="left">{row.typeID}</StyledTableCell>
+              <StyledTableRow key={row.typeId}>
+                <StyledTableCell align="left">{row.typeId}</StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   {row.name}
                 </StyledTableCell>
                 <StyledTableCell>{row.description}</StyledTableCell>
                 <StyledTableCell align="right">{row.dayRate}</StyledTableCell>
                 <StyledTableCell align="right">
-                  {row.pricepernight}
+                  {row.nightRate}
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.dailyRate}</StyledTableCell>
                 <StyledTableCell align="right">
@@ -351,14 +351,14 @@ function RoomType({ typeList }) {
               />
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }}>
-              <InputLabel htmlFor="pricepernight">Night Rate</InputLabel>
+              <InputLabel htmlFor="nightRate">Night Rate</InputLabel>
               <OutlinedInput
-                id="pricepernight"
+                id="nightRate"
                 startAdornment={
                   <InputAdornment position="start">$</InputAdornment>
                 }
                 label="Night Rate"
-                value={formState.pricepernight}
+                value={formState.nightRate}
                 onChange={handleInputChange}
               />
             </FormControl>

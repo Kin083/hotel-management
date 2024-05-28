@@ -102,7 +102,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const [roomInforTab, setRoomInforTab] = React.useState("1");
   const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
   const [specificRoomData, setSpecificRoomData] = React.useState(null);
-  const [roomNames, setRoomNames] = React.useState([]);
+  const [roomNumbers, setroomNumbers] = React.useState([]);
   const [openPayDialog, setOpenPayDialog] = React.useState(false);
   const [openBackdrop, setOpenBackDrop] = React.useState(false);
   const [successAlert, setSuccessAlert] = React.useState(false);
@@ -121,7 +121,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
         id: index,
       }));
 
-      setRoomNames(roomList.map((room) => room.roomName));
+      setroomNumbers(roomList.map((room) => room.roomNumber));
       setRows(rowsWithId);
     };
 
@@ -155,11 +155,11 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
 
     const updatedRoomData = {
       ...currentRoomData,
-      roomName:
-        updatedData.name !== currentRoomData.roomName &&
-        updatedData.roomName !== undefined
-          ? updatedData.roomName
-          : currentRoomData.roomName,
+      roomNumber:
+        updatedData.name !== currentRoomData.roomNumber &&
+        updatedData.roomNumber !== undefined
+          ? updatedData.roomNumber
+          : currentRoomData.roomNumber,
       type:
         updatedData.type !== currentRoomData.type &&
         updatedData.type !== undefined
@@ -184,9 +184,9 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
       if (updatedType) {
         updatedRoomData.dailyRate = updatedType.dailyRate;
         updatedRoomData.dayRate = updatedType.dayRate;
-        updatedRoomData.nightRate = updatedType.pricepernight;
+        updatedRoomData.nightRate = updatedType.nightRate;
         updatedRoomData.overtimeRate = updatedType.overtimePay;
-        updatedRoomData.maxiumCapacity = updatedType.capacity;
+        updatedRoomData.maximumCapacity = updatedType.capacity;
       }
     }
 
@@ -209,10 +209,10 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
     // If type details found, update newRoomData with corresponding fields
     if (typeDetails) {
       newRoomData.dayRate = typeDetails.dayRate;
-      newRoomData.nightRate = typeDetails.pricepernight;
+      newRoomData.nightRate = typeDetails.nightRate;
       newRoomData.dailyRate = typeDetails.dailyRate;
       newRoomData.overtimeRate = typeDetails.overtimePay;
-      newRoomData.maxiumCapacity = typeDetails.capacity;
+      newRoomData.maximumCapacity = typeDetails.capacity;
     }
 
     // Update rows with newRoomData
@@ -374,7 +374,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
           <EnhancedTableToolbar
             numSelected={selected.length}
             typeList={typeList}
-            roomNames={roomNames}
+            roomNumbers={roomNumbers}
             updateRoomList={updateRoomList}
           />
           <TableContainer>
@@ -425,7 +425,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                           scope="row"
                           padding="none"
                         >
-                          {row.roomName}
+                          {row.roomNumber}
                         </StyledTableCell>
                         <StyledTableCell align="right">
                           {row.type}
@@ -448,7 +448,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
                           {row.overtimeRate}
                         </StyledTableCell>
                         <StyledTableCell align="right">
-                          {row.maxiumCapacity}
+                          {row.maximumCapacity}
                         </StyledTableCell>
                         <StyledTableCell align="right">
                           <IconButton
@@ -552,7 +552,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
           saveChange={saveChange}
           specificRoomData={specificRoomData}
           typeList={typeList}
-          roomNames={roomNames}
+          roomNumbers={roomNumbers}
         />
       )}
       {openPayDialog && (
