@@ -30,6 +30,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import FaceIcon from "@mui/icons-material/Face";
+import userApi from "../../../api/userApi";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -75,16 +76,27 @@ function DetailBooking({
   saveBooking,
   openCusInfor,
   detailData,
-  cusName,
+  cusInfor,
 }) {
   const [rows, setRows] = React.useState(detailData);
   const [selectedRooms, setSelectedRooms] = React.useState([]);
   const [notesValue, setNotesValue] = React.useState("");
   const [showAlert, setShowAlert] = React.useState(false);
   const [noRoomsSelectedAlert, setNoRoomsSelectedAlert] = React.useState(false);
+  const [guestList, setGuestList] = React.useState([]);
+  const [cusInforMain, setCusInforMain] = React.useState(cusInfor);
+  const [cusId, setCusId] = React.useState("");
 
   // eslint-disable-next-line no-unused-vars
   const [totalMoney, setTotalMoney] = React.useState(0);
+
+  React.useEffect(() => {
+    const fetchUsers = async () => {
+      setGuestList(await userApi.getAllGuest());
+    };
+
+    fetchUsers();
+  }, []);
 
   const getRate = (
     typeOfRate,
@@ -239,7 +251,6 @@ function DetailBooking({
           rooms: bookingObjects,
         };
         saveBooking(bookingData);
-        
       }
     } else {
       alert("Please choose the number of room is suitable");
@@ -281,6 +292,11 @@ function DetailBooking({
     setTotalMoney(newTotalMoney);
   }, [rows, selectedRooms]);
 
+  const formattedDate = (dobString) => {
+    const date = new Date(dobString);
+    return date.toLocaleDateString();
+  };
+
   React.useEffect(() => {
     const newTotalMoney = rows.reduce((total, row, index) => {
       const rate = getRate(
@@ -294,6 +310,17 @@ function DetailBooking({
     }, 0);
     setTotalMoney(newTotalMoney);
   }, [rows, selectedRooms]);
+
+  const handleCusIdKeyDown = (event) => {
+    if (event.key === "Enter") {
+      const guest = guestList.find((guest) => guest.idNumber === cusId);
+      if (guest) {
+        setCusInforMain(guest);
+      } else {
+        alert("No information");
+      }
+    }
+  };
 
   if (rows.length !== 0) {
     return (
@@ -346,25 +373,33 @@ function DetailBooking({
                 <SearchIcon />
                 <input
                   type="text"
-                  placeholder="Customer Name"
+                  placeholder="Customer ID"
+                  value={cusId}
+                  onChange={(event) => {
+                    setCusId(event.target.value);
+                  }}
+                  onKeyDown={handleCusIdKeyDown}
                   style={{
                     border: "none",
                     outline: "none",
                     flex: 1,
                     paddingLeft: "15px",
                   }}
-                ></input>
+                />
                 <IconButton onClick={openCusInfor}>
                   <AddCircleOutlineIcon />
                 </IconButton>
               </Box>
-              {cusName && (
+              {cusInforMain && (
                 <Alert
                   icon={<FaceIcon fontSize="inherit" />}
                   severity="success"
                   sx={{ marginLeft: "15px", width: "20%" }}
                 >
-                  {cusName}
+                  {cusInforMain.name}
+                  {cusInforMain.dob !== null
+                    ? formattedDate(cusInforMain.dob)
+                    : "Ok"}
                 </Alert>
               )}
               {showAlert && (
@@ -545,7 +580,7 @@ DetailBooking.propTypes = {
   closeDetailBooking: PropTypes.func.isRequired,
   openCusInfor: PropTypes.func.isRequired,
   detailData: PropTypes.array.isRequired,
-  cusName: PropTypes.string,
+  cusInfor: PropTypes.object,
 };
 
 export default DetailBooking;

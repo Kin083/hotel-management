@@ -139,7 +139,7 @@ function RoomType({ typeList }) {
     const typeIdToDelete = rows[deleteIndex].typeId;
     try {
       setRows((prevRows) => prevRows.filter((_, idx) => idx !== deleteIndex));
-      // await userApi.deleteType(typeIdToDelete);
+      await userApi.deleteType(typeIdToDelete);
     } catch (error) {
       console.error("Error deleting type:", error);
     } finally {
@@ -195,6 +195,7 @@ function RoomType({ typeList }) {
       capacity: parseInt(capacity),
     };
 
+    console.log(newData);
     try {
       if (selectedRow !== null) {
         setRows((prevRows) =>
@@ -202,10 +203,10 @@ function RoomType({ typeList }) {
             row.typeId === selectedRow.typeId ? newData : row
           )
         );
-        // await userApi.updateType(selectedRow.typeId, newData);
+        await userApi.updateType(selectedRow.typeId, newData);
       } else {
         setRows((prevRows) => [...prevRows, newData]);
-        // await userApi.addType(newData);
+        await userApi.addType(newData);
       }
     } catch (error) {
       console.error("Error saving change:", error);
@@ -285,9 +286,7 @@ function RoomType({ typeList }) {
                 </StyledTableCell>
                 <StyledTableCell>{row.description}</StyledTableCell>
                 <StyledTableCell align="right">{row.dayRate}</StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.nightRate}
-                </StyledTableCell>
+                <StyledTableCell align="right">{row.nightRate}</StyledTableCell>
                 <StyledTableCell align="right">{row.dailyRate}</StyledTableCell>
                 <StyledTableCell align="right">
                   {row.overtimePay}

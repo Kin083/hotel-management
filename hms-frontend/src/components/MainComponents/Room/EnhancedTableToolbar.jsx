@@ -129,6 +129,14 @@ function EnhancedTableToolbar({
 
   const saveCusInfor = (cusInfor) => {
     setCusInfor(cusInfor);
+    userApi
+      .addGuest(cusInfor)
+      .then(() => {
+        console.log("Adding guest information successfully:", cusInfor);
+      })
+      .catch((error) => {
+        console.error("Adding guest information Error:", error);
+      });
     setOpenCusInforDialog(false);
   };
 
@@ -180,7 +188,7 @@ function EnhancedTableToolbar({
         saveBooking={saveBooking}
         openCusInfor={openCusInfor}
         detailData={detailData}
-        cusName={cusInfor.cusName}
+        cusInfor={cusInfor}
       />
 
       <CustomerInforDialog
@@ -232,7 +240,7 @@ function EnhancedTableToolbar({
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   typeList: PropTypes.array.isRequired,
-  roomNames: PropTypes.array.isRequired,
+  roomNames: PropTypes.array,
   updateRoomList: PropTypes.func,
 };
 

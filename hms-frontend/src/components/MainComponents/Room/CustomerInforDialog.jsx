@@ -42,9 +42,8 @@ const StackItem = ({ label, standard, date, selection, onChange, value }) => {
   };
 
   const handleDateChange = (newValue) => {
-    const formattedDate = dayjs(newValue).format("DD/MM/YYYY");
     setValueDate(newValue);
-    onChange(formattedDate);
+    onChange(newValue.toDate());
   };
 
   const handleInputChange = (event) => {
@@ -100,12 +99,12 @@ function CustomerInforDialog({
   const [showAlert, setShowAlert] = React.useState(false);
   const [selectedImage, setSelectedImage] = React.useState(null);
   const [cusInfor, setCusInfor] = React.useState({
-    cusID: "",
-    cusName: "",
-    cusDoB: "",
-    cusGender: "",
-    cusEmail: "",
-    cusPhone: "",
+    idNumber: "",
+    name: "",
+    dob: null,
+    gender: "",
+    email: "",
+    phone: "",
     cusImg: "",
   });
 
@@ -126,20 +125,20 @@ function CustomerInforDialog({
   };
 
   const handleSave = () => {
-    const { cusID, cusName, cusGender, cusPhone } = cusInfor;
-    if (!cusID || !cusName || !cusGender || !cusPhone) {
+    const { idNumber, name, gender, phone } = cusInfor;
+    if (!idNumber || !name || !gender || !phone) {
       setShowAlert(true);
       return;
     }
     setShowAlert(false);
     saveCusInfor(cusInfor);
     setCusInfor({
-      cusID: "",
-      cusName: "",
-      cusDoB: "",
-      cusGender: "",
-      cusEmail: "",
-      cusPhone: "",
+      idNumber: "",
+      name: "",
+      dob: null,
+      gender: "",
+      email: "",
+      phone: "",
       cusImg: "",
     });
     setSelectedImage(null);
@@ -228,37 +227,38 @@ function CustomerInforDialog({
             <StackItem
               label="Identification Number *"
               standard
-              value={cusInfor.cusID}
-              onChange={handleInputChange("cusID")}
+              value={cusInfor.idNumber}
+              onChange={handleInputChange("idNumber")}
             />
             <StackItem
               label="Customer name *"
               standard
-              value={cusInfor.cusName}
-              onChange={handleInputChange("cusName")}
+              value={cusInfor.name}
+              onChange={handleInputChange("name")}
             />
             <StackItem
               label="Date of Birth"
               date
-              onChange={handleInputChange("cusDoB")}
+              value={dayjs(cusInfor.dob)}
+              onChange={handleInputChange("dob")}
             />
             <StackItem
               label="Gender *"
               selection
-              value={cusInfor.cusGender}
-              onChange={handleInputChange("cusGender")}
+              value={cusInfor.gender}
+              onChange={handleInputChange("gender")}
             />
             <StackItem
               label="Email"
               standard
-              value={cusInfor.cusEmail}
-              onChange={handleInputChange("cusEmail")}
+              value={cusInfor.email}
+              onChange={handleInputChange("email")}
             />
             <StackItem
               label="Phone number *"
               standard
-              value={cusInfor.cusPhone}
-              onChange={handleInputChange("cusPhone")}
+              value={cusInfor.phone}
+              onChange={handleInputChange("phone")}
             />
           </Stack>
         </Box>
@@ -283,7 +283,6 @@ StackItem.propTypes = {
   selection: PropTypes.bool,
   notes: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string,
 };
 
 export default CustomerInforDialog;

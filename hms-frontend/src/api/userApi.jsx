@@ -20,8 +20,8 @@ const userApi = {
   },
 
   updateType(typeId, data) {
-    const url = `/roomType/add/${typeId}`;
-    return axiosClient.post(url, data);
+    const url = `/roomType/update/${typeId}`;
+    return axiosClient.put(url, data);
   },
 
   deleteType(typeID) {
@@ -39,6 +39,16 @@ const userApi = {
     return axiosClient.post(url, data);
   },
 
+  getAllGuest(params) {
+    const url = "/guest/getAll";
+    return axiosClient.get(url, { params: params });
+  },
+
+  addGuest(data) {
+    const url = "/guest/add";
+    return axiosClient.post(url, data);
+  },
+
   getRevenue(params) {
     const url = "getRevenue/Payments/" + params;
     console.log(url);
@@ -53,12 +63,12 @@ const userApi = {
     });
   },
 
-  getSignUp({ username, password, email, fullname, value }) {
+  getSignUp({ username, password, email, fullName, value }) {
     const url = "register";
     return axiosClient.post(url, {
       user_name: username,
       user_password: password,
-      full_name: fullname,
+      full_name: fullName,
       email: email,
       phone: value,
     });
@@ -71,7 +81,7 @@ const userApi = {
   },
 
   getLogout({ sessionId, userName, role }) {
-    const url = "logoutt";
+    const url = "logout";
     return axiosClient.post(url, {
       sessionId: sessionId,
       username: userName,
@@ -87,7 +97,6 @@ const userApi = {
       role: role,
     });
   },
- 
 };
 
 export default userApi;
