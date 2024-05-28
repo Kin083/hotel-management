@@ -102,7 +102,6 @@ const userApi = {
       role: role,
     });
   },
- 
 };
 
 export default userApi;
