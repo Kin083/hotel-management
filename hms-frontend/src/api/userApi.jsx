@@ -40,7 +40,7 @@ const userApi = {
   },
 
   addBooking(data) {
-    const url = "/addBookingDetails";
+    const url = "/booking/add";
     return axiosClient.post(url, data);
   },
 

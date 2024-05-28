@@ -85,14 +85,36 @@ function EnhancedTableToolbar({
   const saveBooking = (bookingData) => {
     if (cusInfor && Object.keys(cusInfor).length > 0) {
       bookingData.rooms.forEach((room) => {
+        const checkinTimeArr = room.startTime.split("/");
+        const checkinHour = checkinTimeArr[0].split(":");
+        const checkinTime = new Date(
+          checkinTimeArr[3],
+          checkinTimeArr[2],
+          checkinTimeArr[1],
+          checkinHour[0],
+          checkinHour[1],
+          0,
+          0
+        );
+        const checkoutTimeArr = room.endTime.split("/");
+        const checkoutHour = checkoutTimeArr[0].split(":");
+        const checkoutTime = new Date(
+          checkoutTimeArr[3],
+          checkoutTimeArr[2],
+          checkoutTimeArr[1],
+          checkoutHour[0],
+          checkoutHour[1],
+          0,
+          0
+        );
+
         const roomData = {
-          ...cusInfor,
-          name: room.name,
-          startTime: room.startTime,
-          endTime: room.endTime,
+          guestId: cusInfor.guestId,
+          roomNumber: room.name,
+          checkinTime: checkinTime,
+          checkoutTime: checkoutTime,
           money: room.money,
-          typeOfRate: room.typeOfRate,
-          cusNotes: bookingData.cusNotes,
+          guestNotes: bookingData.cusNotes,
         };
         userApi
           .addBooking(roomData)
@@ -138,6 +160,10 @@ function EnhancedTableToolbar({
         console.error("Adding guest information Error:", error);
       });
     setOpenCusInforDialog(false);
+  };
+
+  const cusData = (cusInfor) => {
+    setCusInfor(cusInfor);
   };
 
   return (
@@ -189,6 +215,7 @@ function EnhancedTableToolbar({
         openCusInfor={openCusInfor}
         detailData={detailData}
         cusInfor={cusInfor}
+        cusData={cusData}
       />
 
       <CustomerInforDialog

@@ -32,6 +32,7 @@ const styleInput = {
   borderRadius: "4px",
 };
 
+// eslint-disable-next-line react/prop-types
 const StackItem = ({ label, standard, date, selection, onChange, value }) => {
   const [valueDate, setValueDate] = React.useState(dayjs());
   const [selectedGender, setSelectedGender] = React.useState(value);

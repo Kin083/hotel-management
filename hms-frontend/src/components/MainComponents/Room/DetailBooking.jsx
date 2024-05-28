@@ -77,6 +77,7 @@ function DetailBooking({
   openCusInfor,
   detailData,
   cusInfor,
+  cusData,
 }) {
   const [rows, setRows] = React.useState(detailData);
   const [selectedRooms, setSelectedRooms] = React.useState([]);
@@ -96,7 +97,8 @@ function DetailBooking({
     };
 
     fetchUsers();
-  }, []);
+    setCusInforMain(cusInfor);
+  }, [cusInfor]);
 
   const getRate = (
     typeOfRate,
@@ -316,6 +318,7 @@ function DetailBooking({
       const guest = guestList.find((guest) => guest.idNumber === cusId);
       if (guest) {
         setCusInforMain(guest);
+        cusData(guest);
       } else {
         alert("No information");
       }
@@ -581,6 +584,7 @@ DetailBooking.propTypes = {
   openCusInfor: PropTypes.func.isRequired,
   detailData: PropTypes.array.isRequired,
   cusInfor: PropTypes.object,
+  cusData: PropTypes.func,
 };
 
 export default DetailBooking;
