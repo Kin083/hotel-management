@@ -102,7 +102,7 @@ function CustomerInforDialog({
   const [cusInfor, setCusInfor] = React.useState({
     idNumber: "",
     name: "",
-    dob: null, // Initialize dob as null
+    dob: null,
     gender: "",
     email: "",
     phone: "",
@@ -284,9 +284,6 @@ StackItem.propTypes = {
   selection: PropTypes.bool,
   notes: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  // value: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]), // Updated to handle Date type
 };
 
 export default CustomerInforDialog;
-
-
