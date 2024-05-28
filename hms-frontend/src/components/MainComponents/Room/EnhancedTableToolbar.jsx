@@ -111,8 +111,8 @@ function EnhancedTableToolbar({
         const roomData = {
           guestId: cusInfor.guestId,
           roomNumber: room.name,
-          checkinTime: checkinTime,
-          checkoutTime: checkoutTime,
+          checkinDate: checkinTime,
+          checkoutDate: checkoutTime,
           money: room.money,
           guestNotes: bookingData.cusNotes,
         };
