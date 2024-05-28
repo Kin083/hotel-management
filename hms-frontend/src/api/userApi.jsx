@@ -41,7 +41,7 @@ const userApi = {
 
   getAllGuest(params) {
     const url = "/guest/getAll";
-    return axiosClient.get(url, {params: params});
+    return axiosClient.get(url, { params: params });
   },
 
   addGuest(data) {
@@ -63,12 +63,12 @@ const userApi = {
     });
   },
 
-  getSignUp({ username, password, email, fullname, value }) {
+  getSignUp({ username, password, email, fullName, value }) {
     const url = "register";
     return axiosClient.post(url, {
       user_name: username,
       user_password: password,
-      full_name: fullname,
+      full_name: fullName,
       email: email,
       phone: value,
     });
@@ -81,7 +81,7 @@ const userApi = {
   },
 
   getLogout({ sessionId, userName, role }) {
-    const url = "logoutt";
+    const url = "logout";
     return axiosClient.post(url, {
       sessionId: sessionId,
       username: userName,

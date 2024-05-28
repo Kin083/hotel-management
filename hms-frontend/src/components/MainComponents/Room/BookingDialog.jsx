@@ -100,6 +100,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
     executeTime: "hour",
     price: "dayRate",
     timeAlert: false,
+    pastTimeAlert: false,
   };
   const [rows, setRows] = useState(initialState.rows);
   const [startTime, setStartTime] = useState(dayjs());
@@ -107,6 +108,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
   const [executeTime, setExecuteTime] = useState("hour");
   const [price, setPrice] = useState("dayRate");
   const [timeAlert, setTimeAlert] = useState(false);
+  const [pastTimeAlert, setPastTimeAlert] = useState(false);
 
   const resetState = () => {
     setRows((prevRows) => prevRows.map((row) => ({ ...row, quantity: 0 })));
@@ -115,6 +117,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
     setExecuteTime(initialState.executeTime);
     setPrice(initialState.price);
     setTimeAlert(initialState.timeAlert);
+    setPastTimeAlert(initialState.pastTimeAlert);
   };
 
   useEffect(() => {
@@ -144,7 +147,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
   };
 
   const handleConfirmBooking = () => {
-    if (timeAlert) {
+    if (timeAlert || pastTimeAlert) {
       return;
     }
     const selectedRows = rows
@@ -168,6 +171,17 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
     resetState();
   };
 
+  const handleStartTimeChange = (newValue) => {
+    if (newValue.isAfter(dayjs())) {
+      setStartTime(newValue);
+      if (pastTimeAlert) {
+        setPastTimeAlert(false);
+      }
+    } else {
+      setPastTimeAlert(true);
+    }
+  };
+
   const handleEndTimeChange = (newValue) => {
     if (newValue.isAfter(startTime)) {
       setEndTime(newValue);
@@ -179,13 +193,18 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
     }
   };
 
+  const handleCloseBooking = () => {
+    resetState();
+    closeBooking();
+  };
+
   return (
     <ThemeProvider theme={{ ...customTheme, rateType: price }}>
       <Dialog
         open={openBookingDialog}
         TransitionComponent={Transition}
         keepMounted
-        onClose={closeBooking}
+        onClose={handleCloseBooking}
         aria-describedby="booking-dialog"
         maxWidth="lg"
         sx={{
@@ -203,11 +222,16 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
         >
           What room do you need?
           {timeAlert && (
-            <Alert severity="error" sx={{ marginLeft: "0px", width: "230px" }}>
-              Please provide valid time.
+            <Alert severity="error" sx={{ marginLeft: "0px", width: "330px" }}>
+              Please provide valid end time.
             </Alert>
           )}
-          <IconButton onClick={closeBooking}>
+          {pastTimeAlert && (
+            <Alert severity="error" sx={{ marginLeft: "0px", width: "330px" }}>
+              Start time must be in the future.
+            </Alert>
+          )}
+          <IconButton onClick={handleCloseBooking}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -289,7 +313,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                   <DateTimePicker
                     label="Start Time"
                     value={startTime}
-                    onChange={(newValue) => setStartTime(newValue)}
+                    onChange={handleStartTimeChange}
                     sx={{ marginLeft: "15px", marginRight: "10px" }}
                   />
                 </LocalizationProvider>
@@ -340,7 +364,7 @@ function BookingDialog({ openBookingDialog, closeBooking, confirmBooking }) {
                     <TableCell component="th" scope="row">
                       {row.type}
                     </TableCell>
-                    <TableCell align="center">{row.capicity}</TableCell>
+                    <TableCell align="center">{row.capacity}</TableCell>
                     <TableCell align="center">
                       {row.listRoomNumber.length}
                     </TableCell>

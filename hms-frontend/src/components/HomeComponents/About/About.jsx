@@ -1,10 +1,9 @@
 import './About.css'
 import { assets } from '../../../assets/assets'
-import { backdropClasses } from '@mui/material'
 
 const About = () => {
   return (
-    <div class="about-container" id="about">
+    <div className="about-container" id="about">
         <h1>About HMS</h1>
       <div style={{backgroundColor: "#ebf7ef"}} className="subsection">
         <img src={assets.section_img} alt="" />

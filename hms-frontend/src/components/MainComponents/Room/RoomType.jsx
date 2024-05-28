@@ -195,6 +195,7 @@ function RoomType({ typeList }) {
       capacity: parseInt(capacity),
     };
 
+    console.log(newData);
     try {
       if (selectedRow !== null) {
         setRows((prevRows) =>
@@ -285,9 +286,7 @@ function RoomType({ typeList }) {
                 </StyledTableCell>
                 <StyledTableCell>{row.description}</StyledTableCell>
                 <StyledTableCell align="right">{row.dayRate}</StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.nightRate}
-                </StyledTableCell>
+                <StyledTableCell align="right">{row.nightRate}</StyledTableCell>
                 <StyledTableCell align="right">{row.dailyRate}</StyledTableCell>
                 <StyledTableCell align="right">
                   {row.overtimePay}

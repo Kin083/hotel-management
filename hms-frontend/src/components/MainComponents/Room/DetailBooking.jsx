@@ -32,11 +32,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import FaceIcon from "@mui/icons-material/Face";
 import userApi from "../../../api/userApi";
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
-
 
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,7 +50,6 @@ const StyledTableCell = styled(TableCell)(() => ({
   },
 }));
 
-
 const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(even)": {
     backgroundColor: "#f7f8f9",
@@ -61,7 +58,6 @@ const StyledTableRow = styled(TableRow)(() => ({
     border: 0,
   },
 }));
-
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -73,7 +69,6 @@ const MenuProps = {
     },
   },
 };
-
 
 function DetailBooking({
   openDetailBooking,
@@ -92,20 +87,16 @@ function DetailBooking({
   const [cusInforMain, setCusInforMain] = React.useState(cusInfor);
   const [cusId, setCusId] = React.useState("");
 
-
   // eslint-disable-next-line no-unused-vars
   const [totalMoney, setTotalMoney] = React.useState(0);
-
 
   React.useEffect(() => {
     const fetchUsers = async () => {
       setGuestList(await userApi.getAllGuest());
     };
 
-
     fetchUsers();
   }, []);
-
 
   const getRate = (
     typeOfRate,
@@ -119,24 +110,20 @@ function DetailBooking({
       return "Invalid startTime or endTime";
     }
 
-
     if (typeOfRate === "Daily") {
       return "Daily - " + dailyRate;
     } else {
       const startTimeParts = startTime.split(":");
       const endTimeParts = endTime.split(":");
 
-
       if (startTimeParts.length < 2 || endTimeParts.length < 2) {
         return "Invalid time format";
       }
-
 
       const startHour = parseInt(startTimeParts[0]);
       const startMinute = parseInt(startTimeParts[1]);
       const endHour = parseInt(endTimeParts[0]);
       const endMinute = parseInt(endTimeParts[1]);
-
 
       if (
         isNaN(startHour) ||
@@ -147,10 +134,8 @@ function DetailBooking({
         return "Invalid time format";
       }
 
-
       const isDayToNight =
         startHour >= 6 && startHour < 18 && (endHour >= 18 || endHour < 6);
-
 
       if (isDayToNight) {
         return "Day - " + dayRate + " & " + "Night - " + nightRate;
@@ -164,14 +149,12 @@ function DetailBooking({
     }
   };
 
-
   const getHour = (typeOfRate) => {
     if (typeOfRate === "Daily") {
       return "day";
     }
     return "hour";
   };
-
 
   const getTypeMoney = (rate, quantity, hour, startTime, endTime) => {
     // Parse startTime and endTime to get hour and minutes
@@ -180,21 +163,17 @@ function DetailBooking({
     const startMinute = parseInt(startTime.split(":")[1]);
     const endMinute = parseInt(endTime.split(":")[1]);
 
-
     // Check if startTime is in dayRate and endTime is in nightRate
     const isDayToNight =
       startHour >= 6 && startHour < 18 && (endHour >= 18 || endHour < 6);
-
 
     if (isDayToNight) {
       // Calculate number of hours in dayRate and nightRate
       const dayEndHour = 18;
       const nightStartHour = 18;
 
-
       let dayHours = 0;
       let nightHours = 0;
-
 
       if (endHour >= nightStartHour) {
         dayHours = dayEndHour - startHour + startMinute / 60;
@@ -203,7 +182,6 @@ function DetailBooking({
         dayHours = dayEndHour - startHour + startMinute / 60;
         nightHours = 24 - nightStartHour + endHour + endMinute / 60;
       }
-
 
       // Calculate money for each rate and sum them up
       const dayMoney = rate * dayHours * quantity;
@@ -215,12 +193,10 @@ function DetailBooking({
     }
   };
 
-
   const handleChange = (event, index) => {
     const {
       target: { value },
     } = event;
-
 
     if (value.length === detailData[index].quantity + 1) {
       setShowAlert(true);
@@ -231,7 +207,6 @@ function DetailBooking({
       return newSelectedRooms;
     });
   };
-
 
   const createBookingObjects = () => {
     return rows.flatMap((row, index) => {
@@ -255,7 +230,6 @@ function DetailBooking({
       }));
     });
   };
-
 
   const handleSaveBooking = () => {
     if (showAlert === false) {
@@ -283,12 +257,10 @@ function DetailBooking({
     }
   };
 
-
   React.useEffect(() => {
     setRows(detailData);
     setSelectedRooms(Array(detailData.length).fill([]));
   }, [detailData]);
-
 
   React.useEffect(() => {
     const anyExceededQuantity = selectedRooms.some(
@@ -296,7 +268,6 @@ function DetailBooking({
     );
     setShowAlert(anyExceededQuantity);
   }, [selectedRooms, detailData]);
-
 
   React.useEffect(() => {
     const newTotalMoney = rows.reduce((total, row, index) => {
@@ -321,12 +292,10 @@ function DetailBooking({
     setTotalMoney(newTotalMoney);
   }, [rows, selectedRooms]);
 
-
   const formattedDate = (dobString) => {
     const date = new Date(dobString);
     return date.toLocaleDateString();
   };
-
 
   React.useEffect(() => {
     const newTotalMoney = rows.reduce((total, row, index) => {
@@ -342,7 +311,6 @@ function DetailBooking({
     setTotalMoney(newTotalMoney);
   }, [rows, selectedRooms]);
 
-
   const handleCusIdKeyDown = (event) => {
     if (event.key === "Enter") {
       const guest = guestList.find((guest) => guest.idNumber === cusId);
@@ -353,7 +321,6 @@ function DetailBooking({
       }
     }
   };
-
 
   if (rows.length !== 0) {
     return (
@@ -429,9 +396,10 @@ function DetailBooking({
                   severity="success"
                   sx={{ marginLeft: "15px", width: "20%" }}
                 >
-                  {cusInforMain.name + " "}
+                  {cusInforMain.name}
                   {cusInforMain.dob !== null
-                    ? formattedDate(cusInforMain.dob) : "Ok"}
+                    ? formattedDate(cusInforMain.dob)
+                    : "Ok"}
                 </Alert>
               )}
               {showAlert && (
@@ -498,7 +466,6 @@ function DetailBooking({
                               <Checkbox
                                 checked={selectedRooms[index].includes(room)}
                               />
-
 
                               <ListItemText primary={room} />
                             </MenuItem>
@@ -604,10 +571,8 @@ function DetailBooking({
     );
   }
 
-
   return <></>;
 }
-
 
 DetailBooking.propTypes = {
   openDetailBooking: PropTypes.bool.isRequired,
@@ -618,8 +583,4 @@ DetailBooking.propTypes = {
   cusInfor: PropTypes.object,
 };
 
-
 export default DetailBooking;
-
-
-

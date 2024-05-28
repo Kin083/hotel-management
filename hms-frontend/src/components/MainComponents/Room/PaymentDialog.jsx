@@ -32,7 +32,7 @@ function createData(
   startTime,
   endTime,
   money,
-  firstname,
+  firstName,
   cusID,
   dayRate,
   nightRate,
@@ -46,7 +46,7 @@ function createData(
     startTime,
     endTime,
     money,
-    firstname,
+    firstName,
     cusID,
     dayRate,
     nightRate,
@@ -258,7 +258,7 @@ function PaymentDialog(props) {
                 Customer Information
               </Box>
               <Box sx={{ padding: "10px" }}>
-                <StackItem label="Customer name" infor={data.firstname} tag />
+                <StackItem label="Customer name" infor={data.firstName} tag />
                 <StackItem
                   label="Identification Number"
                   infor={data.cusID}

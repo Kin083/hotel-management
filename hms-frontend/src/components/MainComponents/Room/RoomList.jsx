@@ -102,7 +102,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
   const [roomInforTab, setRoomInforTab] = React.useState("1");
   const [openAdjustDialog, setOpenAdjustDialog] = React.useState(false);
   const [specificRoomData, setSpecificRoomData] = React.useState(null);
-  const [roomNumbers, setroomNumbers] = React.useState([]);
+  const [roomNumbers, setRoomNumbers] = React.useState([]);
   const [openPayDialog, setOpenPayDialog] = React.useState(false);
   const [openBackdrop, setOpenBackDrop] = React.useState(false);
   const [successAlert, setSuccessAlert] = React.useState(false);
@@ -121,7 +121,7 @@ function RoomList({ selectedType, selectedStatus, typeList }) {
         id: index,
       }));
 
-      setroomNumbers(roomList.map((room) => room.roomNumber));
+      setRoomNumbers(roomList.map((room) => room.roomNumber));
       setRows(rowsWithId);
     };
 
