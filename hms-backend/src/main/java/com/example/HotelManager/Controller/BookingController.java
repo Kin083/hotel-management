@@ -92,7 +92,7 @@ public class BookingController {
             Integer book_ID = Integer.valueOf(part[0]);
             String MethodPayments = part[1];
             BookingEntity book = bookingService.getBookingByID(book_ID);
-            Double Price = book.getTotalPrice();
+            Double Price = book.getMoney();
             PaymentEntity payment = new PaymentEntity();
 
             LocalDate today = LocalDate.now();

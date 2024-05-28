@@ -34,6 +34,11 @@ const userApi = {
     return axiosClient.post(url, data);
   },
 
+  deleteRoom(roomId) {
+    const url = `/room/delete/${roomId}`;
+    return axiosClient.delete(url);
+  },
+
   addBooking(data) {
     const url = "/addBookingDetails";
     return axiosClient.post(url, data);

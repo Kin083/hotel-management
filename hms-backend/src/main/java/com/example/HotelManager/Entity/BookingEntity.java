@@ -22,7 +22,9 @@ public class BookingEntity {
     private Date checkinDate;
     @Column(name = "checkout_date")
     private Date checkoutDate;
-    @Column(name = "total_price")
-    private Double totalPrice;
+    @Column(name = "money")
+    private Double money;
 
+    @Column(name = "guest_notes")
+    private String guestNotes;
 }

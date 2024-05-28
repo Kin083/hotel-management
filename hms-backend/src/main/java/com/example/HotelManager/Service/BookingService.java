@@ -34,7 +34,7 @@ public class BookingService {
         Integer roomNumber = bookingEntity.getRoomNumber();
         Date checkinDate = bookingEntity.getCheckinDate();
         Date checkoutDate  = bookingEntity.getCheckoutDate();
-        Double totalPrice = bookingEntity.getTotalPrice();
+        Double totalPrice = bookingEntity.getMoney();
         if (guestId != null) {
             booking.setGuestId(guestId);
         }
@@ -48,7 +48,7 @@ public class BookingService {
             booking.setCheckoutDate(checkoutDate);
         }
         if(totalPrice != null) {
-            booking.setTotalPrice(totalPrice);
+            booking.setMoney(totalPrice);
         }
         bookingRepository.save(booking);
         return booking;
@@ -73,7 +73,7 @@ public class BookingService {
         Double price = roomType.getNightRate();
 
         Double total = (Double) (price*daysDifference);
-        booking.setTotalPrice(total);
+        booking.setMoney(total);
 //        bookingRepository.save(booking);
         return (long) (price*daysDifference*amount);
     }

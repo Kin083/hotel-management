@@ -59,4 +59,9 @@ public class RoomService {
     public int countByRoomType(int roomType) {
         return roomRepository.countRoom(roomType,"Available");
     }
+
+    public String deleteRoom(Integer id) {
+        roomRepository.deleteById(id);
+        return "Delete Success";
+    }
 }

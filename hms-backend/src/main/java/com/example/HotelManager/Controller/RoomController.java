@@ -39,6 +39,12 @@ public class RoomController {
     public RoomEntity addRoom(@RequestBody RoomEntity room) {
         return  roomService.saveDetails(room);
     }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public String deleteRoom(@PathVariable Integer id) {
+        return roomService.deleteRoom(id);
+    }
+
     @GetMapping(path = "/getAll/{hotelId}")
     public List<ResponseForListRoom> getListRoom(@PathVariable String hotelId) {
         return lisResponse(hotelId, roomService, roomTypeService);
