@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Hotel Management Web Application
 
 ## Contributors
@@ -43,25 +42,3 @@ This software helps hotels optimize work processes, reduce time and effort, ther
 
 ## More about Document
 Assignment link: [https://drive.google.com/drive/folders/1Kxc4uor5absJ18kC6q6IBP1JaVMIeRdI?usp=sharing](https://drive.google.com/drive/folders/1yD0rQ-WKQ7ctI-5qWV_Syr8BK7cW51iV?usp=sharing)
-=======
-# hotel-management
-
-<ul>
-  <li>npm install</li>
-  <li>npm install react-router-dom</li>
-  <li>npm install @mui/lab</li>
-  <li>npm install @mui/icons-material @mui/material @emotion/styled @emotion/react</li>
-  <li>npm install @mui/x-date-pickers</li>
-  <li>npm install dayjs</li>
-  <li>npm i --save axios </li>
-  <li>npm install jspdf --save</li>
-  <li>npm install --save react-google-charts </li>
-  <li>npm install  jspdf-autotable </li>
-  <li>npm install --save react-date-range </li>
-  <li>npm install --save react date-fns</li>
-  <li>npm install react-phone-number-input --save </li>
-  <li>npm install @mui/styled-engine </li>
-  <li> npm install qrcode.react
-</li>
-</ul>
->>>>>>> tuananh
