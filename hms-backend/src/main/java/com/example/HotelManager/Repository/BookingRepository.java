@@ -13,5 +13,5 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Integer>
 //    List<BookingEntity> findByGuestID(String guestId);
 
     @Query("SELECT p FROM BookingEntity p WHERE p.roomNumber = :roomNumber")
-    BookingEntity findBookingByRoomNumber(String roomNumber);
+    BookingEntity findByRoomNumber(String roomNumber);
 }
