@@ -56,7 +56,7 @@ const AdjustRoomDialog = ({
     nightRate: specificRoomData.nightRate,
     dailyRate: specificRoomData.dailyRate,
     overtimeRate: specificRoomData.overtimeRate,
-    capacity: specificRoomData.maxiumCapacity,
+    capacity: specificRoomData.maximumCapacity,
   }));
   const [name, setName] = useState(specificRoomData.name);
   const [type, setType] = useState(specificRoomData.type);
@@ -83,7 +83,7 @@ const AdjustRoomDialog = ({
     if (selectedType) {
       setPrice({
         dayRate: selectedType.dayRate,
-        nightRate: selectedType.pricepernight,
+        nightRate: selectedType.nightRate,
         dailyRate: selectedType.dailyRate,
         overtimeRate: selectedType.overtimePay,
         capacity: selectedType.capacity,

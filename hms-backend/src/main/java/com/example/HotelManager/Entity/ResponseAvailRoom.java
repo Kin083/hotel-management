@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class ResponseAvailRoom {
     private String type;
-    private String capacity;
+    private int capacity;
     private List<String> listRoomNumber;
     private Double dayRate;
 

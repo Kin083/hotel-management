@@ -126,7 +126,7 @@ function RoomType({ typeList }) {
     setOpenDialog(true);
   };
 
-  const adjustType = (index) => {
+  const updateType = (index) => {
     setSelectedRow(rows[index]);
   };
 
@@ -139,7 +139,7 @@ function RoomType({ typeList }) {
     const typeIdToDelete = rows[deleteIndex].typeId;
     try {
       setRows((prevRows) => prevRows.filter((_, idx) => idx !== deleteIndex));
-      // await userApi.deleteType(typeIdToDelete);
+      await userApi.deleteType(typeIdToDelete);
     } catch (error) {
       console.error("Error deleting type:", error);
     } finally {
@@ -202,10 +202,10 @@ function RoomType({ typeList }) {
             row.typeId === selectedRow.typeId ? newData : row
           )
         );
-        // await userApi.updateType(selectedRow.typeId, newData);
+        await userApi.updateType(selectedRow.typeId, newData);
       } else {
         setRows((prevRows) => [...prevRows, newData]);
-        // await userApi.addType(newData);
+        await userApi.addType(newData);
       }
     } catch (error) {
       console.error("Error saving change:", error);
@@ -294,7 +294,7 @@ function RoomType({ typeList }) {
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.capacity}</StyledTableCell>
                 <StyledTableCell align="right">
-                  <IconButton onClick={() => adjustType(index)}>
+                  <IconButton onClick={() => updateType(index)}>
                     <EditIcon />
                   </IconButton>
                 </StyledTableCell>

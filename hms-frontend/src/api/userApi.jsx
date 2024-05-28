@@ -20,8 +20,8 @@ const userApi = {
   },
 
   updateType(typeId, data) {
-    const url = `/roomType/add/${typeId}`;
-    return axiosClient.post(url, data);
+    const url = `/roomType/update/${typeId}`;
+    return axiosClient.put(url, data);
   },
 
   deleteType(typeID) {
@@ -36,6 +36,16 @@ const userApi = {
 
   addBooking(data) {
     const url = "/addBookingDetails";
+    return axiosClient.post(url, data);
+  },
+
+  getAllGuest(params) {
+    const url = "/guest/getAll";
+    return axiosClient.get(url, {params: params});
+  },
+
+  addGuest(data) {
+    const url = "/guest/add";
     return axiosClient.post(url, data);
   },
 

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@RequestMapping("/room")
 public class RoomController {
     @Autowired
     private RoomService roomService;
@@ -34,11 +35,11 @@ public class RoomController {
     public String updateStatusActive2Using(@PathVariable int id) {
         return roomService.updateStatusActive2Using(id);
     }
-    @PostMapping(path = "/room/add")
+    @PostMapping(path = "/add")
     public RoomEntity addRoom(@RequestBody RoomEntity room) {
         return  roomService.saveDetails(room);
     }
-    @GetMapping(path = "/room/getAll/{hotelId}")
+    @GetMapping(path = "/getAll/{hotelId}")
     public List<ResponseForListRoom> getListRoom(@PathVariable String hotelId) {
         return lisResponse(hotelId, roomService, roomTypeService);
     }
@@ -49,7 +50,7 @@ public class RoomController {
         for(RoomEntity room : listRoom) {
             String roomNum = room.getRoomNumber();
             int typeId = room.getTypeId();
-            RoomTypeEntity roomType = roomTypeService.getRoomTypeByID(typeId);
+            RoomTypeEntity roomType = roomTypeService.getRoomTypeById(typeId);
             ResponseForListRoom res = new ResponseForListRoom();
             res.setType(roomType.getName());
             res.setRoomNumber(roomNum);
@@ -65,7 +66,7 @@ public class RoomController {
         return listResponse;
     }
 
-    @GetMapping(path = "/room/getAvailRoom/{id}")
+    @GetMapping(path = "/getAvailRoom/{id}")
     public List<ResponseAvailRoom> getAvailRoom(@PathVariable String id) {
         List<ResponseForListRoom> lisResponseDetail =lisResponse(id, roomService, roomTypeService);
         List<String> listType = new ArrayList<>();
@@ -82,7 +83,7 @@ public class RoomController {
 
         List<ResponseAvailRoom> ans = new ArrayList<>();
         for (String type : listType) {
-            String capa = "";
+            int capa = 0;
             Double dayrate = (double) 0;
             Double nightrate = (double) 0;
             Double dailyrate = (double) 0;

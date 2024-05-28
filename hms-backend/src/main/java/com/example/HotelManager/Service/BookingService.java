@@ -26,8 +26,7 @@ public class BookingService {
     public BookingEntity getBookingByID(int id) {
         return bookingRepository.findById(id).get();
     }
-    public BookingEntity updateBookingInfo(int id,BookingEntity bookingEntity)
-    {
+    public BookingEntity updateBooking(int id, BookingEntity bookingEntity) {
         BookingEntity booking = bookingRepository.findById(id).orElse(null);
         if (booking == null) return null;
         

@@ -37,9 +37,8 @@ public class BookingController {
     //hàm này để update các infor về booking, cho trường hợp khách muốn đổi ngày checkin-checkout,
     //hàm này chưa tính tiền ontime, sẽ có bổ sung.
     @PostMapping(path = "/booking/update/{id}")
-    public BookingEntity updateBookingInfo(@PathVariable int id, @RequestBody BookingEntity bookEntity)
-    {
-        return bookingService.updateBookingInfo(id,bookEntity);
+    public BookingEntity updateBooking(@PathVariable int id, @RequestBody BookingEntity bookEntity) {
+        return bookingService.updateBooking(id, bookEntity);
     }
     @PostMapping(path = "/booking/add")
     public BookingEntity addBooking(@RequestBody BookingEntity booking) {
@@ -50,8 +49,8 @@ public class BookingController {
 
         int roomNumber = booking.getRoomNumber();
         RoomEntity room = roomService.getRoom(roomNumber);
-        Integer roomTypeID = room.getTypeId();
-        RoomTypeEntity roomType = roomTypeService.getRoomTypeByID(roomTypeID);
+        Integer roomTypeId = room.getTypeId();
+        RoomTypeEntity roomType = roomTypeService.getRoomTypeById(roomTypeId);
         return bookingService.addBookingInforCaculate(booking, room, roomType, amount);
     }
 

@@ -16,6 +16,7 @@ import AddRoomDialog from "./AddRoomDialog";
 import userApi from "../../../api/userApi";
 import { Alert } from "@mui/material";
 
+
 function EnhancedTableToolbar({
   numSelected,
   typeList,
@@ -31,13 +32,16 @@ function EnhancedTableToolbar({
   const [openBackdrop, setOpenBackDrop] = React.useState(false);
   const [successAlert, setSuccessAlert] = React.useState(false);
 
+
   const openAdd = () => {
     setOpenAddDialog(true);
   };
 
+
   const closeAdd = () => {
     setOpenAddDialog(false);
   };
+
 
   const saveAdd = (newRoomData) => {
     userApi
@@ -54,17 +58,21 @@ function EnhancedTableToolbar({
       });
   };
 
+
   const deleteRoom = () => {
     alert("clicked");
   };
+
 
   const openBooking = () => {
     setOpenBookingDialog(true);
   };
 
+
   const closeBooking = () => {
     setOpenBookingDialog(false);
   };
+
 
   const confirmBooking = (selectedRows) => {
     setOpenBookingDialog(false);
@@ -72,12 +80,14 @@ function EnhancedTableToolbar({
     setDetailData(selectedRows);
   };
 
+
   const closeDetailBooking = () => {
     setOpenDetailBooking(false);
   };
   const closeAlert = () => {
     setSuccessAlert(false);
   };
+
 
   const handleCloseBackDrop = () => {
     setOpenBackDrop(false);
@@ -104,6 +114,7 @@ function EnhancedTableToolbar({
           });
       });
 
+
       setOpenDetailBooking(false);
       setOpenBackDrop(true);
       setTimeout(() => {
@@ -119,18 +130,30 @@ function EnhancedTableToolbar({
     }
   };
 
+
   const openCusInfor = () => {
     setOpenCusInforDialog(true);
   };
+
 
   const closeCusInfor = () => {
     setOpenCusInforDialog(false);
   };
 
+
   const saveCusInfor = (cusInfor) => {
     setCusInfor(cusInfor);
+    userApi
+      .addGuest(cusInfor)
+      .then(() => {
+        console.log("Adding guest information successfully:", cusInfor);
+      })
+      .catch((error) => {
+        console.error("Adding guest information Error:", error);
+      });
     setOpenCusInforDialog(false);
   };
+
 
   return (
     <>
@@ -155,6 +178,7 @@ function EnhancedTableToolbar({
           </Typography>
         )}
 
+
         <IconButton onClick={openBooking}>
           <PaidIcon />
         </IconButton>
@@ -169,6 +193,7 @@ function EnhancedTableToolbar({
         )}
       </Toolbar>
 
+
       <BookingDialog
         openBookingDialog={openBookingDialog}
         closeBooking={closeBooking}
@@ -180,14 +205,16 @@ function EnhancedTableToolbar({
         saveBooking={saveBooking}
         openCusInfor={openCusInfor}
         detailData={detailData}
-        cusName={cusInfor.cusName}
+        cusInfor={cusInfor}
       />
+
 
       <CustomerInforDialog
         openCusInforDialog={openCusInforDialog}
         closeCusInfor={closeCusInfor}
         saveCusInfor={saveCusInfor}
       />
+
 
       {openAddDialog && (
         <AddRoomDialog
@@ -199,6 +226,7 @@ function EnhancedTableToolbar({
         />
       )}
 
+
       {openBackdrop && (
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -208,6 +236,7 @@ function EnhancedTableToolbar({
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
+
 
       {successAlert && (
         <Snackbar
@@ -229,11 +258,16 @@ function EnhancedTableToolbar({
   );
 }
 
+
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   typeList: PropTypes.array.isRequired,
-  roomNames: PropTypes.array.isRequired,
+  roomNames: PropTypes.array,
   updateRoomList: PropTypes.func,
 };
 
+
 export default EnhancedTableToolbar;
+
+
+

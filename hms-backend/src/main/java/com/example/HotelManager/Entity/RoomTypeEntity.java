@@ -24,5 +24,5 @@ public class RoomTypeEntity {
     @Column(name = "overtime_pay")
     private Double overtimePay;
 
-    private String capacity;
+    private int capacity;
 }
