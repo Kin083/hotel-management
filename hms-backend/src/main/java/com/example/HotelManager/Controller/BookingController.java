@@ -44,6 +44,12 @@ public class BookingController {
     public BookingEntity addBooking(@RequestBody BookingEntity booking) {
         return bookingService.addBooking(booking);
     }
+
+    @GetMapping(path = "/booking/getBooking/{roomNumber}")
+    public BookingEntity getBooking(@PathVariable String roomNumber) {
+        return bookingService.getBookingByRoomNumber(roomNumber);
+    }
+
     @PostMapping(path = "/booking/addInforCaculate")
     public Long addBookingInforCaculate(@RequestBody BookingEntity booking,@RequestParam int amount) {
 
