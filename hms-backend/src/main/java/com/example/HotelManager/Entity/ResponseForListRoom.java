@@ -13,7 +13,7 @@ public class ResponseForListRoom {
     private Double overtimeRate;
 
     private String status;
-    private String maximumCapacity;
+    private int maximumCapacity;
     private String notes;
 
 }

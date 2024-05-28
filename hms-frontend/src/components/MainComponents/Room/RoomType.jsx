@@ -126,7 +126,7 @@ function RoomType({ typeList }) {
     setOpenDialog(true);
   };
 
-  const adjustType = (index) => {
+  const updateType = (index) => {
     setSelectedRow(rows[index]);
   };
 
@@ -195,7 +195,6 @@ function RoomType({ typeList }) {
       capacity: parseInt(capacity),
     };
 
-    console.log(newData);
     try {
       if (selectedRow !== null) {
         setRows((prevRows) =>
@@ -286,14 +285,16 @@ function RoomType({ typeList }) {
                 </StyledTableCell>
                 <StyledTableCell>{row.description}</StyledTableCell>
                 <StyledTableCell align="right">{row.dayRate}</StyledTableCell>
-                <StyledTableCell align="right">{row.nightRate}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {row.nightRate}
+                </StyledTableCell>
                 <StyledTableCell align="right">{row.dailyRate}</StyledTableCell>
                 <StyledTableCell align="right">
                   {row.overtimePay}
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.capacity}</StyledTableCell>
                 <StyledTableCell align="right">
-                  <IconButton onClick={() => adjustType(index)}>
+                  <IconButton onClick={() => updateType(index)}>
                     <EditIcon />
                   </IconButton>
                 </StyledTableCell>

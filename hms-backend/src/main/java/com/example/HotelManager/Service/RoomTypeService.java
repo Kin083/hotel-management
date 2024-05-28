@@ -2,6 +2,7 @@ package com.example.HotelManager.Service;
 
 import com.example.HotelManager.Entity.RoomTypeEntity;
 import com.example.HotelManager.Repository.RoomTypeRepository;
+import jakarta.persistence.Column;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,29 +15,22 @@ public class RoomTypeService {
     public List<RoomTypeEntity> getAllRoomType() {
         return roomTypeRepository.findAll();
     }
-    public RoomTypeEntity getRoomTypeByID(int RoomTypeID) {
-        return roomTypeRepository.findById(RoomTypeID).orElse(null);
+
+    public RoomTypeEntity getRoomTypeById(int roomTypeId) {
+        return roomTypeRepository.findById(roomTypeId).orElse(null);
     }
-    public RoomTypeEntity saveDetails(RoomTypeEntity roomType) {
+
+    public RoomTypeEntity saveRoomType(RoomTypeEntity roomType) {
         roomTypeRepository.save(roomType);
         return roomType;
     }
 
     public RoomTypeEntity updateRoomType(RoomTypeEntity roomType) {
-        Integer typeId = roomType.getTypeId();
-        RoomTypeEntity room  = roomTypeRepository.findById(typeId).orElse(null);
-        if (room == null) return null;
-        Integer capacity = Integer.valueOf(roomType.getCapacity());
-        String Description = roomType.getDescription();
-        String name = roomType.getName();
-        Double price = roomType.getNightRate();
-
-        room.setCapacity(capacity.toString());
-        room.setName(name);
-        room.setDescription(Description);
-        room.setNightRate(price);
-        roomTypeRepository.save(room);
-        return room;
+        return roomTypeRepository.save(roomType);
     }
 
+    public String deleteRoomType(Integer id) {
+        roomTypeRepository.deleteById(id);
+        return "Delete Success";
+    }
 }
